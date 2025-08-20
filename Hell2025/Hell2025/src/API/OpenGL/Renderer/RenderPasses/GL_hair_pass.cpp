@@ -57,20 +57,43 @@ namespace OpenGLRenderer {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, gBuffer->GetColorAttachmentHandleByName("FinalLighting"));
 
-
-
-
-
         OpenGLFrameBuffer* waterFrameBuffer = GetFrameBuffer("Water");
         glActiveTexture(GL_TEXTURE2);
         glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->GetColorAttachmentHandleByName("Color"));
 
 
-
-
-
         glBindImageTexture(0, gBuffer->GetColorAttachmentHandleByName("FinalLighting"), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA16F);
         glDispatchCompute((gBuffer->GetWidth() + 7) / 8, (gBuffer->GetHeight() + 7) / 8, 1);
+
+
+        // Render hair into the main gbuffer depth texture so that doesn't fuck up 
+
+
+
+       // gBuffer->Bind();
+       // SetRasterizerState("GeometryPass_NonBlended");
+       // glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+       //       
+       // OpenGLShader* depthPeelShader = GetShader("HairDepthPeel");
+       // depthPeelShader->Bind();
+       //
+       // for (int i = 0; i < 4; i++) {
+       //     Viewport* viewport = ViewportManager::GetViewportByIndex(i);
+       //
+       //     if (viewport->IsVisible()) {
+       //         OpenGLRenderer::SetViewport(gBuffer, viewport);
+       //         gBuffer->DrawBuffer("BaseColor");
+       //
+       //         if (BackEnd::RenderDocFound()) {
+       //             SplitMultiDrawIndirect(depthPeelShader, drawInfoSet.hairTopLayer[i]);
+       //         }
+       //         else {
+       //             MultiDrawIndirect(drawInfoSet.hairTopLayer[i]);
+       //         }
+       //     }
+       // }
+       // glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
     }
 
     void RenderHairLayer(const std::vector<DrawIndexedIndirectCommand>(*drawCommands)[4], int peelCount) {

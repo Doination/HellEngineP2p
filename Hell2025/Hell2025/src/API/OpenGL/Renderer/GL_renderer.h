@@ -77,6 +77,7 @@ namespace OpenGLRenderer {
     void UIPass();
     void VatBloodPass();
     void WeatherBoardsPass();
+    void ChristmasLightsPass();
 
     // Debug passes
     void DrawPointCloud();

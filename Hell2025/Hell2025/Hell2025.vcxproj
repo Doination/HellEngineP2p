@@ -215,6 +215,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\API\OpenGL\Renderer\GL_renderer_debug.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\GL_renderer_util.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\ComputePasses\GL_global_illumination_passes.cpp" />
+    <ClCompile Include="src\API\OpenGL\Renderer\RenderPasses\GL_christmas_lights.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\RenderPasses\GL_fog_passes.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\RenderPasses\GL_screenspace_decals_pass.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\RenderPasses\GL_decal_painting_pass.cpp" />
@@ -336,6 +337,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Player\Player_ragdoll.cpp" />
     <ClCompile Include="src\Renderer\GlobalIllumination.cpp" />
     <ClCompile Include="src\Types\Animation\Animator.cpp" />
+    <ClCompile Include="src\Types\Christmas\ChristmasLights.cpp" />
     <ClCompile Include="src\Types\Christmas\ChristmasPresent.cpp" />
     <ClCompile Include="src\Types\Christmas\ChristmasTree.cpp" />
     <ClCompile Include="src\Types\Effects\ScreenSpaceBloodDecal.cpp" />
@@ -364,7 +366,9 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Physics\Types\D6Joint.cpp" />
     <ClCompile Include="src\Player\Player_piano.cpp" />
     <ClCompile Include="src\Physics\Types\Ragdoll.cpp" />
+    <ClCompile Include="src\Types\Generics\GenericBouncable.cpp" />
     <ClCompile Include="src\Types\House\WeatherBoards.cpp" />
+    <ClCompile Include="src\Types\Generics\GenericStatic.cpp" />
     <ClCompile Include="src\Types\Misc\Piano.cpp" />
     <ClCompile Include="src\Types\Misc\PictureFrame.cpp" />
     <ClCompile Include="src\Types\Renderer\Mesh.cpp" />
@@ -505,6 +509,8 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <None Include="res\shaders\OpenGL\GL_blur.frag" />
     <None Include="res\shaders\OpenGL\GL_blur_horizontal.vert" />
     <None Include="res\shaders\OpenGL\GL_blur_vertical.vert" />
+    <None Include="res\shaders\OpenGL\GL_christmas_light_wire.frag" />
+    <None Include="res\shaders\OpenGL\GL_christmas_light_wire.vert" />
     <None Include="res\shaders\OpenGL\GL_debug_point_cloud.frag" />
     <None Include="res\shaders\OpenGL\GL_debug_point_cloud.vert" />
     <None Include="res\shaders\OpenGL\GL_debug_solid_color.frag" />
@@ -661,6 +667,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClInclude Include="src\Physics\Types\CharacterController.h" />
     <ClInclude Include="src\Renderer\GlobalIllumination.h" />
     <ClInclude Include="src\Types\Animation\Animator.h" />
+    <ClInclude Include="src\Types\Christmas\ChristmasLights.h" />
     <ClInclude Include="src\Types\Christmas\ChristmasPresent.h" />
     <ClInclude Include="src\Types\Christmas\ChristmasTree.h" />
     <ClInclude Include="src\Types\Effects\ScreenSpaceBloodDecal.h" />
@@ -681,7 +688,9 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClInclude Include="src\Physics\CollisionReports.h" />
     <ClInclude Include="src\Physics\Types\D6Joint.h" />
     <ClInclude Include="src\Physics\Types\Ragdoll.h" />
+    <ClInclude Include="src\Types\Generics\GenericBouncable.h" />
     <ClInclude Include="src\Types\House\WeatherBoards.h" />
+    <ClInclude Include="src\Types\Generics\GenericStatic.h" />
     <ClInclude Include="src\Types\Misc\Piano.h" />
     <ClInclude Include="src\Types\Misc\PictureFrame.h" />
     <ClInclude Include="src\Types\Renderer\Mesh.h" />

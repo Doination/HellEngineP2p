@@ -8,11 +8,11 @@
 namespace BakeQueue {
 
     std::vector<QueuedTextureBake> g_queuedTextureBakes;
+    std::mutex g_queuedTextureBakesMutex;
     int g_textureBakeJobID = 0;
 
     void QueueTextureForBaking(Texture* texture) {
-        static std::mutex mutex;
-        std::lock_guard<std::mutex> lock(mutex);
+        std::lock_guard<std::mutex> lock(g_queuedTextureBakesMutex);
         for (int i = 0; i < texture->GetTextureDataCount(); i++) {
             QueuedTextureBake& queuedTextureBake = g_queuedTextureBakes.emplace_back();
             queuedTextureBake.jobID = g_textureBakeJobID++;
@@ -28,8 +28,7 @@ namespace BakeQueue {
     }
 
     void RemoveQueuedTextureBakeByJobID(int jobID) {
-        static std::mutex mutex;
-        std::lock_guard<std::mutex> lock(mutex);
+        std::lock_guard<std::mutex> lock(g_queuedTextureBakesMutex);
         for (int i = 0; i < g_queuedTextureBakes.size(); i++) {
             if (g_queuedTextureBakes[i].jobID == jobID) {
                 g_queuedTextureBakes.erase(g_queuedTextureBakes.begin() + i);

@@ -74,6 +74,7 @@ enum class ObjectType {
     DOOR_FRAME,
     GAME_OBJECT,
     GENERIC_BOUNCABLE,
+    GENERIC_STATIC,
     HEIGHT_MAP,
     PLANE,
     LIGHT,
@@ -356,6 +357,20 @@ enum class ChristmasPresentType : uint32_t {
     MEDIUM,
     LARGE
 };
+
+
+enum class GenericStaticType : uint32_t {
+    COUCH = 0
+};
+
+enum class GenericBouncableType : uint32_t {
+    COUCH_CUSHION_0 = 0,
+    COUCH_CUSHION_1,
+    COUCH_CUSHION_2,
+    COUCH_CUSHION_3,
+    COUCH_CUSHION_4
+};
+
 
 inline RaycastIgnoreFlags operator|(RaycastIgnoreFlags a, RaycastIgnoreFlags b) {
     return static_cast<RaycastIgnoreFlags>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));

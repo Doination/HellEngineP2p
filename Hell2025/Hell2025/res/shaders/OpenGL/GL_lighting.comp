@@ -166,6 +166,10 @@ void main() {
     uint viewportIndex = texture(ViewportIndexTexture, uv_screenspace).r;
     float sssRadius = texture(EmissiveTexture, uv_screenspace).a;
 
+    
+    vec3 emssiveColor = texture(EmissiveTexture, uv_screenspace).rgb;
+    baseColor.rgb += emssiveColor.rgb;
+
     // Don't apply lighting to skybox
     if (normal.x == 0.0 && normal.y == 0.0 && normal.z == 0.0) {
         //imageStore(outputImage, pixelCoords, baseColor);
@@ -528,12 +532,12 @@ void main() {
     //finalColor = indirect;
 
     // Emissive
-    vec3 emssiveColor = texture(EmissiveTexture, uv_screenspace).rgb;
     //finalColor += emssiveColor;
 
     finalColor.rgb = finalColor.rgb * finalAlpha;    
     vec4 outputColor = vec4(finalColor, finalAlpha);
     
+
 
 //    outputColor.rgb = vec3(0);
 

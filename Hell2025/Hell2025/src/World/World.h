@@ -4,6 +4,7 @@
 #include "Game/Allies/Mermaid/Mermaid.h"
 #include "Game/Enemies/Kangaroo/Kangaroo.h"
 #include "Game/Enemies/Shark/Shark.h"
+#include "Types/Christmas/ChristmasLights.h"
 #include "Types/Christmas/ChristmasPresent.h"
 #include "Types/Christmas/ChristmasTree.h"
 #include "Types/Game/AnimatedGameObject.h"
@@ -13,6 +14,8 @@
 #include "Types/Game/GameObject.h"
 #include "Types/Game/Light.h"
 #include "Types/Game/PickUp.h"
+#include "Types/Generics/GenericBouncable.h"
+#include "Types/Generics/GenericStatic.h"
 #include "Types/Effects/VolumetricBloodSplatter.h"
 #include "Types/Effects/ScreenSpaceBloodDecal.h"
 #include "Types/House/Door.h"
@@ -68,10 +71,13 @@ namespace World {
     void AddBullet(BulletCreateInfo createInfo);
     void AddDoor(DoorCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddBulletCasing(BulletCasingCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
+    void AddChristmasLights(ChristmasLightsCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddChristmasPresent(ChristmasPresentCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddChristmasTree(ChristmasTreeCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddDecal(const DecalCreateInfo& createInfo);
     void AddGameObject(GameObjectCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
+    void AddGenericStatic(GenericStaticCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
+    void AddGenericBouncable(GenericBouncableCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddHousePlane(PlaneCreateInfo createInfo, SpawnOffset spawnOffset);
     void AddKangaroo(const KangarooCreateInfo& createInfo);
     void AddLight(LightCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
@@ -166,12 +172,15 @@ namespace World {
     std::vector<ScreenSpaceBloodDecal>& GetScreenSpaceBloodDecals();
     std::vector<Bullet>& GetBullets();
     std::vector<BulletCasing>& GetBulletCasings();
+    std::vector<ChristmasLights>& GetChristmasLights();
     std::vector<ChristmasPresent>& GetChristmasPresents();
     std::vector<ChristmasTree>& GetChristmasTrees();
     std::vector<ClippingCube>& GetClippingCubes();
     std::vector<Decal>& GetDecals();
     std::vector<Door>& GetDoors();
     std::vector<GameObject>& GetGameObjects();
+    std::vector<GenericBouncable>& GetGenericBouncables();
+    std::vector<GenericStatic>& GetGenericStatics();
     std::vector<HeightMapChunk>& GetHeightMapChunks();
     std::vector<Plane>& GetPlanes();
     std::vector<Light>& GetLights();

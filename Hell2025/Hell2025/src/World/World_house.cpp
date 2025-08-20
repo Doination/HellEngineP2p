@@ -52,6 +52,58 @@ namespace World {
         christmasTreeCreateInfo.position = glm::vec3(0.78f, 0.15f, 2.25f);
         christmasTreeCreateInfo.rotation.y = Util::RandomFloat(0, HELL_PI);
         AddChristmasTree(christmasTreeCreateInfo, spawnOffset);
+
+     
+        ChristmasLightsCreateInfo christmasLightsCreateInfo;
+        christmasLightsCreateInfo.start = glm::vec3(4.4, 2.13241, 0.861675);
+        christmasLightsCreateInfo.end = glm::vec3(2.99485, 2.16198, 2.9);
+        christmasLightsCreateInfo.spiral = false;
+        christmasLightsCreateInfo.sag = 0.6f;
+        World::AddChristmasLights(christmasLightsCreateInfo, spawnOffset);
+
+
+        glm::vec3 couchSpawnPosition = glm::vec3(0.02f, 0.0f, -1.5f);
+        glm::vec3 couchSpawnRotation = glm::vec3(0.0f, HELL_PI * 0.5f, 0.0f);
+
+        GenericStaticCreateInfo genericStaticCreateInfo;
+        genericStaticCreateInfo.position = couchSpawnPosition;
+        genericStaticCreateInfo.rotation = couchSpawnRotation;
+        genericStaticCreateInfo.type = GenericStaticType::COUCH;
+        World::AddGenericStatic(genericStaticCreateInfo, spawnOffset);
+
+
+        GenericBouncableCreateInfo genericBouncableCreateInfo;
+        genericBouncableCreateInfo.position = couchSpawnPosition;
+        genericBouncableCreateInfo.rotation = couchSpawnRotation;
+        genericBouncableCreateInfo.rotation.y = HELL_PI * 0.5f;
+        genericBouncableCreateInfo.type = GenericBouncableType::COUCH_CUSHION_0;
+        World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
+
+        genericBouncableCreateInfo.position = couchSpawnPosition;
+        genericBouncableCreateInfo.rotation = couchSpawnRotation;
+        genericBouncableCreateInfo.rotation.y = HELL_PI * 0.5f;
+        genericBouncableCreateInfo.type = GenericBouncableType::COUCH_CUSHION_0;
+        World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
+
+        genericBouncableCreateInfo.position = couchSpawnPosition;
+        genericBouncableCreateInfo.rotation = couchSpawnRotation;
+        genericBouncableCreateInfo.rotation.y = HELL_PI * 0.5f;
+        genericBouncableCreateInfo.type = GenericBouncableType::COUCH_CUSHION_1;
+        World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
+
+        genericBouncableCreateInfo.position = couchSpawnPosition;
+        genericBouncableCreateInfo.rotation = couchSpawnRotation;
+        genericBouncableCreateInfo.rotation.y = HELL_PI * 0.5f;
+        genericBouncableCreateInfo.type = GenericBouncableType::COUCH_CUSHION_2;
+        World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
+
+        genericBouncableCreateInfo.position = couchSpawnPosition;
+        genericBouncableCreateInfo.rotation = couchSpawnRotation;
+        genericBouncableCreateInfo.rotation.y = HELL_PI * 0.5f;
+        genericBouncableCreateInfo.type = GenericBouncableType::COUCH_CUSHION_3;
+        World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
+
+
     }
 
     void SaveHouse() {

@@ -267,6 +267,10 @@ namespace OpenGLRenderer {
     }
 
     void LoadShaders() {
+
+
+        g_shaders["ChristmasLightsWire"] = OpenGLShader({ "GL_christmas_light_wire.vert", "GL_christmas_light_wire.frag" });
+        
         g_shaders["RaytraceScene"] = OpenGLShader({ "GL_raytrace_scene.comp" });
 
         g_shaders["BlurHorizontal"] = OpenGLShader({ "GL_blur_horizontal.vert", "GL_blur.frag" });

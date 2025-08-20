@@ -101,7 +101,11 @@ namespace GlobalIllumination {
                     triangle.v1 = wallSegment.GetVertices()[idx1].position;
                     triangle.v2 = wallSegment.GetVertices()[idx2].position;
                     
-                    triangle.normal = wallSegment.GetVertices()[i].normal;
+                    triangle.normal = normalize(
+                        wallSegment.GetVertices()[idx0].normal +
+                        wallSegment.GetVertices()[idx1].normal +
+                        wallSegment.GetVertices()[idx2].normal
+                    );
                 }
             }
         }

@@ -120,10 +120,10 @@ namespace Physics {
         PxVec3 unitDir = PxVec3(rayDirection.x, rayDirection.y, rayDirection.z);
         PxReal maxDistance = rayLength;
         PxRaycastBuffer hit;
-        PxHitFlags outputFlags = PxHitFlag::ePOSITION | PxHitFlag::eNORMAL | PxHitFlag::eMESH_BOTH_SIDES;
-        if (!cullBackFacing) {
-            outputFlags |= PxHitFlag::eMESH_BOTH_SIDES;
-        }
+        PxHitFlags outputFlags = PxHitFlag::ePOSITION | PxHitFlag::eNORMAL;// | PxHitFlag::eMESH_BOTH_SIDES;
+       //if (cullBackFacing) {
+       //    outputFlags |= PxHitFlag::eMESH_BOTH_SIDES;
+       //}
 
 
         PxQueryFilterData filterData = PxQueryFilterData();

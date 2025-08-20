@@ -27,13 +27,16 @@ namespace World {
     std::vector<AnimatedGameObject> g_animatedGameObjects;
     std::vector<ScreenSpaceBloodDecal> g_screenSpaceBloodDecals;
     std::vector<Bullet> g_bullets;
-    std::vector<BulletCasing> g_bulletCasings;
+    std::vector<BulletCasing> g_bulletCasings;  
+    std::vector<ChristmasLights> g_christmasLights;
     std::vector<ChristmasPresent> g_christmasPresents;
     std::vector<ChristmasTree> g_christmasTrees;
     std::vector<ClippingCube> g_clippingCubes;
     std::vector<Door> g_doors;
     std::vector<Decal> g_decals;
     std::vector<GameObject> g_gameObjects;
+    std::vector<GenericStatic> g_genericStatics;
+    std::vector<GenericBouncable> g_genericBouncables;
     std::vector<Kangaroo> g_kangaroos;
     std::vector<HeightMapChunk> g_heightMapChunks;
     std::vector<Mermaid> g_mermaids;
@@ -93,7 +96,10 @@ namespace World {
 
         // Add shark
         Shark& shark = g_sharks.emplace_back();
-        shark.Init();
+        shark.Init(glm::vec3(5.0f, 29.05f, 40.0f));
+
+        //Shark& shark2 = g_sharks.emplace_back();
+        //shark2.Init(glm::vec3(25.0f, 29.05f, 60.0f));
 
         for (Kangaroo& kangaroo : g_kangaroos) {
             kangaroo.Respawn();
@@ -594,6 +600,10 @@ namespace World {
             bulletCasing.CleanUp();
         }
 
+        for (ChristmasLights& christmasLights : g_christmasLights) {
+            christmasLights.CleanUp();
+        }
+
         for (ChristmasPresent& christmasPresent : g_christmasPresents) {
             christmasPresent.CleanUp();
         }
@@ -608,6 +618,15 @@ namespace World {
         for (GameObject& gameObject : g_gameObjects) {
             gameObject.CleanUp();
         }
+
+       //for (GenericBouncable& genericBouncable : g_genericBouncables) {
+       //    genericStatic.CleanUp();
+       //}
+
+        for (GenericStatic& genericStatic : g_genericStatics) {
+            genericStatic.CleanUp();
+        }
+
         //for (Kangaroo& kangaroo : g_kangaroos) {
         //    kangaroo.CleanUp();
         //}
@@ -637,13 +656,15 @@ namespace World {
         }
 
         // Clear all containers
+        g_bulletCasings.clear();
         g_screenSpaceBloodDecals.clear();
+        g_christmasLights.clear();
         g_christmasPresents.clear();
         g_christmasTrees.clear();
         g_decals.clear();
-        g_decals.clear();
         g_doors.clear();
         g_gameObjects.clear();
+        g_genericStatics.clear();
         //g_kangaroos.clear();
         g_heightMapChunks.clear();
         g_lights.clear();
@@ -720,6 +741,10 @@ namespace World {
         kangaroo.Init(createInfo);        
     }
 
+    void AddChristmasLights(ChristmasLightsCreateInfo createInfo, SpawnOffset spawnOffset) {
+        g_christmasLights.push_back(ChristmasLights(createInfo, spawnOffset));
+    }
+
     void AddChristmasPresent(ChristmasPresentCreateInfo createInfo, SpawnOffset spawnOffset) {
         g_christmasPresents.push_back(ChristmasPresent(createInfo, spawnOffset));
     }
@@ -741,6 +766,14 @@ namespace World {
     void AddGameObject(GameObjectCreateInfo createInfo, SpawnOffset spawnOffset) {
         createInfo.position += spawnOffset.translation;
         g_gameObjects.push_back(GameObject(createInfo));
+    }
+
+    void AddGenericBouncable(GenericBouncableCreateInfo createInfo, SpawnOffset spawnOffset) {
+        g_genericBouncables.push_back(GenericBouncable(createInfo, spawnOffset));
+    }
+
+    void AddGenericStatic(GenericStaticCreateInfo createInfo, SpawnOffset spawnOffset) {
+        g_genericStatics.push_back(GenericStatic(createInfo, spawnOffset));
     }
 
     void AddLight(LightCreateInfo createInfo, SpawnOffset spawnOffset) {
@@ -951,11 +984,14 @@ namespace World {
     std::vector<Bullet>& GetBullets()                                   { return g_bullets; }
     std::vector<BulletCasing>& GetBulletCasings()                       { return g_bulletCasings; }
     std::vector<ChristmasPresent>& GetChristmasPresents()               { return g_christmasPresents; }
+    std::vector<ChristmasLights>& GetChristmasLights()                  { return g_christmasLights; }
     std::vector<ChristmasTree>& GetChristmasTrees()                     { return g_christmasTrees; }
     std::vector<ClippingCube>& GetClippingCubes()                       { return g_clippingCubes; }
     std::vector<Decal>& GetDecals()                                     { return g_decals; }
     std::vector<Door>& GetDoors()                                       { return g_doors; }
     std::vector<GameObject>& GetGameObjects()                           { return g_gameObjects; }
+    std::vector<GenericBouncable>& GetGenericBouncables()               { return g_genericBouncables; }
+    std::vector<GenericStatic>& GetGenericStatics()                     { return g_genericStatics; }
     std::vector<Plane>& GetPlanes()                                     { return g_planes; }
     std::vector<Light>& GetLights()                                     { return g_lights; };
     std::vector<Kangaroo>& GetKangaroos()                               { return g_kangaroos; }

@@ -160,6 +160,32 @@ namespace OpenGLRenderer {
                }
            }
        }
+
+        // Render Christmas lights
+       //const std::vector<ViewportData>& viewportData = RenderDataManager::GetViewportData();
+
+       OpenGLShader* christmasLightWireShader = GetShader("ChristmasLightsWire");
+       christmasLightWireShader->Bind();
+       SetRasterizerState("GeometryPass_NonBlended");
+
+       for (int i = 0; i < 4; i++) {
+           Viewport* viewport = ViewportManager::GetViewportByIndex(i);
+           if (viewport->IsVisible()) {
+               OpenGLRenderer::SetViewport(gBuffer, viewport);
+
+               christmasLightWireShader->SetInt("playerIndex", i);
+               christmasLightWireShader->SetMat4("projection", viewportData[i].projection);
+               christmasLightWireShader->SetMat4("view", viewportData[i].view);
+
+               // Draw Christmas lights
+               for (ChristmasLights& lights : World::GetChristmasLights()) {
+                   auto& mesh = lights.m_meshBuffer.GetGLMeshBuffer();
+                   glBindVertexArray(mesh.GetVAO());
+                   glDrawElements(GL_TRIANGLES, mesh.GetIndexCount(), GL_UNSIGNED_INT, 0);
+               }
+           }
+       }
+
 //
 //
 //   OpenGLShader* shader2 = GetShader("GBuffer_DEBUG");

@@ -121,6 +121,19 @@ namespace World {
             RenderDataManager::SubmitRenderItems(wall.GetWeatherBoardstopRenderItems());
         }
 
+        for (GenericBouncable& genericBouncable : GetGenericBouncables()) {
+            RenderDataManager::SubmitRenderItems(genericBouncable.GetRenderItems());
+        }
+
+       // std::cout << "GetGenericBouncables().siez(): " << GetGenericBouncables().size() << "\n";
+
+        for (GenericStatic& genericStatics : GetGenericStatics()) {
+            RenderDataManager::SubmitRenderItems(genericStatics.GetRenderItems());
+        }
+
+        for (ChristmasLights& christmasLights : GetChristmasLights()) {
+            RenderDataManager::SubmitRenderItems(christmasLights.GetRenderItems());
+        }
 
         for (ChristmasPresent& christmasPresent : GetChristmasPresents()) {
             RenderDataManager::SubmitRenderItems(christmasPresent.GetRenderItems());

@@ -17,6 +17,19 @@ ChristmasTree::ChristmasTree(const ChristmasTreeCreateInfo& createInfo, const Sp
 
     CreateRenderItems();
     SpawnPresents(glm::vec3(0.0f, 1.0f, 0.0f));
+
+
+    ChristmasLightsCreateInfo christmasLightsCreateInfo;
+    //christmasLightsCreateInfo.start = createInfo.position;
+    //christmasLightsCreateInfo.end = createInfo.position;
+
+
+    christmasLightsCreateInfo.sprialTopCenter = createInfo.position + glm::vec3(-0.08f, 1.7f, -0.03f);
+    christmasLightsCreateInfo.spiral = true;
+
+
+
+    World::AddChristmasLights(christmasLightsCreateInfo, spawnOffset);
 }
 
 void ChristmasTree::CreateRenderItems() {

@@ -9,7 +9,7 @@
 #define SHARK_HEALTH_MAX 1000
 
 struct Shark {
-    void Init();
+    void Init(glm::vec3 initialPosition);
     void Update(float deltaTime);
     void SetPosition(glm::vec3 position);
     void CleanUp();

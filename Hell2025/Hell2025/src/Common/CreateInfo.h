@@ -4,15 +4,41 @@
 #include "HellDefines.h"
 #include <map>
 
-struct ChristmasTreeCreateInfo {
+struct GenericStaticCreateInfo {
     glm::vec3 position = glm::vec3(0.0f);
     glm::vec3 rotation = glm::vec3(0.0f);
+    GenericStaticType type = GenericStaticType::COUCH;
+};
+
+struct GenericBouncableCreateInfo {
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f);
+    GenericBouncableType type = GenericBouncableType::COUCH_CUSHION_0;
+};
+
+
+struct ChristmasLightsCreateInfo {
+    // Hanging lights
+    glm::vec3 start = glm::vec3(0);
+    glm::vec3 end = glm::vec3(0);
+    float sag = 0;
+
+    // Tree spiral lights
+    bool spiral = false;
+    float spiralRadius = 1.0f;
+    float spiarlHeight = 1.0f;
+    glm::vec3 sprialTopCenter;
 };
 
 struct ChristmasPresentCreateInfo {
     glm::vec3 position = glm::vec3(0.0f);
     glm::vec3 rotation = glm::vec3(0.0f);
     ChristmasPresentType type = ChristmasPresentType::SMALL;
+};
+
+struct ChristmasTreeCreateInfo {
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f);
 };
 
 struct DecalCreateInfo {

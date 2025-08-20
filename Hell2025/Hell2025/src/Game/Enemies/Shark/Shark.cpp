@@ -22,11 +22,9 @@ std::vector<glm::vec3> GetCirclePoints(const glm::vec3& center, int segments, fl
     return pts;
 }
 
-void Shark::Init() {
+void Shark::Init(glm::vec3 initialPosition) {
     m_objectId = UniqueID::GetNext();
 
-    //glm::vec3 initialPosition = glm::vec3(38.0f, 11.48f, 24.0f);
-    glm::vec3 initialPosition = glm::vec3(5.0f, 29.05f, 40.0f);
 
     g_animatedGameObjectObjectId = World::CreateAnimatedGameObject();
 
@@ -141,7 +139,6 @@ void Shark::Init() {
 }
 
 void Shark::Update(float deltaTime) {
-
     if (false) {
         for (glm::vec3 point : m_path) {
             Renderer::DrawPoint(point, RED);
@@ -168,8 +165,6 @@ void Shark::Update(float deltaTime) {
         }
     }
 
-
-
     // Put these somewhere better!
     m_right = glm::cross(m_forward, glm::vec3(0, 1, 0));
     m_left = -m_right;
@@ -191,43 +186,29 @@ void Shark::Update(float deltaTime) {
     float rot9 = Util::YRotationBetweenTwoPoints(m_spinePositions[2], m_spinePositions[1]) + HELL_PI * 0.5f;
     float rot10 = Util::YRotationBetweenTwoPoints(m_spinePositions[1], m_spinePositions[0]) + HELL_PI * 0.5f;
 
-    // Calculate root bone matrix
-    Transform rotationTransform;
-    rotationTransform.rotation.y = rot0;
-    glm::mat4 rootRotationMatrix = rotationTransform.to_mat4();
-    glm::mat4 rootBoneMatrix = rootTranslationMatrix * rootRotationMatrix;
-
-    //std::unordered_map<std::string, glm::mat4> additiveBoneTransforms;
-    //additiveBoneTransforms["Spine_00"] = rootBoneMatrix;
-    //additiveBoneTransforms["BN_Spine_01"] = glm::rotate(glm::mat4(1.0f), rot1 - rot0, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_02"] = glm::rotate(glm::mat4(1.0f), rot2 - rot1, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_03"] = glm::rotate(glm::mat4(1.0f), rot3 - rot2, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_04"] = glm::rotate(glm::mat4(1.0f), rot4 - rot3, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_05"] = glm::rotate(glm::mat4(1.0f), rot5 - rot4, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_06"] = glm::rotate(glm::mat4(1.0f), rot6 - rot5, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Spine_07"] = glm::rotate(glm::mat4(1.0f), rot7 - rot6, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Neck_00"] = glm::rotate(glm::mat4(1.0f), rot8 - rot1, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Neck_01"] = glm::rotate(glm::mat4(1.0f), rot9 - rot8, glm::vec3(0, 1, 0));
-    //additiveBoneTransforms["BN_Head_00"] = glm::rotate(glm::mat4(1.0f), rot10 - rot9, glm::vec3(0, 1, 0));
-
     // Update animation
     AnimatedGameObject* animatedGameObject = GetAnimatedGameObject();
     if (animatedGameObject) {
+        glm::vec3 rootPosition = m_spinePositions[3];
+        float yRotation = rot0;
+
+        animatedGameObject->SetPosition(rootPosition);
+        animatedGameObject->SetRotationY(yRotation);
+
+        animatedGameObject->SetAdditiveTransform("BN_Spine_01", glm::rotate(glm::mat4(1.0f), rot1 - rot0, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_02", glm::rotate(glm::mat4(1.0f), rot2 - rot1, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_03", glm::rotate(glm::mat4(1.0f), rot3 - rot2, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_04", glm::rotate(glm::mat4(1.0f), rot4 - rot3, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_05", glm::rotate(glm::mat4(1.0f), rot5 - rot4, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_06", glm::rotate(glm::mat4(1.0f), rot6 - rot5, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Spine_07", glm::rotate(glm::mat4(1.0f), rot7 - rot6, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Neck_00", glm::rotate(glm::mat4(1.0f), rot8 - rot1, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Neck_01", glm::rotate(glm::mat4(1.0f), rot9 - rot8, glm::vec3(0, 1, 0)));
+        animatedGameObject->SetAdditiveTransform("BN_Head_00", glm::rotate(glm::mat4(1.0f), rot10 - rot9, glm::vec3(0, 1, 0)));
+
         animatedGameObject->Update(deltaTime);
         animatedGameObject->UpdateRenderItems();
     }
-
-    animatedGameObject->SetAdditiveTransform("Spine_00", rootBoneMatrix);
-    animatedGameObject->SetAdditiveTransform("BN_Spine_01", glm::rotate(glm::mat4(1.0f), rot1 - rot0, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_02", glm::rotate(glm::mat4(1.0f), rot2 - rot1, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_03", glm::rotate(glm::mat4(1.0f), rot3 - rot2, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_04", glm::rotate(glm::mat4(1.0f), rot4 - rot3, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_05", glm::rotate(glm::mat4(1.0f), rot5 - rot4, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_06", glm::rotate(glm::mat4(1.0f), rot6 - rot5, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Spine_07", glm::rotate(glm::mat4(1.0f), rot7 - rot6, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Neck_00", glm::rotate(glm::mat4(1.0f), rot8 - rot1, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Neck_01", glm::rotate(glm::mat4(1.0f), rot9 - rot8, glm::vec3(0, 1, 0)));
-    animatedGameObject->SetAdditiveTransform("BN_Head_00", glm::rotate(glm::mat4(1.0f), rot10 - rot9, glm::vec3(0, 1, 0)));
 
     // Arrow key movement
     if (IsAlive()) {

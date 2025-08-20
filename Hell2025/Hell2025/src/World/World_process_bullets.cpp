@@ -36,6 +36,8 @@ namespace World {
 
             // On hit
             if (rayResult.hitFound) {
+
+                std::cout << "Bullet hit position: " << rayResult.hitPosition << "\n";
                              
                 PhysicsType& physicsType = rayResult.userData.physicsType;
                 ObjectType& objectType = rayResult.userData.objectType;
