@@ -247,6 +247,12 @@ namespace AssetManager {
         }
     }
 
+    //void ASyncConsoleLog(std::string text) {
+    //    static std::mutex mutex;
+    //    std::lock_guard<std::mutex> lock(mutex);
+    //    std::cout << text << "\n";
+    //}
+
     std::vector<std::string>& GetLoadLog() {
         return g_loadLog;
     }

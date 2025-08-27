@@ -379,7 +379,7 @@ namespace WeaponManager {
         glock.magSize = 15;
         glock.ammoType = "Glock";
         glock.animationCancelFrames.draw = 50.0f;
-        glock.animationCancelFrames.fire = 6;
+        glock.animationCancelFrames.fire = 5;
         glock.animationCancelFrames.adsFire = 6.0f;
         glock.animationCancelFrames.reload = 40.0f;
         glock.animationCancelFrames.reloadFromEmpty = 40.0f;
@@ -403,6 +403,31 @@ namespace WeaponManager {
         glock.animationSpeeds.adsIn = 3.0f;
         glock.animationSpeeds.adsOut = 3.0f;
         glock.casingEjectionImpulse = 0.025f;
+
+        glock.modelName = "Tokarev";
+        glock.animationNames.idle = "Tokarev_Idle";
+        glock.animationNames.draw = "Tokarev_Draw";
+        glock.animationNames.drawFirst = "Tokarev_DrawFirst";
+        glock.animationNames.walk = "Tokarev_Walk";
+        glock.animationNames.reload = "Tokarev_Reload";
+        glock.animationNames.reloadempty.push_back("Tokarev_ReloadEmpty");
+
+        glock.pickupConvexMeshModelName = "Tokarev_ConvexMesh";
+        glock.pickUpMeshMaterials["TokarevBody"] = "Tokarev";
+        glock.pickUpMeshMaterials["TokarevGripPolymer"] = "TokarevGrip";
+        glock.hiddenMeshAtStart.clear();
+        glock.hiddenMeshAtStart.push_back("ArmsFemale");
+        glock.hiddenMeshAtStart.push_back("TokarevGripWood");
+        glock.meshMaterials["TokarevBody"] = "Tokarev";
+        glock.meshMaterials["TokarevMag"] = "TokarevMag";
+        glock.meshMaterials["TokarevGripPolymer"] = "TokarevGrip";
+        glock.meshMaterials["TokarevGripWood"] = "TokarevGrip";
+        glock.animationNames.fire.clear();
+        glock.animationNames.fire.push_back("Tokarev_Fire1");
+        glock.animationNames.fire.push_back("Tokarev_Fire2");
+        glock.animationNames.fire.push_back("Tokarev_Fire3");
+        glock.casingEjectionBoneName = "Ejection";
+
 
         WeaponInfo& shotgun = g_weapons.emplace_back();
         shotgun.name = "Shotgun";
@@ -472,14 +497,14 @@ namespace WeaponManager {
         spas.animationNames.reloadempty.push_back("SPAS_Fire");
         spas.animationNames.fire.push_back("SPAS_Fire");
         spas.animationNames.draw = "SPAS_Draw";
-        spas.animationNames.shotgunReloadStart = "SPAS_ReloadStart";
-        spas.animationNames.shotgunReloadEnd = "SPAS_ReloadEnd";
-        spas.animationNames.shotgunDrawPump = "SPAS_DrawPump";
         spas.animationSpeeds.fire = 1.0f;
         spas.animationSpeeds.shotgunReloadStart = 1.0f;
         spas.animationSpeeds.shotgunReloadEnd = 1.0f;
         spas.animationSpeeds.shotgunReloadOneShell = 1.25f;
         spas.animationSpeeds.shotgunReloadTwoShells = 1.25f;
+        spas.animationNames.shotgunReloadStart = "SPAS_ReloadStart";
+        spas.animationNames.shotgunReloadEnd = "SPAS_ReloadEnd";
+        spas.animationNames.shotgunDrawPump = "SPAS_DrawPump";
         spas.animationNames.shotgunReloadOneShell = "SPAS_Reload1Shell";
         spas.animationNames.shotgunReloadTwoShells = "SPAS_Reload2Shells";
         spas.animationNames.shotgunUnloadStart = "SPAS_UnloadStart";
@@ -509,6 +534,17 @@ namespace WeaponManager {
         spas.animationNames.dryFire = "SPAS_DryFire";
         spas.animationNames.toggleAutoShotgun = "SPAS_ToggleAuto";
         spas.hasAutoSwitch = true;
+
+
+        spas.modelName = "Remington870";
+        spas.meshMaterials["Shotgun"] = "Shotgun";
+        spas.animationNames.shotgunReloadStart = "Remington870_ReloadStart";
+        spas.animationNames.shotgunReloadEnd = "Remington870_ReloadEnd";
+        //spas.animationNames.shotgunDrawPump = "SPAS_DrawPump";
+        spas.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
+        //spas.animationNames.shotgunReloadTwoShells = "SPAS_Reload2Shells";
+        spas.animationNames.shotgunUnloadEnd = "Remington870_UnloadEnd";
+
 
 
 
