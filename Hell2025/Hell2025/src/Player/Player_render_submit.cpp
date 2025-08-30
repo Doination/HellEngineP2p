@@ -74,11 +74,6 @@ void Player::SubmitAttachmentRenderItem(const std::string& weaponAttachmentName)
             const std::string& textureName = pair.second;
             if (mesh->GetName() == meshName) {
                 renderItem.emissiveTextureIndex = AssetManager::GetTextureIndexByName(textureName);
-                std::cout << "FOUND!: " << renderItem.emissiveTextureIndex << "\n";
-                renderItem.emissiveR = 1.0f;
-                renderItem.emissiveG = 1.0f;
-                renderItem.emissiveB = 1.0f;
-
             }
         }
 

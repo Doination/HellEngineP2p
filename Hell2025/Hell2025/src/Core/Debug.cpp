@@ -177,7 +177,7 @@ namespace Debug {
             NONE,
             PHYSX_ALL,
             RAGDOLLS,
-            //CLIPPING_CUBES,
+            CLIPPING_CUBES,
             //HOUSE_GEOMETRY,
             DECALS,
             BONES,

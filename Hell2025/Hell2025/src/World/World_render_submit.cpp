@@ -83,6 +83,14 @@ namespace World {
             }
         }
 
+        // Toilets
+        for (Toilet& toilet: GetToilets()) {
+            RenderDataManager::SubmitRenderItems(toilet.GetRenderItems());
+            // TODO: if (Editor::GetSelectedObjectId() == toilet.GetObjectId()) {
+            // TODO:     RenderDataManager::SubmitOutlineRenderItems(toilet.GetRenderItems());
+            // TODO: }
+        }
+
         // Window
         for (Window& window : windows) {
             window.SubmitRenderItems();

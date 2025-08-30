@@ -33,8 +33,9 @@ namespace Audio {
     void LoadAudio(const std::string& filename);
     void StopAudio(const std::string& filename);
     uint64_t LoopAudio(const std::string& filename, float volume);
-    uint64_t LoopAudioIfNotPlaying(const std::string& filename, float volume);
     uint64_t PlayAudio(const std::string& filename, float volume, float frequency = 1.0f);
+    uint64_t LoopAudioIfNotPlaying(const std::string& filename, float volume);
+    uint64_t PlayAudioIfNotPlaying(const std::string& filename, float volume, float frequency = 1.0f);
 
     void StopAudio(uint64_t audioId); 
     bool AudioIsPlaying(uint64_t audioId);

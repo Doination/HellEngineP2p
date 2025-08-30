@@ -336,7 +336,8 @@ private:
         bool IsInADS();
 
         // Shotgun
-        void FireShotgun(); 
+        void FireShotgun();
+        void ShotgunMelee();
         void DryFireShotgun();
         void ReloadShotgun();
         void UnloadShotgun();
@@ -380,6 +381,19 @@ private:
         float m_swimVerticalAcceleration = 0.0f;
         float m_smoothedWaterY;
         //bool m_underWater = false;
+
+        struct MeleeBulletWaveState {
+            bool active = false;
+            float startTime = 0.0f;
+            float maxTime = 0.0f;
+            float time = 0.0f;
+            float intervalDuration = 0.0f;
+            float intervalCounter = 0.0f;
+            int spawnCountThisWave = 0;
+        } m_meleeBulletWaveState;
+
+        void UpdateMelleBulletWave(float deltaTime);
+        void BeginMeleeBulletWave();
 
     private:
         bool m_alive = true;

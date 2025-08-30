@@ -84,7 +84,7 @@ void Kangaroo::PlayFleshAudio() {
                            "FLY_Bullet_Impact_Flesh_07.wav",
     };
     int random = rand() % filenames.size();
-    Audio::PlayAudio(filenames[random], 1.0f);
+    Audio::PlayAudioIfNotPlaying(filenames[random], 1.0f);
 }
 
 

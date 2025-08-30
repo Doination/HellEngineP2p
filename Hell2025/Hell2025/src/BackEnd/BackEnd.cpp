@@ -333,7 +333,7 @@ namespace BackEnd {
             Debug::ToggleDebugText();
         }
         if (!Editor::IsOpen()) {
-            if (Input::KeyPressed(HELL_KEY_V)) {
+            if (Input::KeyPressed(HELL_KEY_C)) {
                 Game::NextSplitScreenMode();
             }
             if (Input::KeyPressed(HELL_KEY_1) && Game::GetLocalPlayerCount() >= 1) {

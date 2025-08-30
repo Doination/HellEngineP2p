@@ -16,13 +16,15 @@ namespace World {
 
         for (Bullet& bullet : bullets) {
 
-            // Did it hit a piano key?
-            EvaluatePianoKeyBulletHit(bullet);
+            // Did the bullet hit a piano key directly?
+            if (bullet.PlaysPiano()) {
+                EvaluatePianoKeyBulletHit(bullet);
+            }
 
             // Cast PhysX ray
             glm::vec3 rayOrigin = bullet.GetOrigin();
             glm::vec3 rayDirection = bullet.GetDirection();
-            float rayLength = 1000.0f;
+            float rayLength = bullet.GetRayLength();
 
             std::vector<PxRigidActor*> ignoredActors;
 
@@ -36,9 +38,6 @@ namespace World {
 
             // On hit
             if (rayResult.hitFound) {
-
-                //std::cout << "Bullet hit position: " << rayResult.hitPosition << "\n";
-                             
                 PhysicsType& physicsType = rayResult.userData.physicsType;
                 ObjectType& objectType = rayResult.userData.objectType;
                 uint64_t physicsId = rayResult.userData.physicsId;
@@ -78,11 +77,13 @@ namespace World {
                     for (AnimatedGameObject& animatedGameObject : GetAnimatedGameObjects()) {
                         if (animatedGameObject.GetRagdollId() == objectId) {
 
-                            DecalPaintingInfo decalPaintingInfo;
-                            decalPaintingInfo.rayOrigin = bullet.GetOrigin();
-                            decalPaintingInfo.rayDirection = bullet.GetDirection();
-                            RenderDataManager::SubmitDecalPaintingInfo(decalPaintingInfo);
-                            
+                            if (bullet.CreatesDecalTexturePaintedWounds()) {
+                                DecalPaintingInfo decalPaintingInfo;
+                                decalPaintingInfo.rayOrigin = bullet.GetOrigin();
+                                decalPaintingInfo.rayDirection = bullet.GetDirection();
+                                RenderDataManager::SubmitDecalPaintingInfo(decalPaintingInfo);
+                            }
+
                             for (Kangaroo& kangaroo : GetKangaroos()) {
                                 if (kangaroo.GetAnimatedGameObject() == &animatedGameObject) {
                                     kangaroo.GiveDamage(bullet.GetDamage());
@@ -122,11 +123,13 @@ namespace World {
                         objectType == ObjectType::DOOR ||
                         objectType == ObjectType::PIANO) {
                         decalCreateInfo.decalType = DecalType::PLASTER;
-                        AddDecal(decalCreateInfo);
+                        if (bullet.CreatesDecals()) {
+                            AddDecal(decalCreateInfo);
+                        }
                     }
 
-                    // Piano note trigger
-                    if (objectType == ObjectType::PIANO) {
+                    // Did the bullet hit the piano itself, and thus trigger the closest key? This simulates shooting the strings inside the piano
+                    if (objectType == ObjectType::PIANO && bullet.PlaysPiano()) {
                         Piano* piano = World::GetPianoByObjectId(objectId);
                         if (piano) {
                             piano->TriggerInternalNoteFromExternalBulletHit(rayResult.hitPosition);
@@ -134,7 +137,7 @@ namespace World {
                     }
 
                     // Glass decal
-                    if (objectType == ObjectType::WINDOW) {
+                    if (objectType == ObjectType::WINDOW && bullet.CreatesFolloWThroughBulletOnGlassHit()) {
                         decalCreateInfo.decalType = DecalType::GLASS;
                         AddDecal(decalCreateInfo);
 
@@ -165,7 +168,6 @@ namespace World {
     }
 
     void EvaluatePianoKeyBulletHit(Bullet& bullet) {
-
         for (int i = 0; i < 4; i++) {
             Viewport* viewport = ViewportManager::GetViewportByIndex(i);
             if (!viewport->IsVisible()) continue;

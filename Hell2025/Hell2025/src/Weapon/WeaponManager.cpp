@@ -475,8 +475,7 @@ namespace WeaponManager {
         spas.animationNames.toggleAutoShotgun = "SPAS_ToggleAuto";
         spas.hasAutoSwitch = true;
         spas.pickupName = "SPAS";
-
-
+        spas.animationSpeeds.melee = 1.25f;
 
         WeaponInfo& remington870 = g_weapons.emplace_back();
         remington870.name = "Remington870";
@@ -503,6 +502,7 @@ namespace WeaponManager {
         remington870.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
         remington870.animationNames.shotgunReloadTwoShells = "Remington870_Reload2Shells";
         remington870.animationNames.shotgunFireNoPump = "Remington870_FireNoPump";
+        remington870.animationSpeeds.melee = 1.25f;
         remington870.audioFiles.fire.push_back("Shotgun_Fire.wav");
         remington870.audioFiles.shotgunPump = "SPAS_Pump.wav";
         remington870.type = WeaponType::SHOTGUN;

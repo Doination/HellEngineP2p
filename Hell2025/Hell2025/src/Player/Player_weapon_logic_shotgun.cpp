@@ -2,6 +2,7 @@
 #include "Audio/Audio.h"
 #include "Core/Game.h"
 #include "Input/Input.h"
+#include "World/World.h"
 
 void Player::UpdateShotgunGunLogic(float deltaTime) {
     if (PressingFire() && CanFireShotgun()) {
@@ -18,6 +19,10 @@ void Player::UpdateShotgunGunLogic(float deltaTime) {
     }
     if (PressedADS() && CanToggleShotgunAuto()) {
         ToggleAutoShotgun();
+    }
+
+    if (PressedMelee()) {
+        ShotgunMelee();
     }
 
     UpdateShotgunReloadLogic();
@@ -107,6 +112,29 @@ void Player::FireShotgun() {
     for (int i = 0; i < 12; i++) {
         SpawnBullet(0.1f);
     }
+}
+
+
+void Player::ShotgunMelee() {
+    AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
+    WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
+
+
+    m_weaponAction = WeaponAction::SHOTGUN_MELEE;
+
+    viewWeapon->PlayAnimation("MainLayer", weaponInfo->animationNames.melee, weaponInfo->animationSpeeds.melee);
+
+    bool meleeHitSomething = false;
+
+    BeginMeleeBulletWave();
+
+    if (!meleeHitSomething) {
+        Audio::PlayAudio("Shotgun_Melee_Miss.wav", 1.0f, GetWeaponAudioFrequency());        
+    }
+    else {
+        // TODO
+    }
+
 }
 
 void Player::DryFireShotgun() {
@@ -439,4 +467,3 @@ bool Player::ShotgunRequiresPump() {
         return weaponState->shotgunRequiresPump;
     }
 }
-

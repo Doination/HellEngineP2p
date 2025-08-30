@@ -201,6 +201,7 @@ namespace Util {
             case WeaponAction::SHOTGUN_RELOAD_DOUBLE_SHELL:   return "SHOTGUN_RELOAD_DOUBLE_SHELL";
             case WeaponAction::SHOTGUN_RELOAD_END:            return "SHOTGUN_RELOAD_END";
             case WeaponAction::SHOTGUN_RELOAD_END_WITH_PUMP:  return "SHOTGUN_RELOAD_END_WITH_PUMP";
+            case WeaponAction::SHOTGUN_MELEE:                 return "SHOTGUN_MELEE";
             case WeaponAction::ADS_IN:                        return "ADS_IN";
             case WeaponAction::ADS_OUT:                       return "ADS_OUT";
             case WeaponAction::ADS_IDLE:                      return "ADS_IDLE";

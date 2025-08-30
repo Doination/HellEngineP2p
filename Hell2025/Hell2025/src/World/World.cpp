@@ -45,6 +45,7 @@ namespace World {
     std::vector<PictureFrame> g_pictureFrames;
     std::vector<Piano> g_pianos;
     std::vector<Shark> g_sharks;
+    std::vector<Toilet> g_toilets;
     std::vector<Transform> g_doorAndWindowCubeTransforms;
     std::vector<Tree> g_trees;
     std::vector<Wall> g_walls;
@@ -56,8 +57,6 @@ namespace World {
     std::vector<GPULight> g_gpuLightsHighRes;
 
     std::map<ivecXZ, int> g_validChunks;
-
-    uint32_t g_volumetricBloodSplattersSpawnedThisFrame = 0;
 
     std::string g_mapName = "";
     uint32_t g_mapWidth = 0;
@@ -107,8 +106,6 @@ namespace World {
     }
 
     void BeginFrame() {
-        g_volumetricBloodSplattersSpawnedThisFrame = 0;
-
         //RemoveAnyObjectMarkedForRemoval();
 
         for (GameObject& gameObject : g_gameObjects) {
@@ -674,6 +671,7 @@ namespace World {
         g_planes.clear();
         g_pictureFrames.clear();
         g_sharks.clear();
+        g_toilets.clear();
         g_trees.clear();
         g_walls.clear();
         g_windows.clear();
@@ -683,6 +681,7 @@ namespace World {
         mermaidCreateInfo.position = glm::vec3(29.0f, 29.5f, 52.5f);
         mermaidCreateInfo.rotation.y = 0.25f;
         AddMermaid(mermaidCreateInfo);
+
 
 
         //AnimatedGameObject* animatedGameObject = nullptr;
@@ -799,6 +798,10 @@ namespace World {
         mermaid.Init(createInfo, spawnOffset);
     }
 
+    void AddToilet(ToiletCreateInfo createInfo, SpawnOffset spawnOffset) {
+        g_toilets.push_back(Toilet(createInfo, spawnOffset));
+    }
+
     void AddScreenSpaceBloodDecal(ScreenSpaceBloodDecalCreateInfo createInfo) {
         ScreenSpaceBloodDecal& screenSpaceBloodDecal = g_screenSpaceBloodDecals.emplace_back();
         screenSpaceBloodDecal.Init(createInfo);
@@ -830,11 +833,10 @@ namespace World {
     }
 
     void AddVolumetricBlood(glm::vec3 position, glm::vec3 front) {
-        int maxPerFrame = 4;
-        if (g_volumetricBloodSplattersSpawnedThisFrame < maxPerFrame) {
+        int maxAllowed = 4;
+        if (g_volumetricBloodSplatters.size() < maxAllowed) {
             g_volumetricBloodSplatters.push_back(VolumetricBloodSplatter(position, front));
         }
-        g_volumetricBloodSplattersSpawnedThisFrame++;
     }
 
     uint64_t AddWall(WallCreateInfo createInfo, SpawnOffset spawnOffset) {
@@ -1012,6 +1014,7 @@ namespace World {
     std::vector<PickUp>& GetPickUps()                                   { return g_pickUps; }
     std::vector<PictureFrame>& GetPictureFrames()                       { return g_pictureFrames; }
     std::vector<Transform>& GetDoorAndWindowCubeTransforms()            { return g_doorAndWindowCubeTransforms; }
+    std::vector<Toilet>& GetToilets()                                   { return g_toilets; }
     std::vector<Shark>& GetSharks()                                     { return g_sharks; }
     std::vector<Tree>& GetTrees()                                       { return g_trees; }
     std::vector<Wall>& GetWalls()                                       { return g_walls; }

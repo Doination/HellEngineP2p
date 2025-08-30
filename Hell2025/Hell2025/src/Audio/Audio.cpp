@@ -108,6 +108,18 @@ namespace Audio {
         g_audioPlayedThisFrame.clear();
     }
 
+    uint64_t PlayAudioIfNotPlaying(const std::string& filename, float volume, float frequency) {
+        // Check if sound is already playing
+        for (const auto& pair : g_playingAudio) {
+            const AudioHandle& handle = pair.second;
+            if (handle.filename == filename) {
+                return 0; // Ummm, make sure you don't depend on this actually being a value
+            }
+        }
+        // Otherwise, play the sound
+        PlayAudio(filename, volume, frequency);
+    }
+
     uint64_t PlayAudio(const std::string& filename, float volume, float frequency) {
         // Load if needed
         if (g_loadedAudio.find(filename) == g_loadedAudio.end()) {

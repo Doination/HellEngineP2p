@@ -7,6 +7,9 @@
 #include "Util.h"
 #include "World/World.h"
 
+// remove me
+#include "Renderer/Renderer.h"
+
 void Player::UpdateWeaponLogic(float deltaTime) {
     if (!HasControl() || IsDead()) return;
 
@@ -371,10 +374,65 @@ void Player::DropWeapons() {
                 createInfo.intitialForce *= 200.0f;     
 
                 World::AddPickUp(createInfo);
-                std::cout << "Dropped weapon!  weapon name: '" << weaponState.name << "' pickup name: '" << weaponInfo->pickupName << "'\n";
-
+                //std::cout << "Dropped weapon!  weapon name: '" << weaponState.name << "' pickup name: '" << weaponInfo->pickupName << "'\n";
             }
         }
     }
+}
 
+void Player::UpdateMelleBulletWave(float deltaTime) {
+    if (!m_meleeBulletWaveState.active) return;
+
+    std::cout << "Time: " << m_meleeBulletWaveState.time << "\n";
+
+    m_meleeBulletWaveState.time += deltaTime;
+
+    // Have we started yet? Then increment the internal counter
+    if (m_meleeBulletWaveState.time > m_meleeBulletWaveState.startTime) {
+        m_meleeBulletWaveState.intervalCounter += deltaTime;
+    }
+
+    // Are we done?
+    if (m_meleeBulletWaveState.time >= m_meleeBulletWaveState.maxTime) {
+        m_meleeBulletWaveState.active = false;
+    }
+
+    // Time to spawn a bullet?
+    if (m_meleeBulletWaveState.intervalCounter >= m_meleeBulletWaveState.intervalDuration) {
+        m_meleeBulletWaveState.intervalCounter = 0.0f;
+        m_meleeBulletWaveState.spawnCountThisWave++;
+
+        for (int i = -2; i < 3; i++) {
+
+            glm::vec3 bulletOrigin = GetCameraPosition() + (GetCameraRight() * 0.1f);
+            bulletOrigin -= (GetCameraRight() * 0.05f) * glm::vec3(m_meleeBulletWaveState.spawnCountThisWave);
+            bulletOrigin += (GetCameraUp() * 0.05f) * glm::vec3(i);
+
+            BulletCreateInfo createInfo;
+            createInfo.origin = bulletOrigin;
+            createInfo.direction = GetCameraForward();
+            createInfo.weaponIndex = -1;
+            createInfo.damage = 100;
+            createInfo.ownerObjectId = m_playerId;
+            createInfo.rayLength = 1.5f;
+            createInfo.createsDecals = false;
+            createInfo.createsFollowThroughBulletOnGlassHit = false;
+            createInfo.playsPiano = false;
+            createInfo.createsDecalTexturePaintedWounds = false;
+
+            World::AddBullet(createInfo);
+            //Renderer::DrawLine(createInfo.origin, createInfo.origin + createInfo.direction * 0.5f, GREEN);
+        }
+    }
+}
+
+void Player::BeginMeleeBulletWave() {
+    std::cout << "Begin Melee Bullet Wave\n";
+    m_meleeBulletWaveState.active = true;
+    m_meleeBulletWaveState.time = 0.0f;
+    m_meleeBulletWaveState.intervalDuration = 0.01f;
+    m_meleeBulletWaveState.startTime = 0.05;
+    m_meleeBulletWaveState.maxTime = 0.2f;
+    m_meleeBulletWaveState.intervalCounter = 0.0f; 
+    m_meleeBulletWaveState.spawnCountThisWave = 0;
 }

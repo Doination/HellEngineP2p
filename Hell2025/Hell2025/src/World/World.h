@@ -18,6 +18,7 @@
 #include "Types/Generics/GenericStatic.h"
 #include "Types/Effects/VolumetricBloodSplatter.h"
 #include "Types/Effects/ScreenSpaceBloodDecal.h"
+#include "Types/Interior/Toilet.h"
 #include "Types/House/Door.h"
 #include "Types/House/Plane.h"
 #include "Types/House/Wall.h"
@@ -49,6 +50,8 @@ namespace World {
     void NewRun();
 
     void SubmitRenderItems();
+
+    void RecreateHouseMesh();
 
     void LoadMap(const std::string& mapName);
     void LoadMap(MapCreateInfo* mapCreateInfo);
@@ -86,6 +89,7 @@ namespace World {
     void AddPiano(PianoCreateInfo createInfo, SpawnOffset spawnOffset);
     void AddPickUp(PickUpCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddPictureFrame(PictureFrameCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
+    void AddToilet(ToiletCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddTree(TreeCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     uint64_t AddWall(WallCreateInfo createInfo, SpawnOffset spawnOffset = SpawnOffset());
     void AddVolumetricBlood(glm::vec3 position, glm::vec3 front);
@@ -191,6 +195,7 @@ namespace World {
     std::vector<PictureFrame>& GetPictureFrames();
     std::vector<Transform>& GetDoorAndWindowCubeTransforms();
     std::vector<Shark>& GetSharks();
+    std::vector<Toilet>& GetToilets();;
     std::vector<Tree>& GetTrees();
     std::vector<Wall>& GetWalls();
     std::vector<VolumetricBloodSplatter>& GetVolumetricBloodSplatters();

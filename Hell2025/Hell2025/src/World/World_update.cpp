@@ -112,12 +112,16 @@ namespace World {
             piano.Update(deltaTime);
         }
 
-        for (Tree& tree : trees) {
-            tree.Update(deltaTime);
-        }
-
         for (Shark& shark : GetSharks()) {
             shark.Update(deltaTime);
+        }
+
+        for (Toilet& toilet: GetToilets()) {
+            toilet.Update(deltaTime);
+        }
+
+        for (Tree& tree : trees) {
+            tree.Update(deltaTime);
         }
 
         for (Window& window : windows) {
@@ -125,6 +129,7 @@ namespace World {
         }
 
         for (Wall& wall : walls) {
+          //  wall.CreateTrims();                         // REMOVE ME FOR THE LOVE OF JEBUS!!!
             // Nothing as of yet. Probably ever.
         }
 

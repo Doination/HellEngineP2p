@@ -169,33 +169,78 @@ void Wall::CreateTrims() {
     // Floor
     if (m_floorTrimType != TrimType::NONE) {
         for (int i = 0; i < m_createInfo.points.size() - 1; i++) {
+
             const glm::vec3& start = m_createInfo.points[i];
             const glm::vec3& end = m_createInfo.points[i + 1];
             glm::vec3 rayOrigin = start;
             glm::vec3 rayDir = glm::normalize(end - start);
             float segmentLength = glm::distance(start, end);
 
-            CubeRayResult rayResult;
-            do {
-                rayResult = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), segmentLength);
-                if (rayResult.hitFound) {
+         // glm::vec3 pointColor = BLACK;
+         // switch (i) {
+         //     case 0: pointColor = RED; break;
+         //     case 1: pointColor = GREEN; break;
+         //     case 2: pointColor = BLUE; break;
+         //     case 3: pointColor = YELLOW; break;
+         //     case 4: pointColor = PURPLE; break;
+         //     case 5: pointColor = ORANGE; break;
+         // }
 
-                    Transform transform;
-                    transform.position = rayOrigin;
-                    transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
-                    transform.scale.x = rayResult.distanceToHit;
 
-                    float dot = glm::dot(rayResult.hitNormal, rayDir);
-                    if (dot <= 0.99f) {
-                        Trim& trim = m_trims.emplace_back();
-                        trim.Init(transform, "TrimFloor", "Trims");
+            // i = 0
+            // first point (RED) 
+             
+            // i = 1
+            // second point (GREEN) 
+             
+            // i = 2
+            // third point (BLUE) 
+
+            // i = 3
+            // fourth point (YELLOW) 
+
+            // i = 4
+            // fifth point (PURPLE) 
+
+            // if you are on the second last point, and the last point is the same as the first point, then continue
+          
+            
+            // if i = (4)
+            //bool doNotRayCast = false;
+            //if (i == m_createInfo.points.size() - 2) {
+            //    if (m_createInfo.points[m_createInfo.points.size()-1] == m_createInfo.points[0]) {
+            //        doNotRayCast = true;
+            //    }
+            //}
+
+            //std::cout << " m_createInfo.points.size(): " << m_createInfo.points.size() << '\n';
+
+           // Renderer::DrawPoint(start, pointColor);
+
+           // if (!doNotRayCast) {
+                CubeRayResult rayResult;
+                do {
+                    rayResult = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), segmentLength);
+                    if (rayResult.hitFound) {
+
+                        Transform transform;
+                        transform.position = rayOrigin;
+                        transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
+                        transform.scale.x = rayResult.distanceToHit;
+
+                        float dot = glm::dot(rayResult.hitNormal, rayDir);
+                        if (dot <= 0.99f) {
+                            Trim& trim = m_trims.emplace_back();
+                            trim.Init(transform, "TrimFloor", "Trims");
+                        }
+
+                        // Start next ray just past the opposite face of the hit cube
+                        rayOrigin = rayResult.hitPosition + (rayDir * 0.01f);
                     }
 
-                    // Start next ray just past the opposite face of the hit cube
-                    rayOrigin = rayResult.hitPosition + (rayDir * 0.01f);
-                }
+                } while (rayResult.hitFound);
+            //}
 
-            } while (rayResult.hitFound);
 
             Transform transform;
             transform.position = rayOrigin;

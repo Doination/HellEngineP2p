@@ -66,33 +66,43 @@ namespace OpenGLRenderer {
         glDispatchCompute((gBuffer->GetWidth() + 7) / 8, (gBuffer->GetHeight() + 7) / 8, 1);
 
 
-        // Render hair into the main gbuffer depth texture so that doesn't fuck up 
+       // Render hair into the main gbuffer depth texture so that doesn't fuck up 
+        gBuffer->Bind();
+        gBuffer->DrawBuffer("FinalLighting");
 
+        SetRasterizerState("GeometryPass_NonBlended");
+        glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);        
+        // glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE); // remove me
 
+        OpenGLShader* solidColorShader = GetShader("SolidColor");
+        solidColorShader->Bind();
+        solidColorShader->SetBool("useUniformColor", true);
+        solidColorShader->SetVec4("uniformColor", glm::vec4(1.0f, 0.0f, 0.0f, 1.0f));
+       
+        const std::vector<ViewportData>& viewportData = RenderDataManager::GetViewportData();
+        const std::vector<RenderItem>& instanceData = RenderDataManager::GetInstanceData();
 
-       // gBuffer->Bind();
-       // SetRasterizerState("GeometryPass_NonBlended");
-       // glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-       //       
-       // OpenGLShader* depthPeelShader = GetShader("HairDepthPeel");
-       // depthPeelShader->Bind();
-       //
-       // for (int i = 0; i < 4; i++) {
-       //     Viewport* viewport = ViewportManager::GetViewportByIndex(i);
-       //
-       //     if (viewport->IsVisible()) {
-       //         OpenGLRenderer::SetViewport(gBuffer, viewport);
-       //         gBuffer->DrawBuffer("BaseColor");
-       //
-       //         if (BackEnd::RenderDocFound()) {
-       //             SplitMultiDrawIndirect(depthPeelShader, drawInfoSet.hairTopLayer[i]);
-       //         }
-       //         else {
-       //             MultiDrawIndirect(drawInfoSet.hairTopLayer[i]);
-       //         }
-       //     }
-       // }
-       // glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+        for (int i = 0; i < 4; i++) {
+            Viewport* viewport = ViewportManager::GetViewportByIndex(i);
+            solidColorShader->SetMat4("projection", viewportData[i].projection);
+            solidColorShader->SetMat4("view", viewportData[i].view);
+       
+            if (viewport->IsVisible()) {
+                OpenGLRenderer::SetViewport(gBuffer, viewport);
+       
+                for (const DrawIndexedIndirectCommand& command : drawInfoSet.hairTopLayer[i]) {
+                    int viewportIndex = command.baseInstance >> VIEWPORT_INDEX_SHIFT;
+                    int instanceOffset = command.baseInstance & ((1 << VIEWPORT_INDEX_SHIFT) - 1);
+
+                    for (GLuint i = 0; i < command.instanceCount; ++i) {
+                        const RenderItem& renderItem = instanceData[instanceOffset + i];
+                        solidColorShader->SetMat4("model", renderItem.modelMatrix);
+                        glDrawElementsBaseVertex(GL_TRIANGLES, command.indexCount, GL_UNSIGNED_INT, (GLvoid*)(command.firstIndex * sizeof(GLuint)), command.baseVertex);
+                    }
+                }
+            }
+        }
+        glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
     }
 

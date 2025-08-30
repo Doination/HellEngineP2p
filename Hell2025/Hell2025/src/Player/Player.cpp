@@ -122,6 +122,7 @@ void Player::Update(float deltaTime) {
     UpdateFlashlightFrustum();
     UpdatePlayingPiano(deltaTime);
     UpdateCharacterModelHacks();
+    UpdateMelleBulletWave(deltaTime);
 
     if (m_infoTextTimer > 0) {
         m_infoTextTimer -= deltaTime;

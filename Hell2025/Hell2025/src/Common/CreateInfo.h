@@ -4,6 +4,11 @@
 #include "HellDefines.h"
 #include <map>
 
+struct ToiletCreateInfo {
+    glm::vec3 position = glm::vec3(0.0f);
+    glm::vec3 rotation = glm::vec3(0.0f);
+};
+
 struct GenericStaticCreateInfo {
     glm::vec3 position = glm::vec3(0.0f);
     glm::vec3 rotation = glm::vec3(0.0f);
@@ -16,6 +21,14 @@ struct GenericBouncableCreateInfo {
     GenericBouncableType type = GenericBouncableType::COUCH_CUSHION_0;
 };
 
+/*
+struct MeleeBulletWaveCreateInfo {
+    glm::vec3 startPos = glm::vec3(0.0f);
+    glm::vec3 localXYPlaneDir = glm::vec3(0.0f);
+    float startTime = 0.0f;
+    float maxTime = 0.0f;
+    float intervalDuration = 0.0f;;
+};*/
 
 struct ChristmasLightsCreateInfo {
     // Hanging lights
@@ -121,6 +134,11 @@ struct BulletCreateInfo {
     int32_t weaponIndex = 0;
     uint32_t damage = 0;
     uint32_t ownerObjectId = 0;
+    float rayLength = 1000.0f;
+    bool createsDecals = true;
+    bool createsFollowThroughBulletOnGlassHit = true;
+    bool playsPiano = true;
+    bool createsDecalTexturePaintedWounds = true;
 };
 
 struct BasicDoorCreateInfo {

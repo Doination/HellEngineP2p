@@ -43,7 +43,7 @@ namespace World {
 
         //GlobalIllumination::CreatePointCloud();
 
-        // Hack in a christmas tree
+        // Hack in a Christmas tree
         ChristmasTreeCreateInfo christmasTreeCreateInfo;
         christmasTreeCreateInfo.position = glm::vec3(8.13f, 0.15f, 1.2f);
         christmasTreeCreateInfo.rotation.y = Util::RandomFloat(0, HELL_PI);
@@ -104,6 +104,16 @@ namespace World {
         World::AddGenericBouncable(genericBouncableCreateInfo, spawnOffset);
 
 
+        ToiletCreateInfo toiletCreateInfo;
+        toiletCreateInfo.position = glm::vec3(4.40f, 0.0f, -0.7f);
+        toiletCreateInfo.rotation.y = HELL_PI * 0.5f;
+        World::AddToilet(toiletCreateInfo, spawnOffset);
+
+        ToiletCreateInfo toiletCreateInfo2;
+        toiletCreateInfo2.position = glm::vec3(0.1f, 0.0f, 4.5f);
+        toiletCreateInfo2.rotation.y = HELL_PI * 1.5f;
+        World::AddToilet(toiletCreateInfo2, spawnOffset);
+
     }
 
     void SaveHouse() {
@@ -137,6 +147,13 @@ namespace World {
         JSON::SaveHouse("res/houses/" + filename, houseCreateInfo);
     }
 
+    // Find out why this isn't required for windows and doors, yet still somehow updates all this shit
+    void RecreateHouseMesh() {
+        UpdateClippingCubes();
+        UpdateAllWallCSG();
+        UpdateHouseMeshBuffer();
+        UpdateWeatherBoardMeshBuffer();
+    }
 
     void UpdateHouseMeshBuffer() {
         g_houseMeshBuffer.Reset();

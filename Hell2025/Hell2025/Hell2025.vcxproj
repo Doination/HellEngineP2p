@@ -370,6 +370,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Types\Generics\GenericBouncable.cpp" />
     <ClCompile Include="src\Types\House\WeatherBoards.cpp" />
     <ClCompile Include="src\Types\Generics\GenericStatic.cpp" />
+    <ClCompile Include="src\Types\Interior\Toilet.cpp" />
     <ClCompile Include="src\Types\Misc\Piano.cpp" />
     <ClCompile Include="src\Types\Misc\PictureFrame.cpp" />
     <ClCompile Include="src\Types\Renderer\Mesh.cpp" />
@@ -398,6 +399,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Util\Util_black_magic.cpp" />
     <ClCompile Include="src\Util\Util_debug_info.cpp" />
     <ClCompile Include="src\Util\Util_easing.cpp" />
+    <ClCompile Include="src\Weapon\MeleeBulletWave.cpp" />
     <ClCompile Include="src\World\HeightMapManager.cpp" />
     <ClCompile Include="src\Physics\Physics.cpp" />
     <ClCompile Include="src\Physics\Physics_create_destroy.cpp" />
@@ -693,6 +695,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClInclude Include="src\Types\Generics\GenericBouncable.h" />
     <ClInclude Include="src\Types\House\WeatherBoards.h" />
     <ClInclude Include="src\Types\Generics\GenericStatic.h" />
+    <ClInclude Include="src\Types\Interior\Toilet.h" />
     <ClInclude Include="src\Types\Misc\Piano.h" />
     <ClInclude Include="src\Types\Misc\PictureFrame.h" />
     <ClInclude Include="src\Types\Renderer\Mesh.h" />
@@ -712,6 +715,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClInclude Include="src\Types\Exterior\Tree.h" />
     <ClInclude Include="src\Types\House\Wall.h" />
     <ClInclude Include="src\Types\House\Window.h" />
+    <ClInclude Include="src\Weapon\MeleeBulletWave.h" />
     <ClInclude Include="src\World\HeightMapManager.h" />
     <ClInclude Include="src\Physics\Physics.h" />
     <ClInclude Include="src\Types\Renderer\GrassMesh.h" />

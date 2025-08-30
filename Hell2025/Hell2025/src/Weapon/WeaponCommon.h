@@ -77,6 +77,7 @@ struct AnimationSpeeds {
     float adsFire = 1.0;
     float adsWalk = 1.0;
     float adsIdle = 1.0f;
+    float melee = 1.0f;
 };
 
 struct AudioFiles {
