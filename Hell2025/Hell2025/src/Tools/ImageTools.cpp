@@ -100,7 +100,7 @@ namespace ImageTools {
     }
 
     std::vector<TextureData> LoadTextureDataFromDDSThreadUnsafe(const std::string filepath) {
-        if (!IsCMPFrameworkInitialized) {
+        if (!IsCMPFrameworkInitialized()) {
             InitializeCMPFramework();
         }
         std::vector<TextureData> textureDataLevels;

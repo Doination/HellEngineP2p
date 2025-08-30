@@ -64,7 +64,13 @@ namespace AssetManager {
             AnimatedNode animatedNode(nodeName);
             animation->m_NodeMapping.emplace(nodeName, n);
 
-            for (unsigned int p = 0; p < aiAnim->mChannels[n]->mNumPositionKeys; p++)
+            //for (unsigned int p = 0; p < aiAnim->mChannels[n]->mNumPositionKeys; p++)
+            unsigned int numPosKeys = aiAnim->mChannels[n]->mNumPositionKeys;
+            unsigned int numRotKeys = aiAnim->mChannels[n]->mNumRotationKeys;
+            unsigned int numScaleKeys = aiAnim->mChannels[n]->mNumScalingKeys;
+            unsigned int keyCount = std::max({ numPosKeys, numRotKeys, numScaleKeys });
+
+            for (unsigned int p = 0; p < keyCount; ++p)
             {
                 SQT sqt;
                 aiVectorKey pos = aiAnim->mChannels[n]->mPositionKeys[p];
@@ -74,7 +80,8 @@ namespace AssetManager {
                 sqt.positon = glm::vec3(pos.mValue.x, pos.mValue.y, pos.mValue.z);
                 sqt.rotation = glm::quat(rot.mValue.w, rot.mValue.x, rot.mValue.y, rot.mValue.z);
                 sqt.scale = glm::vec3(scale.mValue.x, scale.mValue.y, scale.mValue.z);
-                sqt.timeStamp = (float)aiAnim->mChannels[n]->mPositionKeys[p].mTime;
+                //sqt.timeStamp = (float)aiAnim->mChannels[n]->mPositionKeys[p].mTime; 
+                sqt.timeStamp = (float)pos.mTime;
 
                 animation->m_finalTimeStamp = std::max(animation->m_finalTimeStamp, sqt.timeStamp);
 
@@ -85,7 +92,7 @@ namespace AssetManager {
         // Store it
         m_AnimationImporter.FreeScene();
 
-        animation->SetLoadingState(LoadingState::LOADING_FROM_DISK);
+        animation->SetLoadingState(LoadingState::LOADING_COMPLETE);
     }
 
     Animation* AssetManager::GetAnimationByName(const std::string& name) {

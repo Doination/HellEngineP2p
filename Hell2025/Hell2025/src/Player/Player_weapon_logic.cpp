@@ -150,6 +150,9 @@ WeaponType Player::GetCurrentWeaponType() {
     WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
     if (weaponInfo) {
         return weaponInfo->type;
+    } 
+    else {
+        return WeaponType::UNDEFINED;
     }
 }
 
@@ -255,6 +258,7 @@ int Player::GetCurrentWeaponTotalAmmo() {
 }
 
 void Player::SpawnMuzzleFlash(float speed, float scale) {
+    std::cout << "Warning: you have hardcoded muzzle flash speed and ignoring function param!\n";
     m_muzzleFlash.SetSpeed(55.0f);
     m_muzzleFlash.SetScale(glm::vec3(scale));
     m_muzzleFlash.SetTime(0.0f);
@@ -265,15 +269,17 @@ void Player::SpawnMuzzleFlash(float speed, float scale) {
 void Player::SpawnCasing(AmmoInfo* ammoInfo, bool alternateAmmo) {
     AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
     WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
+    if (!weaponInfo) return;
 
     if (!Util::StrCmp(ammoInfo->casingModelName, UNDEFINED_STRING)) {
         BulletCasingCreateInfo createInfo;
         createInfo.modelIndex = AssetManager::GetModelIndexByName(ammoInfo->casingModelName);
         createInfo.materialIndex = AssetManager::GetMaterialIndexByName(ammoInfo->casingMaterialName);
-        createInfo.position = viewWeapon->GetBoneWorldPosition(weaponInfo->casingEjectionBoneName);;
+        createInfo.position = viewWeapon->GetBoneWorldPosition(weaponInfo->casingEjectionBoneName);
         createInfo.rotation.y = m_camera.GetYaw() + (HELL_PI * 0.5f);
         createInfo.force = glm::normalize(GetCameraRight() + glm::vec3(0.0f, Util::RandomFloat(0.7f, 0.9f), 0.0f)) * glm::vec3(weaponInfo->casingEjectionImpulse);
         createInfo.force = glm::normalize(GetCameraRight() + glm::vec3(0.0f, Util::RandomFloat(0.7f, 0.9f), 0.0f)) * glm::vec3(0.0175);
+        std::cout << "warning: you have hardcoded casing ejection impulse!\n";
 
         createInfo.position += GetCameraForward() * glm::vec3(0.15f);
         createInfo.position += GetCameraRight() * glm::vec3(0.05f);

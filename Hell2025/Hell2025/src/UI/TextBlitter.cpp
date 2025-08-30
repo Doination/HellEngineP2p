@@ -46,7 +46,7 @@ namespace TextBlitter {
                     size_t end = text.find("]", i);
                     if (end != std::string::npos) {
                         color = ParseColorTag(text.substr(i, end - i + 1));
-                        i = end; // Skip the tag
+                        i = end + 1; // Skip the tag
                         continue;
                     }
                 }
@@ -209,7 +209,7 @@ namespace TextBlitter {
             if (text.compare(i, 5, "[COL=") == 0) {
                 size_t end = text.find("]", i);
                 if (end != std::string::npos) {
-                    i = end;
+                    i = end + 1;
                     continue;
                 }
             }

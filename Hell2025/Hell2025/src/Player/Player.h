@@ -175,6 +175,9 @@ struct Player {
     bool PressedFour();
 
     const float GetFov();
+    const void SetName(const std::string& name);
+
+    glm::mat4 GetViewWeaponBoneWorldMatrix(const std::string& boneName);
 
     ivecXZ GetChunkPos() { return m_chunkPos; }
 
@@ -182,8 +185,11 @@ struct Player {
     uint64_t GetInteractObjectId()      { return m_interactObjectId; }
     ObjectType GetInteractObjectType()  { return m_interactObjectType; }
     Frustum& GetFlashlightFrustum()     { return m_flashlightFrustum; }
+    const std::string& GetName() const  { return m_name; }
 
 private:
+    std::string m_name = "PLAYER_NAME";
+
     // Interact
     PhysXRayResult m_physXRayResult;
     BvhRayResult m_bvhRayResult;

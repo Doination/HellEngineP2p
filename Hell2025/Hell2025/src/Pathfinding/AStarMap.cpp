@@ -116,7 +116,7 @@ namespace AStarMap {
 
     void UpdateDebugGridMesh() {
         std::vector<Vertex> vertices;
-        vertices.reserve(g_mapWidth + 1 * g_mapHeight + 1);
+        vertices.reserve((g_mapWidth + 1) * (g_mapHeight + 1));
         for (int y = 0; y < g_mapHeight + 1; ++y) {
             for (int x = 0; x < g_mapWidth + 1; ++x) {
                 Vertex vertex;
@@ -162,7 +162,7 @@ namespace AStarMap {
 
     void UpdateDebugSolidMesh() {
         std::vector<Vertex> vertices;
-        vertices.reserve(g_mapWidth + 1 * g_mapHeight + 1);
+        vertices.reserve((g_mapWidth + 1) * (g_mapHeight + 1));
         for (int y = 0; y < g_mapHeight + 1; ++y) {
             for (int x = 0; x < g_mapWidth + 1; ++x) {
                 Vertex vertex;

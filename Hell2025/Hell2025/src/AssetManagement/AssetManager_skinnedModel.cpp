@@ -24,6 +24,24 @@ namespace AssetManager {
     }
     
     void GrabSkeleton(std::vector<Node>& nodes, const aiNode* pNode, int parentIndex) {
+
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+        //const std::string name = pNode->mName.C_Str();
+        //if (name.size() >= 4) {
+        //    const std::string suf = name.substr(name.size() - 4);
+        //    if (suf == ".001" || suf == ".002" || suf == ".003" ||
+        //        suf == ".004" || suf == ".005" || suf == ".006" ||
+        //        suf == ".007") {
+        //        return; // skip this node and its children
+        //    }
+        //}
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+        // REMOVE ME WHEN YOU FIX BROKEN GLOCK BLEND FILE
+
+
         // Create the joint node
         Node node;
         node.name = Util::CopyConstChar(pNode->mName.C_Str());

@@ -683,6 +683,19 @@ namespace World {
         mermaidCreateInfo.position = glm::vec3(29.0f, 29.5f, 52.5f);
         mermaidCreateInfo.rotation.y = 0.25f;
         AddMermaid(mermaidCreateInfo);
+
+
+        //AnimatedGameObject* animatedGameObject = nullptr;
+        //uint64_t id = World::CreateAnimatedGameObject();
+        //animatedGameObject = World::GetAnimatedGameObjectByObjectId(id);
+        //animatedGameObject->SetSkinnedModel("Glock");
+        //animatedGameObject->SetName("Remington870");
+        //animatedGameObject->SetAllMeshMaterials("Glock");
+        //animatedGameObject->PlayAndLoopAnimation("MainLayer", "Glock_Reload", 1.0f);
+        //animatedGameObject->SetScale(0.01);
+        //animatedGameObject->SetPosition(glm::vec3(17, 31, 40));
+        //animatedGameObject->SetMeshMaterialByMeshName("ArmsMale", "Hands");
+        //animatedGameObject->SetMeshMaterialByMeshName("ArmsFemale", "FemaleArms");
     }
 
     void UpdateClippingCubes() {

@@ -205,7 +205,7 @@ void main() {
     accCol *= fogColor;
 
     // Tone it down a bit
-    //accCol *= 0.325;
+    //accCol *= 0.75;
 
     //accCol *= 20;
     

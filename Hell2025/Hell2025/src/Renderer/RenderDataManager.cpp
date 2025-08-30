@@ -421,33 +421,17 @@ namespace RenderDataManager {
     }
 
     void CreateMultiDrawIndirectCommandsSkinned(std::vector<DrawIndexedIndirectCommand>& commands, std::span<RenderItem> renderItems, int viewportIndex, int instanceOffset) {
-        std::unordered_map<int, std::size_t> commandMap;
         commands.reserve(renderItems.size());
 
         for (const RenderItem& renderItem : renderItems) {
-            //if (renderItem.ignoredViewportIndex != -1 && renderItem.ignoredViewportIndex == viewportIndex) continue;
-            //if (renderItem.exclusiveViewportIndex != -1 && renderItem.exclusiveViewportIndex != viewportIndex) continue;
-
-            int meshIndex = renderItem.meshIndex;
-            SkinnedMesh* mesh = AssetManager::GetSkinnedMeshByIndex(meshIndex);
-
-            // If the command exists, increment its instance count
-            auto it = commandMap.find(meshIndex);
-            if (it != commandMap.end()) {
-                commands[it->second].instanceCount++;
-            }
-            // Otherwise create a new command
-            else {
-                std::size_t index = commands.size();
-                auto& cmd = commands.emplace_back();
-                cmd.indexCount = mesh->indexCount;
-                cmd.firstIndex = mesh->baseIndex;
-                cmd.baseVertex = renderItem.baseSkinnedVertex;
-                cmd.baseInstance = EncodeBaseInstance(viewportIndex, instanceOffset);
-                cmd.instanceCount = 1;
-
-                commandMap[meshIndex] = index;
-            }
+            SkinnedMesh* mesh = AssetManager::GetSkinnedMeshByIndex(renderItem.meshIndex);
+            std::size_t index = commands.size();
+            auto& cmd = commands.emplace_back();
+            cmd.indexCount = mesh->indexCount;
+            cmd.firstIndex = mesh->baseIndex;
+            cmd.baseVertex = renderItem.baseSkinnedVertex;
+            cmd.baseInstance = EncodeBaseInstance(viewportIndex, instanceOffset);
+            cmd.instanceCount = 1;
             instanceOffset++;
         }
     }
@@ -522,6 +506,7 @@ namespace RenderDataManager {
     void ResetBaseSkinnedVertex() {
         g_baseSkinnedVertex = 0;
     }
+
     void IncrementBaseSkinnedVertex(uint32_t vertexCount) {
         g_baseSkinnedVertex += vertexCount;
     }

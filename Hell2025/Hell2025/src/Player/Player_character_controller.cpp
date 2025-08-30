@@ -20,7 +20,6 @@ void Player::SetFootPosition(glm::vec3 position) {
     CharacterController* characterControler = Physics::GetCharacterControllerById(m_characterControllerId);
     if (characterControler) {
         PxController* pxControler = characterControler->GetPxController();
-
         PxExtendedVec3 pxVec3 = PxExtendedVec3(position.x, position.y, position.z);
         pxControler->setFootPosition(pxVec3);
     }

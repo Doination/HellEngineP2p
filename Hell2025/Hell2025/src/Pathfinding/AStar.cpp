@@ -146,8 +146,8 @@ void AStar::FindPath() {
 
 void AStar::PrintPath() {
 
-    for (int y = 0; y < m_mapWidth; ++y) {
-        for (int x = 0; x < m_mapHeight; ++x) {
+    for (int y = 0; y < m_mapHeight; ++y) {
+        for (int x = 0; x < m_mapWidth; ++x) {
 
             bool inPath = false;
             for (Cell* cell : m_finalPath) {

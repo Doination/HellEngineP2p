@@ -84,9 +84,6 @@ void Kangaroo::UpdateMovementLogic(float deltaTime) {
     displacement.y += m_yVelocity * deltaTime;
 
     // Move character controller
-    characterController->Move(glm::vec3(0.0f));
-
-    // Update character controller
     Physics::MoveCharacterController(m_characterControllerId, displacement);
     m_position = Physics::GetCharacterControllerPosition(m_characterControllerId);
 

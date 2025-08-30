@@ -39,13 +39,14 @@ void Player::UpdateShotgunGunLogic(float deltaTime) {
 
     // Green shell hack
     static float delayCounter = 0.0f;
-    delayCounter -= Game::GetDeltaTime();
-    if (delayCounter <= 0.0f)
-    if (Input::MouseWheelDown() || Input::MouseWheelUp()) {
+    if (delayCounter > 0.0f) {
+        delayCounter -= Game::GetDeltaTime();
+    }
+    if (delayCounter <= 0.0f && (Input::MouseWheelDown() || Input::MouseWheelUp())) {
         WeaponState* weaponState = GetCurrentWeaponState();
-        weaponState->shotgunSlug = !weaponState->shotgunSlug;   
+        weaponState->shotgunSlug = !weaponState->shotgunSlug;
         Audio::PlayAudio("SPAS_AutoToggle_STOLEN_FROM_HALFLIFE.wav", 1.0f, GetWeaponAudioFrequency());
-        delayCounter = 0.1f;
+        delayCounter = 0.1f; // cooldown
     }
 
     WeaponState* weaponState = GetCurrentWeaponState();

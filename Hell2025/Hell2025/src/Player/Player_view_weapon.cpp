@@ -21,16 +21,6 @@ void Player::UpdateViewWeapon(float deltaTime) {
         }
     }
 
-    glm::mat4 cameraAnimation = inverse(cameraBindMatrix) * inverse(dmMaster) * cameraMatrix;
-
-    if (viewWeapon->GetSkinnedModel()->GetName() == "Knife" ||
-        viewWeapon->GetSkinnedModel()->GetName() == "Shotgun" ||
-        viewWeapon->GetSkinnedModel()->GetName() == "Smith" ||
-        viewWeapon->GetSkinnedModel()->GetName() == "P90" ||
-        viewWeapon->GetSkinnedModel()->GetName() == "SPAS") {
-        cameraAnimation = inverse(cameraBindMatrix) * cameraMatrix;
-    }
-
     // Weapon sway
     float xMax = 5.0;
     float SWAY_AMOUNT = 0.125f;
@@ -63,6 +53,7 @@ void Player::UpdateViewWeapon(float deltaTime) {
 
     float weaponScale = 0.001f;
     //weaponScale = 0.01f;
+    //weaponScale = 1.0;
 
     // Final transform
     Transform transform;

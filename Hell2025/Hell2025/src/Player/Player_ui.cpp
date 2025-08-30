@@ -106,6 +106,7 @@ void Player::UpdateUI() {
         std::string text = "";
         text += "Cam Pos: " + Util::Vec3ToString(GetCameraPosition()) + "\n";
         text += "Cam Euler: " + Util::Vec3ToString(GetCameraRotation()) + "\n";
+        text += "\n" + GetName() + "\n";
 
         // Kangaroos
         if (false) {

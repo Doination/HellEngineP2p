@@ -162,13 +162,17 @@ bool Player::CanFireGun() {
 bool Player::CanEnterADS() {
     AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
     WeaponState* weaponState = GetCurrentWeaponState();
-    WeaponInfo* weaponInfo = GetCurrentWeaponInfo();;
+    WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
 
-    if (weaponInfo->hasADS) {
-        return (m_weaponAction != RELOAD && m_weaponAction != RELOAD_FROM_EMPTY && !IsInADS() ||
-                m_weaponAction == RELOAD && viewWeapon->AnimationIsPastFrameNumber("MainLayer", weaponInfo->animationCancelFrames.reload) ||
-                m_weaponAction == RELOAD_FROM_EMPTY && viewWeapon->AnimationIsPastFrameNumber("MainLayer", weaponInfo->animationCancelFrames.reloadFromEmpty));
-    }
+    if (!weaponInfo->hasADS)
+        return false;
+
+    return (
+        (m_weaponAction != RELOAD && m_weaponAction != RELOAD_FROM_EMPTY && !IsInADS()) ||
+
+        (m_weaponAction == RELOAD && viewWeapon->AnimationIsPastFrameNumber("MainLayer", weaponInfo->animationCancelFrames.reload)) ||
+
+        (m_weaponAction == RELOAD_FROM_EMPTY && viewWeapon->AnimationIsPastFrameNumber("MainLayer", weaponInfo->animationCancelFrames.reloadFromEmpty)));
 }
 
 bool Player::CanLeaveADS() {
@@ -180,4 +184,15 @@ bool Player::IsInADS() {
             m_weaponAction == ADS_OUT ||
             m_weaponAction == ADS_IDLE ||
             m_weaponAction == ADS_FIRE);
+}
+
+glm::mat4 Player::GetViewWeaponBoneWorldMatrix(const std::string& boneName) {
+    AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
+    if (!viewWeapon) {
+        return glm::mat4(1.0f);
+    }
+
+    glm::mat4 worldMatrix = viewWeapon->GetBoneWorldMatrix(boneName);
+    
+    return worldMatrix;
 }

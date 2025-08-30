@@ -29,7 +29,7 @@ namespace HeightMapManager {
         if (BackEnd::GetAPI() == API::OPENGL) {
             g_glTextureArray.AllocateMemory(HEIGHT_MAP_SIZE, HEIGHT_MAP_SIZE, GL_R16F, 1, heightmapCount);
         }
-        else if (BackEnd::GetAPI() == API::OPENGL) {
+        else if (BackEnd::GetAPI() == API::VULKAN) {
             // TODO
         }
     }
@@ -45,7 +45,7 @@ namespace HeightMapManager {
             if (BackEnd::GetAPI() == API::OPENGL) {
                 g_glTextureArray.SetLayerDataR16(i, heightMapData.data);
             }
-            else if (BackEnd::GetAPI() == API::OPENGL) {
+            else if (BackEnd::GetAPI() == API::VULKAN) {
                 // TODO
             }
             g_heightMapNames.push_back(files[i].name);

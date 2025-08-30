@@ -441,6 +441,10 @@ glm::vec3 Player::GetViewportColorTint() {
     return color;
 }
 
+const void Player::SetName(const std::string& name) {
+    m_name = name;
+}
+
 bool Player::RespawnAllowed() {
     return IsDead() && m_timeSinceDeath > 3.25f;
 }
