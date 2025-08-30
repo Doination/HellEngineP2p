@@ -125,63 +125,6 @@ namespace World {
             RenderDataManager::SubmitRenderItems(genericBouncable.GetRenderItems());
         }
 
-
-       
-
-        //Player* player = Game::GetLocalPlayerByIndex(0);
-        //Material* material = AssetManager::GetMaterialByName("Glock_Silencer");
-        //AnimatedGameObject* animatedGameObject = nullptr;
-        //
-        //for (AnimatedGameObject& object : animatedGameObjects) {
-        //    if (object.GetName() == "Remington870") {
-        //        animatedGameObject = &object;
-        //    }
-        //}
-        //if (!animatedGameObject) {
-        //    return;
-        //}
-        //if (Input::KeyPressed(HELL_KEY_Y)) {
-        //    animatedGameObject->PrintNodeNames();
-        //}
-        //
-        ////animatedGameObject = player->GetViewWeaponAnimatedGameObject();
-        //
-        //animatedGameObject->DrawBones();
-        //
-        //for (int i = 0; i < AssetManager::GetModelByName("Glock_Silencer")->GetMeshCount(); i++) {
-        //    int meshIndex = AssetManager::GetModelByName("Glock_Silencer")->GetMeshIndices()[i];
-        //    RenderItem renderItem;
-        //    renderItem.modelMatrix = animatedGameObject->GetBoneWorldMatrix("Suppressor");
-        //    renderItem.inverseModelMatrix = inverse(renderItem.modelMatrix);
-        //    renderItem.baseColorTextureIndex = material->m_basecolor;
-        //    renderItem.rmaTextureIndex = material->m_rma;
-        //    renderItem.normalMapTextureIndex = material->m_normal;
-        //    renderItem.meshIndex = meshIndex;
-        //    Util::UpdateRenderItemAABB(renderItem);
-        //    RenderDataManager::SubmitRenderItem(renderItem);
-        //    Renderer::DrawPoint(renderItem.modelMatrix[3], RED);
-        //}
-        //
-        //
-        //for (int i = 0; i < AssetManager::GetModelByName("Glock_RedDot")->GetMeshCount(); i++) {
-        //    int meshIndex = AssetManager::GetModelByName("Glock_RedDot")->GetMeshIndices()[i];
-        //    RenderItem renderItem;
-        //    renderItem.modelMatrix = animatedGameObject->GetBoneWorldMatrix("Sight");
-        //    renderItem.inverseModelMatrix = inverse(renderItem.modelMatrix);
-        //    renderItem.baseColorTextureIndex = material->m_basecolor;
-        //    renderItem.rmaTextureIndex = material->m_rma;
-        //    renderItem.normalMapTextureIndex = material->m_normal;
-        //    renderItem.meshIndex = meshIndex;
-        //    Util::UpdateRenderItemAABB(renderItem);
-        //    RenderDataManager::SubmitRenderItem(renderItem);
-        //    Renderer::DrawPoint(renderItem.modelMatrix[3], YELLOW);
-        //}
-
-
-
-
-        // std::cout << "GetGenericBouncables().siez(): " << GetGenericBouncables().size() << "\n";
-
         for (GenericStatic& genericStatics : GetGenericStatics()) {
             RenderDataManager::SubmitRenderItems(genericStatics.GetRenderItems());
         }
@@ -226,6 +169,12 @@ namespace World {
             characterModel->SubmitForSkinning();
             g_skinnedRenderItems.insert(g_skinnedRenderItems.end(), viewWeapon->GetRenderItems().begin(), viewWeapon->GetRenderItems().end());
             g_skinnedRenderItems.insert(g_skinnedRenderItems.end(), characterModel->GetRenderItems().begin(), characterModel->GetRenderItems().end());
+        }
+
+        // Player render items
+        for (int i = 0; i < Game::GetLocalPlayerCount(); i++) {
+            Player* player = Game::GetLocalPlayerByIndex(i);
+            player->SubmitRenderItems();
         }
     }
 

@@ -364,6 +364,11 @@ bool Player::CanDryFireShotgun() {
 bool Player::CanToggleShotgunAuto() {
     AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
     WeaponState* weaponState = GetCurrentWeaponState();
+    WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
+
+    if (!weaponInfo->hasAutoSwitch) {
+        return false;
+    }
 
     WeaponAction weaponAction = GetCurrentWeaponAction();
     return (

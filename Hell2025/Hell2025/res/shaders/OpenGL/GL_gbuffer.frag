@@ -37,6 +37,8 @@ in vec3 ViewPos;
 in vec3 EmissiveColor;
 in flat int WoundMaskTextureIndex;
 in flat int BlockScreenSpaceBloodDecalsFlag;
+in flat int EmissiveTextureIndex; 
+
 uniform bool u_alphaDiscard;
 
 //layout (binding = 6) uniform sampler2DArray woundMaskTextureArray;
@@ -95,8 +97,18 @@ void main() {
     RMAOut.a = BlockScreenSpaceBloodDecalsFlag;
 
     WorldPositionOut = vec4(WorldPos.rgb, 1.0);
-    EmissiveOut = vec4(EmissiveColor, 0);
-    
 
+    // Emissive
+    if (EmissiveTextureIndex != -1) {    
+        #if ENABLE_BINDLESS == 1
+            EmissiveOut = vec4(texture(sampler2D(textureSamplers[EmissiveTextureIndex]), TexCoord).rgb, 1.0);
+
+        #else    
+            EmissiveOut = vec4(0, 0, 0);
+        #endif    
+    }
+    else {
+        EmissiveOut = vec4(EmissiveColor, 0);
+    }
 
 }

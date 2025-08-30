@@ -29,7 +29,8 @@ namespace RenderDataManager {
     std::vector<HouseRenderItem> g_houseRenderItems;
     std::vector<HouseRenderItem> g_houseOutlineRenderItems;
     std::vector<RenderItem> g_decalRenderItems;
-
+    
+    std::vector<RenderItem> g_glassRenderItems;
     std::vector<RenderItem> g_renderItems;
     std::vector<RenderItem> g_renderItemsBlended;
     std::vector<RenderItem> g_renderItemsAlphaDiscarded;
@@ -56,7 +57,7 @@ namespace RenderDataManager {
     void UpdateRendererData();
     void UpdateDrawCommandsSet();
     //void CreateDrawCommands(DrawCommands& drawCommands, std::vector<RenderItem>& renderItems);
-    void CreateDrawCommands(std::vector<DrawIndexedIndirectCommand>& drawCommands, std::vector<RenderItem>& renderItems, Frustum& frustum, int viewportIndex);
+    void CreateDrawCommands(std::vector<DrawIndexedIndirectCommand>& drawCommands, std::vector<RenderItem>& renderItems, Frustum& frustum, int viewportIndex, bool ignoreNonShadowCasters = false);
     void CreateDrawCommandsSkinned(DrawCommands& drawCommands, std::vector<RenderItem>& renderItems);
     void CreateMultiDrawIndirectCommands(std::vector<DrawIndexedIndirectCommand>& commands, std::span<RenderItem> renderItems, int viewportIndex, int instanceOffset);
     void CreateMultiDrawIndirectCommandsSkinned(std::vector<DrawIndexedIndirectCommand>& commands, std::span<RenderItem> renderItems, int viewportIndex, int instanceOffset);
@@ -72,6 +73,7 @@ namespace RenderDataManager {
         g_houseRenderItems.clear();
 
         g_renderItems.clear();
+        g_glassRenderItems.clear();
         g_renderItemsBlended.clear();
         g_renderItemsAlphaDiscarded.clear();
         g_renderItemsHairTopLayer.clear();
@@ -253,7 +255,7 @@ namespace RenderDataManager {
             Frustum flashLightFrustum = player->GetFlashlightFrustum();
 
             // Build multi draw commands for regular geometry
-            CreateDrawCommands(g_flashLightShadowMapDrawInfo.flashlightShadowMapGeometry[i], g_renderItems, flashLightFrustum, i);
+            CreateDrawCommands(g_flashLightShadowMapDrawInfo.flashlightShadowMapGeometry[i], g_renderItems, flashLightFrustum, i, true);
 
             // Frustum cull the heightmap chunks
             std::vector<HeightMapChunk>& chunks = World::GetHeightMapChunks();
@@ -299,7 +301,7 @@ namespace RenderDataManager {
         UpdateOceanPatchTransforms();
     }
 
-    void CreateDrawCommands(std::vector<DrawIndexedIndirectCommand>& drawCommands, std::vector<RenderItem>& renderItems, Frustum& frustum, int viewportIndex) {
+    void CreateDrawCommands(std::vector<DrawIndexedIndirectCommand>& drawCommands, std::vector<RenderItem>& renderItems, Frustum& frustum, int viewportIndex, bool ignoreNonShadowCasters) {
         // Store the instance offset for this list of commands
         int instanceStart = g_instanceData.size();
 
@@ -308,6 +310,7 @@ namespace RenderDataManager {
 
         // Append new render items to the global instance data
         for (const RenderItem& renderItem : renderItems) {
+            if (ignoreNonShadowCasters && !renderItem.castShadows) continue;
             if (renderItem.ignoredViewportIndex != -1 && renderItem.ignoredViewportIndex == viewportIndex) continue;
             if (renderItem.exclusiveViewportIndex != -1 && renderItem.exclusiveViewportIndex != viewportIndex) continue;
 
@@ -539,6 +542,10 @@ namespace RenderDataManager {
         return g_renderItems;
     }
 
+    const std::vector<RenderItem>& GetGlassRenderItems() {
+        return g_glassRenderItems;
+    }
+
     const std::vector<RenderItem>& GetDecalRenderItems() {
         return g_decalRenderItems;
     }
@@ -601,6 +608,10 @@ namespace RenderDataManager {
 
     void SubmitRenderItem(const RenderItem& renderItem) {
         g_renderItems.push_back(renderItem);
+    }
+
+    void SubmitGlassRenderItem(const RenderItem& renderItem) {
+        g_glassRenderItems.push_back(renderItem);
     }
 
     void SubmitRenderItem(const HouseRenderItem& renderItem) {

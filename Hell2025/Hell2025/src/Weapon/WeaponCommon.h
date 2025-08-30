@@ -91,6 +91,7 @@ struct AudioFiles {
 struct WeaponInfo {
     std::string name;
     std::string modelName;
+    std::string pickupName;
     AnimationNames animationNames;
     AnimationSpeeds animationSpeeds;
     AudioFiles audioFiles;
@@ -122,6 +123,18 @@ struct WeaponInfo {
     const char* pickupConvexMeshModelName = UNDEFINED_STRING;
     bool emptyReloadRequiresSlideOffset = false;
     bool hasADS = false;
+    std::string sightName = UNDEFINED_STRING;
+    std::string silencerName = UNDEFINED_STRING;
+    bool isGold = false;
+};
+
+struct WeaponAttachmentInfo {
+    std::string name = UNDEFINED_STRING;
+    std::string modelName = UNDEFINED_STRING;
+    std::string boneName = UNDEFINED_STRING;
+    std::unordered_map<std::string, std::string> meshMaterials;             // maybe make me const char*
+    std::unordered_map<std::string, std::string> meshEmmisveTextureNames;   // maybe make me const char*
+    std::vector<std::string> glassMeshNames;                                // maybe make me const char*
 };
 
 struct AmmoInfo {
@@ -134,18 +147,17 @@ struct AmmoInfo {
     int pickupAmount = 0;
 };
 
+/*
 struct WeaponAttachmentInfo {
     const char* name = UNDEFINED_STRING;
     const char* materialName = UNDEFINED_STRING;
     const char* modelName = UNDEFINED_STRING;
     bool isGold = false;
-};
+};*/
 
 struct WeaponState {
     bool has = false;
     bool requiresSlideOffset = false;
-    bool hasScope = false;
-    bool hasSilencer = false;
     bool shotgunAwaitingFirstShellReload = false;
     bool shotgunAwaitingSecondShellReload = false;
     bool shotgunRequiresPump = true;
@@ -157,6 +169,8 @@ struct WeaponState {
     bool awaitingMagReload = false;
     int ammoInMag = 0;
     std::string name = "UNDEFINED_STRING";
+    bool hasSight = false;
+    bool hasSilencer = false;
 };
 
 struct AmmoState {

@@ -164,12 +164,18 @@ namespace OpenGLRenderer {
             }
         }
 
-
         // Cleanup
         shader->SetBool("u_wireframe", false);
         glEnable(GL_DEPTH_TEST);
         glCullFace(GL_BACK);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        // Hide the gaps from tessellation
+        OpenGLShader* cleanUpShader = GetShader("OceanTesseleationEdgeTransitionCleanUp");
+        if (!cleanUpShader) return;
+        cleanUpShader->Bind();
+        glBindImageTexture(0, waterFrameBuffer->GetColorAttachmentHandleByName("Color"), 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA16F);
+        glDispatchCompute(1, (waterFrameBuffer->GetHeight() + 7) / 8, 1);
 
     }
 

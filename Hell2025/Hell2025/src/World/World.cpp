@@ -810,7 +810,6 @@ namespace World {
         piano.Init(createInfo);
     }
 
-
     void AddPickUp(PickUpCreateInfo createInfo, SpawnOffset spawnOffset) {
         createInfo.position += spawnOffset.translation;
 

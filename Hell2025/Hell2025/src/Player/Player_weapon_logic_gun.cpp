@@ -25,7 +25,7 @@ void Player::FireGun() {
     WeaponInfo* weaponInfo = GetCurrentWeaponInfo();
     AmmoInfo* ammoInfo = GetCurrentAmmoInfo();
     WeaponState* weaponState = GetWeaponStateByName(weaponInfo->name);
-        
+
     if (weaponInfo->hasADS && IsInADS()) {
         viewWeapon->PlayAnimation("MainLayer", weaponInfo->animationNames.adsFire, weaponInfo->animationSpeeds.adsFire);
         m_weaponAction = WeaponAction::ADS_FIRE;
@@ -34,7 +34,7 @@ void Player::FireGun() {
         viewWeapon->PlayAnimation("MainLayer", weaponInfo->animationNames.fire, weaponInfo->animationSpeeds.fire);
         m_weaponAction = WeaponAction::FIRE;
     }
-    
+
     SpawnMuzzleFlash(55.0f, 0.3f);
     SpawnCasing(ammoInfo, weaponState->shotgunSlug);
     SpawnBullet(0.05f);
@@ -42,7 +42,12 @@ void Player::FireGun() {
     weaponState->ammoInMag--;
 
     int rand = std::rand() % weaponInfo->audioFiles.fire.size();
-    Audio::PlayAudio(weaponInfo->audioFiles.fire[rand], 1.0f, GetWeaponAudioFrequency());
+    if (weaponState->hasSilencer) {
+        Audio::PlayAudio("Silenced.wav", 1.0f, GetWeaponAudioFrequency());
+    }
+    else {
+        Audio::PlayAudio(weaponInfo->audioFiles.fire[rand], 1.0f, GetWeaponAudioFrequency());
+    }
 }
 
 void Player::ReloadGun() {

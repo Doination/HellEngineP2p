@@ -335,6 +335,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Physics\Types\CharacterController.cpp" />
     <ClCompile Include="src\Player\Player_character_model.cpp" />
     <ClCompile Include="src\Player\Player_ragdoll.cpp" />
+    <ClCompile Include="src\Player\Player_render_submit.cpp" />
     <ClCompile Include="src\Renderer\GlobalIllumination.cpp" />
     <ClCompile Include="src\Types\Animation\Animator.cpp" />
     <ClCompile Include="src\Types\Christmas\ChristmasLights.cpp" />
@@ -566,6 +567,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <None Include="res\shaders\OpenGL\GL_ocean_geometry.vert" />
     <None Include="res\shaders\OpenGL\GL_ocean_position_readback.comp" />
     <None Include="res\shaders\OpenGL\GL_ocean_surface_composite.comp" />
+    <None Include="res\shaders\OpenGL\GL_ocean_tessellation_edge_transition_cleanup.comp" />
     <None Include="res\shaders\OpenGL\GL_ocean_underwater_composite.comp" />
     <None Include="res\shaders\OpenGL\GL_ocean_underwater_mask_preprocess.comp" />
     <None Include="res\shaders\OpenGL\GL_ocean_update_textures.comp" />

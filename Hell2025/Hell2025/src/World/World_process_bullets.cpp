@@ -37,7 +37,7 @@ namespace World {
             // On hit
             if (rayResult.hitFound) {
 
-                std::cout << "Bullet hit position: " << rayResult.hitPosition << "\n";
+                //std::cout << "Bullet hit position: " << rayResult.hitPosition << "\n";
                              
                 PhysicsType& physicsType = rayResult.userData.physicsType;
                 ObjectType& objectType = rayResult.userData.objectType;
@@ -103,7 +103,7 @@ namespace World {
                     float strength = 200.0f;
                     glm::vec3 force = bullet.GetDirection() * strength;
                     Physics::AddFoceToRigidDynamic(physicsId, force);
-                    std::cout << "Shot a rigid dynamic\n";
+                    //std::cout << "Shot a rigid dynamic\n";
                 }
 
                 // Add decals for rigid static

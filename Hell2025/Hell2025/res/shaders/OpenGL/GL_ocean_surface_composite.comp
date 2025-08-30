@@ -81,6 +81,11 @@ void main() {
     }
 
     
+  //  vec3 waterNormals = texture(waterNormalTexture, uv_screenspace).rgb;
+
+    
+    //    imageStore(LightingImage, pixelCoords, vec4(vec3(waterColor), 1.0));
+    
     //imageStore(LightingImage, pixelCoords, vec4(vec3(underwaterMask), 1.0));
     //imageStore(LightingImage, pixelCoords, vec4(vec3(waterColor), 1.0));
 

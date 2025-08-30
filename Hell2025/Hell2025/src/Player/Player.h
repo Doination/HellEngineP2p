@@ -42,6 +42,10 @@ struct Player {
     float m_timeSinceDeath = 0.0f;
     bool RespawnAllowed();
 
+    void SubmitRenderItems();
+    void SubmitAttachmentRenderItem(const std::string& weaponAttachmentName);
+
+
     void UpdateCursorRays();
     void UpdateInteract();
     void UpdateCamera(float deltaTime);
@@ -78,9 +82,9 @@ struct Player {
     void GiveDefaultLoadout();
     void GiveWeapon(const std::string& name);
     void GiveAmmo(const std::string& name, int amount);
+    void GiveSight(const std::string& weaponName);
+    void GiveSilencer(const std::string& weaponName);
     void SwitchWeapon(const std::string& name, WeaponAction weaponAction);
-    void GiveRedDotToWeapon(const std::string& name);
-    void GiveSilencerToWeapon(const std::string& name);
     void DropWeapons();
     WeaponAction& GetWeaponAction();
     WeaponInfo* GetCurrentWeaponInfo();

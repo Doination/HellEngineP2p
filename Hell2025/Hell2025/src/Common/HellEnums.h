@@ -245,8 +245,12 @@ enum struct EditorViewportSplitMode {
 enum struct PickUpType {
     SHOTGUN_AMMO_BUCKSHOT,
     SHOTGUN_AMMO_SLUG,
+    GLOCK,
+    GOLDEN_GLOCK,
     AKS74U,
+    SPAS,
     REMINGTON_870,
+    TOKAREV,
     UNDEFINED
 };
 

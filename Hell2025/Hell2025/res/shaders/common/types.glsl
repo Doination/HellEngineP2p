@@ -85,7 +85,7 @@ struct RenderItem {
     int customFlag; // what does this do?
 
     int blockScreenSpaceBloodDecals;  // True or false
-    int padding0;
+    int emissiveTextureIndex;         // -1 means nothing, anything else is a texture index
     int padding1;
     int padding2;
 };

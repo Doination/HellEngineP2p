@@ -23,6 +23,10 @@ namespace Util {
             case PickUpType::SHOTGUN_AMMO_SLUG:     return "SHOTGUN_AMMO_SLUG";
             case PickUpType::AKS74U:                return "AKS74U";
             case PickUpType::REMINGTON_870:         return "REMINGTON_870";
+            case PickUpType::SPAS:                  return "SPAS";
+            case PickUpType::GLOCK:                 return "GLOCK";
+            case PickUpType::GOLDEN_GLOCK:          return "GOLDEN_GLOCK";
+            case PickUpType::TOKAREV:               return "TOKAREV";
             default: return "UNKNOWN";
         }
     }
@@ -32,6 +36,10 @@ namespace Util {
         if (str == "SHOTGUN_AMMO_SLUG")     return PickUpType::SHOTGUN_AMMO_SLUG;
         if (str == "AKS74U")                return PickUpType::AKS74U;
         if (str == "REMINGTON_870")         return PickUpType::REMINGTON_870;
+        if (str == "GLOCK")                 return PickUpType::GLOCK;
+        if (str == "GOLDEN_GLOCK")          return PickUpType::GOLDEN_GLOCK;
+        if (str == "SPAS")                  return PickUpType::SPAS;
+        if (str == "TOKAREV")               return PickUpType::TOKAREV;
         return PickUpType::UNDEFINED;
     }
 

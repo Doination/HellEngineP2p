@@ -131,6 +131,17 @@ namespace BackEnd {
         UIBackEnd::Update();
         RenderDataManager::Update();
         ImGuiBackEnd::Update();
+
+        //if (Input::KeyPressed(HELL_KEY_SPACE)) {
+        //    for (auto& model : AssetManager::GetModels()) {
+        //        std::cout << model.GetName() << "\n";
+        //        for (auto meshIndex : model.GetMeshIndices()) {
+        //            auto mesh = AssetManager::GetMeshByIndex(meshIndex);
+        //            std::cout << " - " << mesh->GetName() << "\n";
+        //        }
+        //        std::cout << "\n";
+        //    }
+        //}
     }
 
     void EndFrame() {

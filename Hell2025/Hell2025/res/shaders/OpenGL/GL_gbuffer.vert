@@ -38,6 +38,7 @@ uniform int u_viewportIndex;
 uniform int u_globalInstanceIndex;
 #endif
 
+out flat int EmissiveTextureIndex; // WARNING! this doens't work when bindless textures are disabled
 out flat int WoundMaskTextureIndex;
 out flat int BlockScreenSpaceBloodDecalsFlag;
 
@@ -48,9 +49,10 @@ void main() {
     int instanceOffset = gl_BaseInstance & ((1 << VIEWPORT_INDEX_SHIFT) - 1);
     int globalInstanceIndex = instanceOffset + gl_InstanceID;
     
-    BaseColorTextureIndex =  renderItems[globalInstanceIndex].baseColorTextureIndex;
-	NormalTextureIndex =  renderItems[globalInstanceIndex].normalMapTextureIndex;
-	RMATextureIndex =  renderItems[globalInstanceIndex].rmaTextureIndex;   
+    BaseColorTextureIndex = renderItems[globalInstanceIndex].baseColorTextureIndex;
+	NormalTextureIndex = renderItems[globalInstanceIndex].normalMapTextureIndex;
+	RMATextureIndex = renderItems[globalInstanceIndex].rmaTextureIndex;   
+    EmissiveTextureIndex = renderItems[globalInstanceIndex].emissiveTextureIndex;   
 
 #else
     int globalInstanceIndex = u_globalInstanceIndex;

@@ -17,18 +17,21 @@ void PickUp::Init(PickUpCreateInfo createInfo) {
     filterData.collisionGroup = CollisionGroup::ITEM_PICK_UP;
     filterData.collidesWith = CollisionGroup::ENVIROMENT_OBSTACLE;
 
+    float mass = 0.0f;
+    Model* physicsModel = nullptr;
+
     // Shotty buckshot
     if (m_pickUpType == PickUpType::SHOTGUN_AMMO_BUCKSHOT) {
         SetModel("Shotgun_AmmoBox");
         SetAllMeshMaterials("Shotgun_AmmoBox");
-        float mass = 0.45f;
+        mass = 0.45f;
         m_physicsId = Physics::CreateRigidDynamicFromBoxExtents(m_initialTransform, m_model->GetExtents(), mass, filterData);
     }
     // Shotty slug
     else if (m_pickUpType == PickUpType::SHOTGUN_AMMO_SLUG) {
         SetModel("Shotgun_AmmoBox");
         SetAllMeshMaterials("Shotgun_AmmoBoxSlug");
-        float mass = 0.45f;
+        mass = 0.45f;
         m_physicsId = Physics::CreateRigidDynamicFromBoxExtents(m_initialTransform, m_model->GetExtents(), mass, filterData);
     }
     // AKS74U
@@ -39,37 +42,67 @@ void PickUp::Init(PickUpCreateInfo createInfo) {
         SetMeshMaterial("Mesh2", "AKS74U_2");
         SetMeshMaterial("Mesh3", "AKS74U_3");
         SetMeshMaterial("Mesh4", "AKS74U_4");
-        float mass = 2.7f;
-
-        // Convex mesh
-        Model* model = AssetManager::GetModelByName("AKS74U_PickUpConvexMesh");
-        if (model) {
-            int32_t meshIndex = model->GetMeshIndices()[0];
-            Mesh* mesh = AssetManager::GetMeshByIndex(meshIndex);
-            if (mesh) {
-                std::span<Vertex> vertices = AssetManager::GetVerticesSpan(mesh->baseVertex, mesh->vertexCount);
-                std::span<uint32_t> indices = AssetManager::GetIndicesSpan(mesh->baseIndex, mesh->indexCount);
-                m_physicsId = Physics::CreateRigidDynamicFromConvexMeshVertices(m_initialTransform, vertices, indices, mass, filterData);
-            }
-        }
+        mass = 2.7f;
+        physicsModel = AssetManager::GetModelByName("AKS74U_PickUpConvexMesh");
     }
 
     // Remington 870
     else if (m_pickUpType == PickUpType::REMINGTON_870) {
         SetModel("Shotgun_PickUp");
         SetAllMeshMaterials("Shotgun");
-        float mass = 3.2f;
+        mass = 3.2f;
+        physicsModel = AssetManager::GetModelByName("Shotgun_PickUpConvexMesh");
+    }
 
-        // Convex mesh
-        Model* model = AssetManager::GetModelByName("Shotgun_PickUpConvexMesh");
-        if (model) {
-            int32_t meshIndex = model->GetMeshIndices()[0];
-            Mesh* mesh = AssetManager::GetMeshByIndex(meshIndex);
-            if (mesh) {
-                std::span<Vertex> vertices = AssetManager::GetVerticesSpan(mesh->baseVertex, mesh->vertexCount);
-                std::span<uint32_t> indices = AssetManager::GetIndicesSpan(mesh->baseIndex, mesh->indexCount);
-                m_physicsId = Physics::CreateRigidDynamicFromConvexMeshVertices(m_initialTransform, vertices, indices, mass, filterData);
-            }
+    // SPAS
+    else if (m_pickUpType == PickUpType::SPAS) {
+        SetModel("SPAS_Isolated");
+        SetMeshMaterial("SPAS12_Main", "SPAS_Main");
+        SetMeshMaterial("SPAS12_Moving", "SPAS_Moving");
+        SetMeshMaterial("SPAS12_Stamped", "SPAS_Stamped");
+        mass = 3.3f;
+        physicsModel = AssetManager::GetModelByName("SPAS_ConvexMesh");
+    }
+
+    else if (m_pickUpType == PickUpType::GLOCK || m_pickUpType == PickUpType::GOLDEN_GLOCK) {
+        SetModel("Glock_Isolated");
+        switch (m_pickUpType) {
+            case PickUpType::GOLDEN_GLOCK: SetAllMeshMaterials("GoldenGlock"); break;
+            case PickUpType::GLOCK:        SetAllMeshMaterials("Glock"); break;
+        }
+        mass = 0.7f;
+        physicsModel = AssetManager::GetModelByName("Glock_Isolated_ConvexMesh");
+    }
+
+
+    else if (m_pickUpType == PickUpType::TOKAREV) {
+        SetModel("Tokarev_Isolated");
+        SetMeshMaterial("TokarevBody", "Tokarev");
+        SetMeshMaterial("TokarevGripPolymer", "TokarevGrip");
+        mass = 0.7f;
+        physicsModel = AssetManager::GetModelByName("Glock_Isolated_ConvexMesh");
+    }
+
+
+    else {
+        std::cout << "Warning!: You created a pickup with an invalid type!: " << createInfo.pickUpType << "\n";
+        return;
+    }
+
+    // Error check the m_model
+    if (!m_model) {
+        std::cout << "Pickup::Init() WARNING!!!: m_model was nullptr, meaning it was not found!\n";
+        return;
+    }
+
+    // Physics object
+    if (physicsModel) {
+        int32_t meshIndex = physicsModel->GetMeshIndices()[0];
+        Mesh* mesh = AssetManager::GetMeshByIndex(meshIndex);
+        if (mesh) {
+            std::span<Vertex> vertices = AssetManager::GetVerticesSpan(mesh->baseVertex, mesh->vertexCount);
+            std::span<uint32_t> indices = AssetManager::GetIndicesSpan(mesh->baseIndex, mesh->indexCount);
+            m_physicsId = Physics::CreateRigidDynamicFromConvexMeshVertices(m_initialTransform, vertices, indices, mass, filterData);
         }
     }
 
@@ -83,6 +116,11 @@ void PickUp::Init(PickUpCreateInfo createInfo) {
     userData.physicsType = PhysicsType::RIGID_DYNAMIC;
     userData.objectType = ObjectType::PICK_UP;
     Physics::SetRigidDynamicUserData(m_physicsId, userData);
+
+
+    // Apply initial impulse
+    glm::vec3 force = createInfo.intitialForce;
+    Physics::AddFoceToRigidDynamic(m_physicsId, force);
 }
 
 void PickUp::SetModel(const std::string& modelName) {
@@ -161,6 +199,10 @@ void PickUp::SetPosition(glm::vec3 position) {
 
 void PickUp::UpdateRenderItems() {
     m_renderItems.clear();    
+    if (!m_model) {
+        std::cout << "A pickup failed to create render items because it had a nullptr m_model!\n";
+        return;
+    }
 
     for (int i = 0; i < m_model->GetMeshCount(); i++) {
         Mesh* mesh = AssetManager::GetMeshByIndex(m_model->GetMeshIndices()[i]);

@@ -7,21 +7,31 @@
 namespace WeaponManager {
 
     std::vector<AmmoInfo> g_ammos;
-    std::vector<WeaponInfo> g_weapons;
     std::vector<WeaponAttachmentInfo> g_attachments;
+    std::vector<WeaponInfo> g_weapons;
 
     void Init() {
 
         g_weapons.clear();
         g_ammos.clear();
+        g_attachments.clear();
 
         // Attachments
 
-        WeaponAttachmentInfo glockSilencer = g_attachments.emplace_back();
-        glockSilencer.name = "Glock Silencer";
-        glockSilencer.materialName = "Glock Silencer";
-        glockSilencer.modelName = "Glock Silencer";
-        glockSilencer.isGold = false;
+        WeaponAttachmentInfo& glockSilencer = g_attachments.emplace_back();
+        glockSilencer.name = "GLOCK_SILENCER";
+        glockSilencer.modelName = "Glock_Silencer";
+        glockSilencer.boneName = "Suppressor";
+        glockSilencer.meshMaterials["Glock_silencer"] = "Glock_Silencer";
+
+        WeaponAttachmentInfo& glockRedDot = g_attachments.emplace_back();
+        glockRedDot.name = "GLOCK_RED_DOT";
+        glockRedDot.modelName = "Glock_RedDot";
+        glockRedDot.boneName = "Sight";
+        glockRedDot.meshMaterials["RedDotSight"] = "Glock_RedDot";
+        glockRedDot.meshMaterials["RedDotSightGlass"] = "Glock_RedDot";
+        glockRedDot.meshEmmisveTextureNames["RedDotSight"] = "Glock_RedDot_EMI";
+        glockRedDot.glassMeshNames.push_back("RedDotSightGlass");
 
         // Ammo
 
@@ -138,7 +148,7 @@ namespace WeaponManager {
         aks74u.muzzleFlashBoneName = "Muzzle";
         aks74u.casingEjectionBoneName = "EjectionPort";
         aks74u.muzzleFlashScale = 1.5f;
-        aks74u.casingEjectionImpulse = 0.025f;
+        aks74u.casingEjectionImpulse = 0.0175f;
         aks74u.animationNames.adsIn = "AKS74U_ADS_In";
         aks74u.animationNames.adsOut = "AKS74U_ADS_Out";
         aks74u.animationNames.adsIdle = "AKS74U_ADS_Idle";
@@ -218,9 +228,13 @@ namespace WeaponManager {
         goldeneGlock.pickUpMeshMaterials["Glock"] = "Glock";
         goldeneGlock.emptyReloadRequiresSlideOffset = true;
         goldeneGlock.hasADS = true;
+        goldeneGlock.isGold = true;
         goldeneGlock.animationSpeeds.adsIn = 3.0f;
         goldeneGlock.animationSpeeds.adsOut = 3.0f;
-        goldeneGlock.casingEjectionImpulse = 0.025f;
+        goldeneGlock.casingEjectionImpulse = 0.0175f;
+        goldeneGlock.pickupName = "GLOCK";
+        goldeneGlock.silencerName = "GLOCK_SILENCER";
+        goldeneGlock.sightName = "GLOCK_RED_DOT";
 
         WeaponInfo& knife = g_weapons.emplace_back();
         knife.name = "Knife";
@@ -285,21 +299,12 @@ namespace WeaponManager {
         smith.animationCancelFrames.reloadFromEmpty = 80.0f;
         smith.revolverCockFrameNumber = 18;
         smith.relolverStyleReload = true;
-        smith.casingEjectionImpulse = 0.025f;
+        smith.casingEjectionImpulse = 0.0175f;
+
 
         WeaponInfo& tokarev = g_weapons.emplace_back();
         tokarev.name = "Tokarev";
         tokarev.modelName = "Tokarev";
-        tokarev.animationNames.idle = "Tokarev_Idle";
-        tokarev.animationNames.walk = "Tokarev_Walk";
-        tokarev.animationNames.draw = "Tokarev_Draw";
-        tokarev.animationNames.drawFirst = "Tokarev_DrawFirst";
-        tokarev.animationNames.reload = "Tokarev_Reload";
-        tokarev.animationNames.reloadempty.push_back("Tokarev_ReloadEmpty");
-        tokarev.animationNames.fire.push_back("Tokarev_Fire0");
-        tokarev.animationNames.fire.push_back("Tokarev_Fire1");
-        tokarev.animationNames.fire.push_back("Tokarev_Fire2");
-        tokarev.animationSpeeds.fire = 1.0f;
         tokarev.meshMaterials["ArmsMale"] = "Hands";
         tokarev.meshMaterials["ArmsFemale"] = "FemaleArms";
         tokarev.meshMaterials["TokarevBody"] = "Tokarev";
@@ -308,39 +313,51 @@ namespace WeaponManager {
         tokarev.meshMaterials["TokarevGripWood"] = "TokarevGrip";
         tokarev.hiddenMeshAtStart.push_back("ArmsFemale");
         tokarev.hiddenMeshAtStart.push_back("TokarevGripWood");
-        //tokarev.hiddenMeshAtStart.push_back("TokarevGripPolymer");
+        tokarev.animationNames.fire.push_back("Tokarev_Fire1");
+        tokarev.animationNames.fire.push_back("Tokarev_Fire2");
+        tokarev.animationNames.fire.push_back("Tokarev_Fire3");
+        tokarev.animationNames.idle = "Tokarev_Idle";
+        tokarev.animationNames.draw = "Tokarev_Draw";
+        tokarev.animationNames.drawFirst = "Tokarev_DrawFirst";
+        tokarev.animationNames.walk = "Tokarev_Walk";
+        tokarev.animationNames.fire.push_back("Tokarev_Fire1");
+        tokarev.animationNames.fire.push_back("Tokarev_Fire2");
+        tokarev.animationNames.fire.push_back("Tokarev_Fire3");
+        tokarev.animationNames.reload = "Tokarev_Reload";
+        tokarev.animationNames.reloadempty.push_back("Tokarev_ReloadEmpty");
+        tokarev.animationSpeeds.fire = 1.5f;
         tokarev.audioFiles.fire.push_back("Tokarev_Fire0.wav");
         tokarev.audioFiles.fire.push_back("Tokarev_Fire1.wav");
         tokarev.audioFiles.fire.push_back("Tokarev_Fire2.wav");
         tokarev.audioFiles.fire.push_back("Tokarev_Fire3.wav");
         tokarev.audioFiles.reload = "Tokarev_Reload.wav";
         tokarev.audioFiles.reloadEmpty = "Tokarev_ReloadEmpty.wav";
-        tokarev.muzzleFlashBoneName = "Muzzle";
+        tokarev.audioFiles.drawFirst = "Tokarev_DrawFirst.wav";
         tokarev.type = WeaponType::PISTOL;
-        tokarev.damage = 22;
-        tokarev.magSize = 8;
+        tokarev.muzzleFlashBoneName = "Muzzle";
         tokarev.casingEjectionBoneName = "Ejection";
-        tokarev.casingEjectionOffset = glm::vec3(-0.066, -0.007, 0.249);
+        tokarev.muzzleFlashOffset = glm::vec3(0, 0.002, 0.005f);
+        tokarev.casingEjectionOffset = glm::vec3(-0.098, -0.033, 0.238);
+        tokarev.damage = 25;
+        tokarev.magSize = 15;
         tokarev.ammoType = "Tokarev";
         tokarev.animationCancelFrames.draw = 50.0f;
-        tokarev.animationCancelFrames.fire = 5.0f;
-        tokarev.animationCancelFrames.reload = 80.0f;
-        tokarev.animationCancelFrames.reloadFromEmpty = 80.0f;
-        tokarev.casingEjectionImpulse = 0.025f;
-
+        tokarev.animationCancelFrames.fire = 5;
+        tokarev.animationCancelFrames.adsFire = 6.0f;
+        tokarev.animationCancelFrames.reload = 40.0f;
+        tokarev.animationCancelFrames.reloadFromEmpty = 40.0f;
+        tokarev.animationCancelFrames.draw = 75.0f;
         tokarev.pistolSlideBoneName = "Slide";
-        tokarev.pistolSlideOffset = -5;
-        tokarev.pickupModelName = "Tokarev_Isolated";
-        tokarev.pickupConvexMeshModelName = "Tokarev_ConvexMesh";
-        tokarev.pickUpMeshMaterials["TokarevBody"] = "Tokarev";
-        tokarev.pickUpMeshMaterials["TokarevGripPolymer"] = "TokarevGrip";
+        tokarev.pistolSlideOffset = 5;
+        tokarev.reloadMagInFrameNumber = 20;
+        tokarev.reloadEmptyMagInFrameNumber = 20;
+        tokarev.pickupModelName = "Glock_Isolated";
+        tokarev.pickupConvexMeshModelName = "Glock_Isolated_ConvexMesh";
+        tokarev.pickUpMeshMaterials["Tokarev"] = "Tokarev";
         tokarev.emptyReloadRequiresSlideOffset = true;
-
-      
-      
-      
-      
-
+        tokarev.hasADS = false;
+        tokarev.casingEjectionImpulse = 0.0175f;
+        tokarev.pickupName = "TOKAREV";
 
         WeaponInfo& glock = g_weapons.emplace_back();
         glock.name = "Glock";
@@ -402,78 +419,11 @@ namespace WeaponManager {
         glock.hasADS = true;
         glock.animationSpeeds.adsIn = 3.0f;
         glock.animationSpeeds.adsOut = 3.0f;
-        glock.casingEjectionImpulse = 0.025f;
-
-   //  glock.modelName = "Tokarev";
-   //  glock.animationNames.idle = "Tokarev_Idle";
-   //  glock.animationNames.draw = "Tokarev_Draw";
-   //  glock.animationNames.drawFirst = "Tokarev_DrawFirst";
-   //  glock.animationNames.walk = "Tokarev_Walk";
-   //  glock.animationNames.reload = "Tokarev_Reload";
-   //  glock.animationNames.reloadempty.push_back("Tokarev_ReloadEmpty");
-   //
-   //  glock.pickupConvexMeshModelName = "Tokarev_ConvexMesh";
-   //  glock.pickUpMeshMaterials["TokarevBody"] = "Tokarev";
-   //  glock.pickUpMeshMaterials["TokarevGripPolymer"] = "TokarevGrip";
-   //  glock.hiddenMeshAtStart.clear();
-   //  glock.hiddenMeshAtStart.push_back("ArmsFemale");
-   //  glock.hiddenMeshAtStart.push_back("TokarevGripWood");
-   //  glock.meshMaterials["TokarevBody"] = "Tokarev";
-   //  glock.meshMaterials["TokarevMag"] = "TokarevMag";
-   //  glock.meshMaterials["TokarevGripPolymer"] = "TokarevGrip";
-   //  glock.meshMaterials["TokarevGripWood"] = "TokarevGrip";
-   //  glock.animationNames.fire.clear();
-   //  glock.animationNames.fire.push_back("Tokarev_Fire1");
-   //  glock.animationNames.fire.push_back("Tokarev_Fire2");
-   //  glock.animationNames.fire.push_back("Tokarev_Fire3");
-   //  glock.casingEjectionBoneName = "Ejection";
-
-
-        WeaponInfo& shotgun = g_weapons.emplace_back();
-        shotgun.name = "Shotgun";
-        shotgun.modelName = "Shotgun";
-        shotgun.meshMaterials["ArmsMale"] = "Hands";
-        shotgun.meshMaterials["ArmsFemale"] = "FemaleArms";
-        shotgun.meshMaterials["Shells"] = "Shell";
-        shotgun.meshMaterials["Shotgun"] = "Shotgun";
-        shotgun.animationNames.idle = "Shotgun_Idle";
-        shotgun.animationNames.walk = "Shotgun_Walk";
-        shotgun.animationNames.melee = "Shotgun_Melee";
-        shotgun.animationNames.reload = "Shotgun_Reload1Shell";
-        shotgun.animationNames.shotgunReloadStart = "Shotgun_ReloadWetstart";
-        shotgun.animationNames.shotgunReloadEnd = "Shotgun_ReloadEnd";
-        shotgun.animationNames.shotgunReloadOneShell = "Shotgun_Reload1Shell";
-        shotgun.animationNames.shotgunReloadTwoShells = "Shotgun_Reload2Shells";
-        shotgun.animationNames.reloadempty.push_back("Glock_ReloadEmpty");
-        shotgun.animationNames.fire.push_back("Shotgun_Fire");
-        shotgun.animationNames.draw = "Shotgun_Draw";
-        shotgun.animationSpeeds.fire = 1.5f;
-        shotgun.animationSpeeds.shotgunReloadStart = 1.25f;
-        shotgun.animationSpeeds.shotgunReloadEnd = 1.25f;
-        shotgun.animationSpeeds.shotgunReloadOneShell = 1.5f;
-        shotgun.animationSpeeds.shotgunReloadTwoShells = 1.5f;
-        shotgun.audioFiles.fire.push_back("Glock_Fire0.wav");
-        shotgun.audioFiles.fire.push_back("Glock_Fire1.wav");
-        shotgun.audioFiles.fire.push_back("Glock_Fire2.wav");
-        shotgun.audioFiles.fire.push_back("Glock_Fire3.wav");
-        shotgun.audioFiles.reload = "Glock_Reload.wav";
-        shotgun.audioFiles.reloadEmpty = "Glock_ReloadEmpty.wav";
-        shotgun.type = WeaponType::SHOTGUN;
-        shotgun.muzzleFlashOffset = glm::vec3(0, 0.002, 0.005f);
-        shotgun.casingEjectionOffset = glm::vec3(-0.098, -0.033, 0.238);
-        shotgun.damage = 15;
-        shotgun.magSize = 8;
-        shotgun.ammoType = "Shotgun";
-        shotgun.hiddenMeshAtStart.push_back("ArmsFemale");
-        shotgun.muzzleFlashBoneName = "Muzzle";
-        shotgun.casingEjectionBoneName = "Shell_bone";
-        shotgun.casingEjectionImpulse = 0.025f;
-        shotgun.animationCancelFrames.fire = 50.0f;
-        shotgun.pickupModelName = "Shotgun_Isolated";
-        shotgun.pickupConvexMeshModelName = "Shotgun_Isolated_ConvexMesh";
-        shotgun.pickUpMeshMaterials["Shotgun_Mesh"] = "Shotgun";
-
-
+        glock.casingEjectionImpulse = 0.0175f;
+        glock.pickupName = "GOLDEN_GLOCK";
+        glock.silencerName = "GLOCK_SILENCER";
+        glock.sightName = "GLOCK_RED_DOT";
+        glock.isGold = false;
 
         WeaponInfo& spas = g_weapons.emplace_back();
         spas.name = "SPAS";
@@ -482,14 +432,9 @@ namespace WeaponManager {
         spas.meshMaterials["ArmsFemale"] = "FemaleArms";
         spas.meshMaterials["Shells"] = "Shell";
         spas.meshMaterials["Shells.001"] = "Shell";
-        
-        //spas.meshMaterials["SPAS12_Main"] = "SPAS_Main";
-        //spas.meshMaterials["SPAS12_Moving"] = "SPAS_Moving";
-        //spas.meshMaterials["SPAS12_Stamped"] = "SPAS_Stamped";
         spas.meshMaterials["SPAS12_Main"] = "SPAS2_Main";
         spas.meshMaterials["SPAS12_Moving"] = "SPAS2_Moving";
         spas.meshMaterials["SPAS12_Stamped"] = "SPAS2_Stamped";
-
         spas.animationSpeeds.fire = 1.0f;
         spas.animationSpeeds.shotgunReloadStart = 1.0f;
         spas.animationSpeeds.shotgunReloadEnd = 1.0f;
@@ -524,43 +469,65 @@ namespace WeaponManager {
         spas.hiddenMeshAtStart.push_back("ArmsFemale");
         spas.muzzleFlashBoneName = "Muzzle";
         spas.casingEjectionBoneName = "Shell_bone";
-        spas.casingEjectionImpulse = 0.025f;
+        spas.casingEjectionImpulse = 0.0175f;
         spas.animationCancelFrames.fire = 50.0f;
-        spas.pickupModelName = "SPAS_Isolated";
-        spas.pickupConvexMeshModelName = "SPAS_ConvexMesh";
-        spas.pickUpMeshMaterials["SPAS12_Main"] = "SPAS_Main";
-        spas.pickUpMeshMaterials["SPAS12_Moving"] = "SPAS_Moving";
-        spas.pickUpMeshMaterials["SPAS12_Stamped"] = "SPAS_Stamped";
         spas.animationNames.dryFire = "SPAS_DryFire";
         spas.animationNames.toggleAutoShotgun = "SPAS_ToggleAuto";
         spas.hasAutoSwitch = true;
+        spas.pickupName = "SPAS";
 
 
-        //spas.modelName = "Remington870";
-        //spas.meshMaterials["Shotgun"] = "Shotgun";
-        //
-        //spas.animationNames.shotgunReloadStart = "Remington870_ReloadStart";
-        //spas.animationNames.shotgunReloadEnd = "Remington870_ReloadEnd";
-        //spas.animationNames.shotgunDrawPump = "Remington870_DrawPump";
-        //spas.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
-        //spas.animationNames.shotgunReloadTwoShells = "Remington870_Reload2Shells";
 
-        //spas.animationNames.fire.clear();
-        //spas.animationNames.reloadempty.clear();
-        //spas.animationNames.idle = "Remington870_Idle";
-        //spas.animationNames.walk = "Remington870_Walk";
-        //spas.animationNames.melee = "Remington870_Melee";
-        //spas.animationNames.reload = "Remington870_Fire";
-        //spas.animationNames.reloadempty.push_back("Remington870_Fire");
-        //spas.animationNames.fire.push_back("Remington870_Fire");
-        //spas.animationNames.draw = "Remington870_Draw";
-        //spas.animationNames.shotgunDrawPump = "Remington870_DrawPump";
-        //spas.animationNames.shotgunReloadStart = "Remington870_ReloadStart";
-        //spas.animationNames.shotgunReloadEnd = "Remington870_ReloadEnd";
-        //spas.animationNames.shotgunReloadEndPump = "Remington870_ReloadEndPump";
-        //spas.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
-        //spas.animationNames.shotgunReloadTwoShells = "Remington870_Reload2Shells";
-        //spas.animationNames.shotgunFireNoPump = "Remington870_FireNoPump";
+        WeaponInfo& remington870 = g_weapons.emplace_back();
+        remington870.name = "Remington870";
+        remington870.modelName = "Remington870";
+        remington870.meshMaterials["Shotgun"] = "Shotgun";
+        remington870.meshMaterials["ArmsMale"] = "Hands";
+        remington870.meshMaterials["ArmsFemale"] = "FemaleArms";
+        remington870.animationNames.shotgunReloadStart = "Remington870_ReloadStart";
+        remington870.animationNames.shotgunReloadEnd = "Remington870_ReloadEnd";
+        remington870.animationNames.shotgunDrawPump = "Remington870_DrawPump";
+        remington870.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
+        remington870.animationNames.shotgunReloadTwoShells = "Remington870_Reload2Shells";
+        remington870.animationNames.idle = "Remington870_Idle";
+        remington870.animationNames.walk = "Remington870_Walk";
+        remington870.animationNames.melee = "Remington870_Melee";
+        remington870.animationNames.reload = "Remington870_Fire";
+        remington870.animationNames.reloadempty.push_back("Remington870_Fire");
+        remington870.animationNames.fire.push_back("Remington870_Fire");
+        remington870.animationNames.draw = "Remington870_Draw";
+        remington870.animationNames.shotgunDrawPump = "Remington870_DrawPump";
+        remington870.animationNames.shotgunReloadStart = "Remington870_ReloadStart";
+        remington870.animationNames.shotgunReloadEnd = "Remington870_ReloadEnd";
+        remington870.animationNames.shotgunReloadEndPump = "Remington870_ReloadEndPump";
+        remington870.animationNames.shotgunReloadOneShell = "Remington870_Reload1Shell";
+        remington870.animationNames.shotgunReloadTwoShells = "Remington870_Reload2Shells";
+        remington870.animationNames.shotgunFireNoPump = "Remington870_FireNoPump";
+        remington870.audioFiles.fire.push_back("Shotgun_Fire.wav");
+        remington870.audioFiles.shotgunPump = "SPAS_Pump.wav";
+        remington870.type = WeaponType::SHOTGUN;
+        remington870.muzzleFlashOffset = glm::vec3(0, 0.002, 0.005f);
+        remington870.casingEjectionOffset = glm::vec3(-0.098, -0.033, 0.238);
+        remington870.damage = 14;
+        remington870.magSize = 8;
+        remington870.ammoType = "Shotgun";
+        remington870.hiddenMeshAtStart.push_back("ArmsFemale");
+        remington870.muzzleFlashBoneName = "Muzzle";
+        remington870.casingEjectionBoneName = "Shell_bone";
+        remington870.casingEjectionImpulse = 0.0175f;
+        remington870.animationCancelFrames.fire = 50.0f;
+        remington870.pickupModelName = "SPAS_Isolated";
+        remington870.pickupConvexMeshModelName = "SPAS_ConvexMesh";
+        remington870.pickUpMeshMaterials["SPAS12_Main"] = "SPAS_Main";
+        remington870.pickUpMeshMaterials["SPAS12_Moving"] = "SPAS_Moving";
+        remington870.pickUpMeshMaterials["SPAS12_Stamped"] = "SPAS_Stamped";
+        remington870.animationNames.dryFire = "SPAS_DryFire";
+        remington870.animationNames.toggleAutoShotgun = "SPAS_ToggleAuto";
+        remington870.hasAutoSwitch = false;
+        remington870.pickupName = "REMINGTON_870";
+
+        
+
 
 
 
@@ -674,7 +641,7 @@ namespace WeaponManager {
         p90.casingEjectionBoneName = "Ejection_Port";  // FIGURE THIS OUT LATER
         p90.casingEjectionBoneName = "Weapon";
         p90.muzzleFlashScale = 1.5f;
-        p90.casingEjectionImpulse = 0.025f;
+        p90.casingEjectionImpulse = 0.0175f;
         p90.animationNames.adsIn = "AKS74U_ADS_In";
         p90.animationNames.adsOut = "AKS74U_ADS_Out";
         p90.animationNames.adsIdle = "AKS74U_ADS_Idle";
@@ -777,6 +744,14 @@ namespace WeaponManager {
         }
     }
 
+    WeaponAttachmentInfo* GetWeaponAttachmentInfoByName(const std::string& name) {
+        for (int i = 0; i < g_attachments.size(); i++) {
+            if (g_attachments[i].name == name) {
+                return &g_attachments[i];
+            }
+        }
+        return nullptr;
+    }
 
     WeaponInfo* GetWeaponInfoByName(const std::string& name) {
         for (int i = 0; i < g_weapons.size(); i++) {

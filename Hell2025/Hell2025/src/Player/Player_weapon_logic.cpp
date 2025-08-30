@@ -90,10 +90,20 @@ void Player::UpdateWeaponLogic(float deltaTime) {
 void Player::GiveDefaultLoadout() {
     GiveWeapon("Knife");
     GiveWeapon("SPAS");
+    GiveWeapon("Remington870");
     GiveWeapon("Glock");
+    GiveWeapon("Tokarev");
     GiveWeapon("GoldenGlock");
-    GiveAmmo("Shotgun", 80); 
+
+    GiveAmmo("Shotgun", 80);
     GiveAmmo("Glock", 200);
+    GiveAmmo("Tokarev", 200);
+
+    GiveSilencer("Glock");
+    //GiveSight("Glock");
+
+    GiveSight("GoldenGlock");
+    GiveSilencer("GoldenGlock");
 }
 
 void Player::NextWeapon() {
@@ -184,18 +194,18 @@ void Player::GiveAmmo(const std::string& name, int amount) {
     }
 }
 
-void Player::GiveRedDotToWeapon(const std::string& name) {
-    WeaponInfo* weaponInfo = WeaponManager::GetWeaponInfoByName(name);
-    WeaponState* state = GetWeaponStateByName(name);
-    if (state && weaponInfo && weaponInfo->type == WeaponType::PISTOL) {
-        state->hasScope = true;
+void Player::GiveSight(const std::string& weaponName) {
+    WeaponInfo* weaponInfo = WeaponManager::GetWeaponInfoByName(weaponName);
+    WeaponState* state = GetWeaponStateByName(weaponName);
+    if (state && weaponInfo) {
+        state->hasSight = true;
     }
 }
 
-void Player::GiveSilencerToWeapon(const std::string& name) {
-    WeaponInfo* weaponInfo = WeaponManager::GetWeaponInfoByName(name);
-    WeaponState* state = GetWeaponStateByName(name);
-    if (state && weaponInfo && weaponInfo->type == WeaponType::PISTOL) {
+void Player::GiveSilencer(const std::string& weaponName) {
+    WeaponInfo* weaponInfo = WeaponManager::GetWeaponInfoByName(weaponName);
+    WeaponState* state = GetWeaponStateByName(weaponName);
+    if (state && weaponInfo) {
         state->hasSilencer = true;
     }
 }
@@ -258,8 +268,7 @@ int Player::GetCurrentWeaponTotalAmmo() {
 }
 
 void Player::SpawnMuzzleFlash(float speed, float scale) {
-    std::cout << "Warning: you have hardcoded muzzle flash speed and ignoring function param!\n";
-    m_muzzleFlash.SetSpeed(55.0f);
+    m_muzzleFlash.SetSpeed(speed);
     m_muzzleFlash.SetScale(glm::vec3(scale));
     m_muzzleFlash.SetTime(0.0f);
     m_muzzleFlash.EnableRendering();
@@ -278,8 +287,8 @@ void Player::SpawnCasing(AmmoInfo* ammoInfo, bool alternateAmmo) {
         createInfo.position = viewWeapon->GetBoneWorldPosition(weaponInfo->casingEjectionBoneName);
         createInfo.rotation.y = m_camera.GetYaw() + (HELL_PI * 0.5f);
         createInfo.force = glm::normalize(GetCameraRight() + glm::vec3(0.0f, Util::RandomFloat(0.7f, 0.9f), 0.0f)) * glm::vec3(weaponInfo->casingEjectionImpulse);
-        createInfo.force = glm::normalize(GetCameraRight() + glm::vec3(0.0f, Util::RandomFloat(0.7f, 0.9f), 0.0f)) * glm::vec3(0.0175);
-        std::cout << "warning: you have hardcoded casing ejection impulse!\n";
+    // createInfo.force = glm::normalize(GetCameraRight() + glm::vec3(0.0f, Util::RandomFloat(0.7f, 0.9f), 0.0f)) * glm::vec3(0.0175);
+    // std::cout << "warning: you have hardcoded casing ejection impulse!\n";
 
         createInfo.position += GetCameraForward() * glm::vec3(0.15f);
         createInfo.position += GetCameraRight() * glm::vec3(0.05f);
@@ -334,4 +343,38 @@ void Player::UpdateWeaponSlide() {
     else {
         viewWeapon->SetAdditiveTransform(boneName, glm::mat4(1.0f));
     }
+}
+
+void Player::DropWeapons() {
+
+    for (WeaponState& weaponState : m_weaponStates) {
+        if (weaponState.has) {
+            
+            WeaponInfo* weaponInfo = WeaponManager::GetWeaponInfoByName(weaponState.name);
+            if (!weaponInfo) {
+                std::cout << "You tried to drop a weapon with an invalid name somehow...\n";
+                continue;
+            }
+
+            if (weaponInfo->pickupName != "") {
+                PickUpCreateInfo createInfo;
+                createInfo.position = GetCameraPosition();
+                createInfo.rotation.x = Util::RandomFloat(-HELL_PI, HELL_PI);
+                createInfo.rotation.y = Util::RandomFloat(-HELL_PI, HELL_PI);
+                createInfo.rotation.z = Util::RandomFloat(-HELL_PI, HELL_PI);
+                createInfo.pickUpType = weaponInfo->pickupName;
+
+                createInfo.intitialForce.x = Util::RandomFloat(-HELL_PI * 0.5f, HELL_PI * 0.5f);
+                createInfo.intitialForce.y = 1.0f;
+                createInfo.intitialForce.z = Util::RandomFloat(-HELL_PI * 0.5f, HELL_PI * 0.5f);
+                createInfo.intitialForce = glm::normalize(createInfo.intitialForce);
+                createInfo.intitialForce *= 200.0f;     
+
+                World::AddPickUp(createInfo);
+                std::cout << "Dropped weapon!  weapon name: '" << weaponState.name << "' pickup name: '" << weaponInfo->pickupName << "'\n";
+
+            }
+        }
+    }
+
 }

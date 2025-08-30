@@ -52,7 +52,7 @@ struct RenderItem {
     int customFlag = 0;
 
     int blockScreenSpaceBloodDecals = 0;  // True or false
-    int padding0;
+    int emissiveTextureIndex = -1;
     int padding1;
     int padding2;
 };

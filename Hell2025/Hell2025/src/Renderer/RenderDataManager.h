@@ -31,6 +31,7 @@ namespace RenderDataManager {
     void SubmitGPULightHighRes(uint32_t lightIndex);
     void SubmitDecalRenderItem(const RenderItem& renderItem);
     void SubmitRenderItem(const RenderItem& renderItem);
+    void SubmitGlassRenderItem(const RenderItem& renderItem);
     void SubmitRenderItems(const std::vector<RenderItem>& renderItems);
     void SubmitRenderItemsBlended(const std::vector<RenderItem>& renderItems);
     void SubmitRenderItemsAlphaDiscard(const std::vector<RenderItem>& renderItems);
@@ -55,6 +56,7 @@ namespace RenderDataManager {
     const std::vector<HouseRenderItem>& GetHouseRenderItems();
     const std::vector<HouseRenderItem>& GetHouseOutlineRenderItems();
     const std::vector<RenderItem>& GetRenderItems();
+    const std::vector<RenderItem>& GetGlassRenderItems();
     const std::vector<RenderItem>& GetDecalRenderItems();
     const std::vector<RenderItem>& GetInstanceData();
     const std::vector<RenderItem>& GetOutlineRenderItems();

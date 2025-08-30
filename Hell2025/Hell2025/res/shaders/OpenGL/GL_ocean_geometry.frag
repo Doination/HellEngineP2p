@@ -268,6 +268,8 @@ void main() {
         ColorOut = vec4(DebugColor, 1.0);
         //ColorOut.rgb = u_wireframeColor;
     }
+
+//    ColorOut =  vec4(normal, 1.0);
     
     //ColorOut.rgb = u_wireframeColor;
 

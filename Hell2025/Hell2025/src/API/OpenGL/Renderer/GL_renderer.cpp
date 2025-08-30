@@ -325,6 +325,7 @@ namespace OpenGLRenderer {
         g_shaders["OceanUpdateTextures"] = OpenGLShader({ "GL_ocean_update_textures.comp" });
         g_shaders["OceanUnderwaterComposite"] = OpenGLShader({ "GL_ocean_underwater_composite.comp" });
         g_shaders["OceanUnderwaterMaskPreProcess"] = OpenGLShader({ "GL_ocean_underwater_mask_preprocess.comp" });
+        g_shaders["OceanTesseleationEdgeTransitionCleanUp"] = OpenGLShader({ "GL_ocean_tessellation_edge_transition_cleanup.comp" });      
         g_shaders["OceanPositionReadback"] = OpenGLShader({ "GL_ocean_position_readback.comp" });
         g_shaders["GaussianBlur"] = OpenGLShader({ "GL_gaussian_blur.comp" });
         g_shaders["Outline"] = OpenGLShader({ "GL_outline.vert", "GL_outline.frag" });

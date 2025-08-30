@@ -75,10 +75,6 @@ void Player::Update(float deltaTime) {
         }
     }
 
-    //if (Input::MiddleMousePressed()) {
-    //    Kill();
-    //}
-
     if (World::HasOcean()) {
         float feetHeight = GetFootPosition().y;
         float waterHeight = Ocean::GetWaterHeightAtPlayer(m_viewportIndex);
@@ -160,6 +156,8 @@ struct SpawnPoint {
 };
 
 void Player::Respawn() {
+
+    WeaponManager::Init();
 
     World::GetKangaroos()[0].Respawn();
 
@@ -416,6 +414,7 @@ void Player::Kill() {
         m_alive = false;
         m_characterModelAnimatedGameObject.SetAnimationModeToRagdoll();
         Audio::PlayAudio("Death0.wav", 1.0f);
+        DropWeapons();
     }
 }
 
