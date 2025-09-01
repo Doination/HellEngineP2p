@@ -32,7 +32,12 @@ namespace World {
             return (glm::distance(rayHitPosition, playerCameraPosition) < 2.0f);
         }
 
-
+        if (objectType == ObjectType::TOILET_LID) {
+            return (glm::distance(rayHitPosition, playerCameraPosition) < 2.0f);
+        }
+        if (objectType == ObjectType::TOILET_SEAT) {
+            return (glm::distance(rayHitPosition, playerCameraPosition) < 2.0f);
+        }
 
         return false;
     }

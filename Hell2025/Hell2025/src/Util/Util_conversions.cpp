@@ -126,6 +126,9 @@ namespace Util {
             case ObjectType::RAGDOLL_ENEMY:                 return "RAGDOLL_ENEMY";
             case ObjectType::RAGDOLL_PLAYER:                return "RAGDOLL_PLAYER";
             case ObjectType::SHARK:                         return "SHARK";
+            case ObjectType::TOILET:                        return "TOILET";
+            case ObjectType::TOILET_LID:                    return "TOILET_LID";
+            case ObjectType::TOILET_SEAT:                   return "TOILET_SEAT";
             case ObjectType::TREE:                          return "TREE";
             case ObjectType::UNDEFINED:                     return "UNDEFINED";
             case ObjectType::WALL:                          return "WALL";

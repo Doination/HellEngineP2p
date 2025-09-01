@@ -109,10 +109,10 @@ namespace World {
         toiletCreateInfo.rotation.y = HELL_PI * 0.5f;
         World::AddToilet(toiletCreateInfo, spawnOffset);
 
-        ToiletCreateInfo toiletCreateInfo2;
-        toiletCreateInfo2.position = glm::vec3(0.1f, 0.0f, 4.5f);
-        toiletCreateInfo2.rotation.y = HELL_PI * 1.5f;
-        World::AddToilet(toiletCreateInfo2, spawnOffset);
+   //  ToiletCreateInfo toiletCreateInfo2;
+   //  toiletCreateInfo2.position = glm::vec3(0.1f, 0.0f, 4.5f);
+   //  toiletCreateInfo2.rotation.y = HELL_PI * 1.5f;
+   //  World::AddToilet(toiletCreateInfo2, spawnOffset);
 
     }
 

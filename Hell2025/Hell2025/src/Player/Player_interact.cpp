@@ -152,6 +152,21 @@ void Player::UpdateInteract() {
                 piano->InteractWithTopCover();
             }
         }
+
+
+        // Toilet stuff
+        if (m_interactObjectType == ObjectType::TOILET_LID) {
+            Toilet* toilet = World::GetToiletByMeshNodeObjectId(m_interactObjectId);
+            if (toilet) {
+                toilet->InteractWithLid();
+            }
+        }
+        if (m_interactObjectType == ObjectType::TOILET_SEAT) {
+            Toilet* toilet = World::GetToiletByMeshNodeObjectId(m_interactObjectId);
+            if (toilet) {
+                toilet->InteractWithSeat();
+            }
+        }
     }
 
     if (PressingInteract()) {

@@ -103,10 +103,7 @@ void Player::GiveDefaultLoadout() {
     GiveAmmo("Tokarev", 200);
 
     GiveSilencer("Glock");
-    //GiveSight("Glock");
-
     GiveSight("GoldenGlock");
-    GiveSilencer("GoldenGlock");
 }
 
 void Player::NextWeapon() {

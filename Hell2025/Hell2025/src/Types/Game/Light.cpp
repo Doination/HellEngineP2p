@@ -64,6 +64,14 @@ void Light::UpdateDirtyState() {
             }
         }
     }
+
+    // Toilet // FIXXXXXXXXXXXXX
+    for (Toilet& toilet : World::GetToilets()) {
+        if (toilet.MovedThisFrame()) {
+            m_dirty = true;
+            return;
+        }
+    }
 }
 
 void Light::UpdateRenderItems() {

@@ -160,6 +160,7 @@ namespace World {
     PictureFrame* GetPictureFrameByObjectId(uint64_t objectId);
     Plane* GetPlaneByObjectId(uint64_t objectID); 
     Tree* GetTreeByObjectId(uint64_t objectId);
+    Toilet* GetToiletByMeshNodeObjectId(uint64_t objectId);
     Wall* GetWallByObjectId(uint64_t objectID);
     Wall* GetWallByWallSegmentObjectId(uint64_t objectID);
     Shark* GetSharkByObjectId(uint64_t objectID);

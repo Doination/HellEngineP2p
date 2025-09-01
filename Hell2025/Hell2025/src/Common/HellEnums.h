@@ -91,6 +91,9 @@ enum class ObjectType {
     RAGDOLL_ENEMY,
     RAGDOLL_PLAYER,
     SHARK,
+    TOILET,
+    TOILET_SEAT,
+    TOILET_LID,
     WALL,
     WALL_SEGMENT,
     WINDOW

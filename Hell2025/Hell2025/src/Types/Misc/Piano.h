@@ -38,9 +38,6 @@ struct Piano {
     void TriggerInternalNoteFromExternalBulletHit(glm::vec3 bulletHitPositon);
     void CalculatePianoKeyWorldspaceCenters();
 
-    OpenState m_topCoverOpenState = OpenState::CLOSED;
-    OpenState m_sheetMusicRestOpenState = OpenState::OPEN;
-
     OpenStateHandler m_keyboardCoverOpenHandler;
     OpenStateHandler m_topCoverOpenHandler;
     OpenStateHandler m_sheetMusicRestOpenHandler;

@@ -93,6 +93,13 @@ namespace World {
                 }
             }
 
+            for (Toilet& toilet : GetToilets()) {
+                const std::vector<RenderItem>& renderItems = toilet.GetRenderItems();
+                for (const RenderItem& renderItem : renderItems) {
+                    CreateObjectInstanceDataFromRenderItem(renderItem, frustum, viewportBvhData.instances);
+                }
+            }
+
             if (Editor::IsOpen()) {
                 for (Tree& tree : GetTrees()) {
                     const std::vector<RenderItem>& renderItems = tree.GetRenderItems();

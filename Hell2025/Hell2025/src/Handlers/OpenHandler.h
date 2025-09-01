@@ -10,6 +10,7 @@ struct OpenStateHandler {
     float maxOpenValue = HELL_PI * 0.5f;
     float openSpeed = 1.0f;
     float closeSpeed = 1.0f;
+    bool movedThisFrame = false;
     std::string openingAudio = "";
     std::string closingAudio = "";
     std::string openedAudio = "";
@@ -26,8 +27,11 @@ struct OpenStateHandler {
         }
     }
 
-    void Update(float deltaTime = 0) {
+    void Update(float deltaTime) {
+        movedThisFrame = false;
+
         if (openState == OpenState::CLOSING) {
+            movedThisFrame = true;
             currentOpenValue -= closeSpeed * deltaTime;
             if (currentOpenValue < minOpenValue) {
                 openState = OpenState::CLOSED;
@@ -36,6 +40,7 @@ struct OpenStateHandler {
             }
         }
         if (openState == OpenState::OPENING) {
+            movedThisFrame = true;
             currentOpenValue += openSpeed * deltaTime;
             if (currentOpenValue > maxOpenValue) {
                 openState = OpenState::OPEN;

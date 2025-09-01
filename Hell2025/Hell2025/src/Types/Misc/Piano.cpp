@@ -202,7 +202,7 @@ void Piano::Init(PianoCreateInfo& createInfo) {
     m_keyboardCoverOpenHandler.closeSpeed = 6.825f;
     m_keyboardCoverOpenHandler.openedAudio = "Piano_LidClose.wav";
     m_keyboardCoverOpenHandler.closedAudio = "Piano_LidClose.wav";
-    m_keyboardCoverOpenHandler.Update();
+    m_keyboardCoverOpenHandler.Update(0.0f); // check u really want this???
 
     m_topCoverOpenHandler.openState = OpenState::CLOSED;
     m_topCoverOpenHandler.minOpenValue = 0.0f;
@@ -219,9 +219,6 @@ void Piano::Init(PianoCreateInfo& createInfo) {
     m_sheetMusicRestOpenHandler.closeSpeed = 8.5f;
     m_sheetMusicRestOpenHandler.openedAudio = "Piano_LidClose.wav";
     m_sheetMusicRestOpenHandler.closedAudio = "Piano_LidClose.wav";
-
-   //m_TopCoverOpenHandler;
-   //m_SheetMusicOpenHandler;
 }
 
 

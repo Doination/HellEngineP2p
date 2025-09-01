@@ -455,6 +455,16 @@ namespace World {
             }
         }
         return nullptr;
+    }    
+
+    Toilet* GetToiletByMeshNodeObjectId(uint64_t objectId) {
+        for (Toilet& toilet : g_toilets) {
+            const MeshNodes& meshNodes = toilet.GetMeshNodes();
+            if (meshNodes.HasNodeWithObjectId(objectId)) {
+                return &toilet;
+            }
+        }
+        return nullptr;
     }
 
     Piano* GetPianoByMeshNodeObjectId(uint64_t objectId) {
