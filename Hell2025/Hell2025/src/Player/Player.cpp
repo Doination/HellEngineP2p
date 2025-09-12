@@ -23,6 +23,8 @@ void Player::Init(glm::vec3 position, glm::vec3 rotation, int32_t viewportIndex)
     m_camera.SetEulerRotation(rotation);
     m_viewportIndex = viewportIndex;
 
+    m_inventory.SetLocalPlayerIndex(m_viewportIndex);
+
     AnimatedGameObject* viewWeapon = GetViewWeaponAnimatedGameObject();
     viewWeapon->SetExclusiveViewportIndex(viewportIndex);
 
@@ -55,6 +57,7 @@ void Player::Update(float deltaTime) {
 
     // Toggle inventory
     if (PressedToggleInventory()) {
+        Audio::PlayAudio(AUDIO_SELECT, 1.00f);
         std::cout << "PRESSED TOGGLE INVENTORY\n";
         if (m_inventory.IsClosed()) {
             m_inventory.OpenInventory();
@@ -67,6 +70,7 @@ void Player::Update(float deltaTime) {
     // This may break code elsewhere in the player logic like anywhere
     if (m_inventory.IsOpen()) {
         DisableControl();
+        m_inventory.Update(deltaTime);
     }
 
     // Inside or outside?
@@ -189,12 +193,12 @@ void Player::Respawn() {
     m_inventory.AddItem("Knife");
     m_inventory.AddItem("Glock");
     m_inventory.AddItem("GoldenGlock");
+    m_inventory.AddItem("Tokarev");
     m_inventory.AddItem("Remington870");
-    m_inventory.AddItem("GoldenGlock");
-    m_inventory.AddItem("GoldenGlock");
-    m_inventory.AddItem("Knife");
-    m_inventory.AddItem("Knife");
-    m_inventory.AddItem("Remington870");
+    m_inventory.AddItem("SPAS");
+    //m_inventory.AddItem("Knife");
+    //m_inventory.AddItem("Knife");
+    //m_inventory.AddItem("Remington870");
 
     World::GetKangaroos()[0].Respawn();
 
@@ -501,5 +505,9 @@ Ragdoll* Player::GetRagdoll() {
 
 bool Player::InventoryIsOpen() {
     return m_inventory.IsOpen();
+}
+
+bool Player::InventoryIsClosed() {
+    return m_inventory.IsClosed();
 }
 

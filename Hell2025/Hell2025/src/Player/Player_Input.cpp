@@ -261,6 +261,29 @@ bool Player::PressedToggleInventory() {
     }
 }
 
+
+bool Player::PressedUp() {
+    return PressedWalkForward();
+}
+
+bool Player::PressedDown() {
+    return PressedWalkBackward();
+}
+
+bool Player::PressedLeft() {
+    return PressedWalkLeft();
+}
+
+bool Player::PressedRight() {
+    return PressedWalkRight();
+}
+
+bool Player::PressedInventoryExamine() {
+    if (m_inputType == InputType::KEYBOARD_AND_MOUSE) {
+        return InputMulti::KeyPressed(m_keyboardIndex, m_mouseIndex, HELL_KEY_F);
+    }
+}
+
 bool Player::PressedFlashlight() {
     if (m_inputType == InputType::KEYBOARD_AND_MOUSE) {
         return InputMulti::KeyPressed(m_keyboardIndex, m_mouseIndex, m_controls.FLASHLIGHT);

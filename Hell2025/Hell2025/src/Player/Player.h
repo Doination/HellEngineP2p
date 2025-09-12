@@ -168,6 +168,11 @@ struct Player {
     bool PressedMelee();
     bool PressedFlashlight();
     bool PressedToggleInventory();
+    bool PressedUp();
+    bool PressedDown();
+    bool PressedLeft();
+    bool PressedRight();
+    bool PressedInventoryExamine();
 
     void DisplayInfoText(const std::string& text);
     std::string m_infoText = "";
@@ -188,6 +193,7 @@ struct Player {
     ivecXZ GetChunkPos() { return m_chunkPos; }
 
     bool InventoryIsOpen();
+    bool InventoryIsClosed();
 
     bool InteractFound()                { return m_interactFound; }
     uint64_t GetInteractObjectId()      { return m_interactObjectId; }

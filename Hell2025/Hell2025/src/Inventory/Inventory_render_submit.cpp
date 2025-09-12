@@ -5,20 +5,33 @@
 #include "UI/TextBlitter.h"
 #include "UI/UiBackend.h"
 
+
 void Inventory::SubmitRenderItems() {
+    if (m_state == InventoryState::ITEM_VIEW_SCREEN) SubmitItemViewScreenRenderItems();
+    if (m_state == InventoryState::ITEM_EXAMINE) SubmitItemExamineRenderItems();
+}
+
+void Inventory::SubmitItemExamineRenderItems() {
+    // Render item inspect item
+
+}
+
+void Inventory::SubmitItemViewScreenRenderItems() {
     Texture* bgTexture = AssetManager::GetTextureByName("inventory_bg");
     Texture* squareSize1Texture = AssetManager::GetTextureByName("InvSquare_Size1");
     Texture* squareSize2Texture = AssetManager::GetTextureByName("InvSquare_Size2");
     Texture* squareSize3Texture = AssetManager::GetTextureByName("InvSquare_Size3");
-    Texture* squareSize1SelectedTexture = AssetManager::GetTextureByName("InvSquare_Size1");
+    Texture* squareSize1SelectedTexture = AssetManager::GetTextureByName("InvSquare_Size1Selected");
     //Texture* squareSize2SelectedTexture = AssetManager::GetTextureByName("InvSquare_Size2");
-    //Texture* squareSize3SelectedTexture = AssetManager::GetTextureByName("InvSquare_Size3");
+    Texture* squareSize3SelectedTexture = AssetManager::GetTextureByName("InvSquare_Size3Selected");
 
     if (!bgTexture) return;
     if (!squareSize1Texture) return;
     if (!squareSize2Texture) return;
     if (!squareSize3Texture) return;
     if (!squareSize1SelectedTexture) return;
+    //if (!squareSize2SelectedTexture) return;
+    if (!squareSize3SelectedTexture) return;
 
     int cellWidth = squareSize1Texture->GetWidth(0);
     int cellHeight = squareSize1Texture->GetHeight(0);
@@ -40,6 +53,7 @@ void Inventory::SubmitRenderItems() {
     int itemCountX = 4;
     int itemCountY = 4;
 
+    // Render background squares
     for (int x = 0; x < itemCountX; x++) {
         for (int y = 0; y < itemCountY; y++) {
             glm::ivec2 location;
@@ -51,15 +65,103 @@ void Inventory::SubmitRenderItems() {
             blitTextureInfo.alignment = Alignment::TOP_LEFT;
             blitTextureInfo.textureFilter = TextureFilter::LINEAR;
             UIBackEnd::BlitTexture(blitTextureInfo);
-
-
-          // if (m_selectedCellX == x && m_selectedCellY == y) {
-          //     blitTextureInfo.textureName = squareSize1SelectedTexture->GetFileName();
-          //     UIBackEnd::BlitTexture(blitTextureInfo);
-          // }
-
         }
     }
+
+    // Render bigger background squares for items that need it
+    for (InventoryItem& item : m_items) {
+        glm::ivec2 location;
+        location.x = squaresOrigin.x + (squareSize1Texture->GetWidth(0) * item.m_gridLocation.x);
+        location.y = squaresOrigin.y + (squareSize1Texture->GetHeight(0) * item.m_gridLocation.y);
+        BlitTextureInfo blitTextureInfo;        
+        int itemSize = Bible::GetInventoryItemSizeByName(item.m_name);
+        if (itemSize == 1) {
+            continue;
+        }
+        if (itemSize == 2) {
+            blitTextureInfo.textureName = squareSize2Texture->GetFileName();
+        }
+        if (itemSize == 3) {
+            blitTextureInfo.textureName = squareSize3Texture->GetFileName();
+        }
+        blitTextureInfo.location = location;
+        blitTextureInfo.alignment = Alignment::TOP_LEFT;
+        blitTextureInfo.textureFilter = TextureFilter::LINEAR;
+        UIBackEnd::BlitTexture(blitTextureInfo);
+    }
+
+    // Render the selected cell
+    for (int x = 0; x < itemCountX; x++) {
+        for (int y = 0; y < itemCountY; y++) {
+
+            glm::ivec2 location;
+            location.x = squaresOrigin.x + (squareSize1Texture->GetWidth(0) * x);
+            location.y = squaresOrigin.y + (squareSize1Texture->GetHeight(0) * y);
+
+            BlitTextureInfo blitTextureInfo;
+            blitTextureInfo.textureName = squareSize1SelectedTexture->GetFileName();
+            blitTextureInfo.alignment = Alignment::TOP_LEFT;
+            blitTextureInfo.textureFilter = TextureFilter::LINEAR;
+
+            // First check if it is a item bigger than size 1
+            int itemSize = GetItemSizeAtLocation(x, y);
+
+            // TODO: MAKE THE MISSING TEXTURE if (itemSize == 2) {
+            // TODO: MAKE THE MISSING TEXTURE     int itemIndex = m_occupiedSlots[x][y];
+            // TODO: MAKE THE MISSING TEXTURE     location.x = squaresOrigin.x + (squareSize1Texture->GetWidth(0) * m_items[itemIndex].m_gridLocation.x);
+            // TODO: MAKE THE MISSING TEXTURE     location.y = squaresOrigin.y + (squareSize1Texture->GetHeight(0) * m_items[itemIndex].m_gridLocation.y);
+            // TODO: MAKE THE MISSING TEXTURE     blitTextureInfo.textureName = squareSize2SelectedTexture->GetFileName();
+            // TODO: MAKE THE MISSING TEXTURE }
+            if (itemSize == 3) {
+                int itemIndex = m_itemIndex2DArray[x][y];
+                location.x = squaresOrigin.x + (squareSize1Texture->GetWidth(0) * m_items[itemIndex].m_gridLocation.x);
+                location.y = squaresOrigin.y + (squareSize1Texture->GetHeight(0) * m_items[itemIndex].m_gridLocation.y);
+                blitTextureInfo.textureName = squareSize3SelectedTexture->GetFileName();
+            }
+
+            // Needs rendering???
+            if (m_selectedCellX == x && m_selectedCellY == y) {
+                blitTextureInfo.location = location;
+                UIBackEnd::BlitTexture(blitTextureInfo);
+            }
+        }
+    }
+
+
+
+
+    // Are you rendering the current selected cell?
+   // if (m_selectedCellX == x && m_selectedCellY == y) {
+   //
+   //     // Check the size of the item stored at this cell
+   //     int itemIndex = m_occupiedSlots[x][y];
+   //     if (itemIndex == -1) continue; // Happens when nothing is stored in this cell
+   //
+   //     InventoryItem selectedItem = m_items[itemIndex];
+   //     InventoryItemInfo* itemInfo = Bible::GetInventoryItemInfoByName(selectedItem.m_name);
+   //     if (!itemInfo) continue; // This should never happen
+   //
+   //     if (itemInfo->m_cellSize == 1) {
+   //         blitTextureInfo.textureName = squareSize1SelectedTexture->GetFileName();
+   //         std::cout << "RENDERING SMALL GUY\n";
+   //     }
+   //    //if (itemInfo->m_cellSize == 2) {
+   //    //    // TODO: blitTextureInfo.textureName = squareSize2SelectedTexture->GetFileName();
+   //    //}
+   //    //if (itemInfo->m_cellSize == 3) {
+   //    //    blitTextureInfo.textureName = squareSize3SelectedTexture->GetFileName();
+   //    //    std::cout << "RENDERING BIG GUY\n";
+   //    //}
+   //     UIBackEnd::BlitTexture(blitTextureInfo);
+    //}
+
+
+
+
+
+
+    // Render selected cell background (includes border thing)
+
 
     // Icons
     for (InventoryItem& item : m_items) {
@@ -79,26 +181,26 @@ void Inventory::SubmitRenderItems() {
         itemLocation.y = squaresOrigin.y + (cellHeight * item.m_gridLocation.y);
 
         // Render bigger cell square backgrounds if needed
-        if (itemInfo->m_cellSize == 2) {
-            BlitTextureInfo blitTextureInfo;
-            blitTextureInfo.textureName = squareSize2Texture->GetFileName();
-            blitTextureInfo.location = itemLocation;
-            blitTextureInfo.alignment = Alignment::TOP_LEFT;
-            blitTextureInfo.textureFilter = TextureFilter::LINEAR;
-            UIBackEnd::BlitTexture(blitTextureInfo);
-
-            // TODO: account for rotation
-        }
-        if (itemInfo->m_cellSize == 3) {
-            BlitTextureInfo blitTextureInfo;
-            blitTextureInfo.textureName = squareSize3Texture->GetFileName();
-            blitTextureInfo.location = itemLocation;
-            blitTextureInfo.alignment = Alignment::TOP_LEFT;
-            blitTextureInfo.textureFilter = TextureFilter::LINEAR;
-            UIBackEnd::BlitTexture(blitTextureInfo);
-
-            // TODO: account for rotation
-        }
+        //if (itemInfo->m_cellSize == 2) {
+        //    BlitTextureInfo blitTextureInfo;
+        //    blitTextureInfo.textureName = squareSize2Texture->GetFileName();
+        //    blitTextureInfo.location = itemLocation;
+        //    blitTextureInfo.alignment = Alignment::TOP_LEFT;
+        //    blitTextureInfo.textureFilter = TextureFilter::LINEAR;
+        //    UIBackEnd::BlitTexture(blitTextureInfo);
+        //
+        //    // TODO: account for rotation
+        //}
+        //if (itemInfo->m_cellSize == 3) {
+        //    BlitTextureInfo blitTextureInfo;
+        //    blitTextureInfo.textureName = squareSize3Texture->GetFileName();
+        //    blitTextureInfo.location = itemLocation;
+        //    blitTextureInfo.alignment = Alignment::TOP_LEFT;
+        //    blitTextureInfo.textureFilter = TextureFilter::LINEAR;
+        //    UIBackEnd::BlitTexture(blitTextureInfo);
+        //
+        //    // TODO: account for rotation
+        //}
 
         // Render icon
         BlitTextureInfo blitTextureInfo;
@@ -152,97 +254,85 @@ void Inventory::SubmitRenderItems() {
     lineInfo.textureFilter = TextureFilter::LINEAR;
     UIBackEnd::BlitTexture(lineInfo);
 
+    InventoryItemInfo* itemInfo = GetSelectedItemInfo();
 
-    static bool test = true;
-    if (Input::KeyPressed(HELL_KEY_9)) {
-        test = !test;
+    // If you have an item selected, then render the name and description and buttons
+    if (itemInfo) {
+        std::string name = itemInfo->m_itemHeading;
+        std::string description = itemInfo->m_description;
+
+
+        UIBackEnd::BlitText("[COL=0.839,0.784,0.635]" + name, "BebasNeue", marginX, headingY, Alignment::TOP_LEFT, 1.0f, TextureFilter::LINEAR);
+        UIBackEnd::BlitText("[COL=0.839,0.784,0.635]" + description, "RobotoCondensed", marginX, descriptionY, Alignment::TOP_LEFT, 1.0f, TextureFilter::LINEAR);
+
+        glm::ivec2 descriptonSize = TextBlitter::GetBlitTextSize(description, "RobotoCondensed", 1.0f);
+
+        int thePlaceholderY = descriptionY + descriptonSize.y;
+
+       //// The placeholder
+       //BlitTextureInfo placeholderInfo;
+       //placeholderInfo.textureName = "inv_the_line_white";
+       //placeholderInfo.location = { marginX, descriptionY };
+       //placeholderInfo.alignment = Alignment::TOP_LEFT;
+       //placeholderInfo.textureFilter = TextureFilter::LINEAR;
+       //placeholderInfo.size = { descriptonSize.x, 2 };
+       /// UIBackEnd::BlitTexture(placeholderInfo);
+       //
+       //
+       //placeholderInfo.textureName = "inv_the_line_white";
+       //placeholderInfo.location = { marginX, thePlaceholderY };
+       //placeholderInfo.alignment = Alignment::TOP_LEFT;
+       //placeholderInfo.textureFilter = TextureFilter::LINEAR;
+      ///  UIBackEnd::BlitTexture(placeholderInfo);
+       //placeholderInfo.size = { descriptonSize.x, 2 };
+       //
+       //
+       //
+       //placeholderInfo.textureName = "White";
+       //placeholderInfo.location = { marginX + descriptonSize.x, descriptionY };
+       //placeholderInfo.alignment = Alignment::TOP_LEFT;
+       //placeholderInfo.textureFilter = TextureFilter::LINEAR;
+       //placeholderInfo.size = { 2, descriptonSize.y };
+       /// UIBackEnd::BlitTexture(placeholderInfo);
+       //
+       //placeholderInfo.textureName = "White";
+       //placeholderInfo.location = { marginX, descriptionY };
+       //placeholderInfo.alignment = Alignment::TOP_LEFT;
+       //placeholderInfo.textureFilter = TextureFilter::LINEAR;
+       //placeholderInfo.size = { 2, descriptonSize.y };
+       ////UIBackEnd::BlitTexture(placeholderInfo);
+
+
+        int buttonPaddingY = 35;
+        int buttonMarginX = marginX; // maybe you wanna indent this?
+        int buttonOriginY = descriptionY + descriptonSize.y + buttonPaddingY;
+        int buttonLineHeight = 31;
+
+
+        RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "E", "Equip");
+        buttonOriginY += buttonLineHeight;
+
+        RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "C", "Combine");
+        buttonOriginY += buttonLineHeight;
+
+        RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "F", "Examine");
+        buttonOriginY += buttonLineHeight;
+
+        RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "M", "Move");
+        buttonOriginY += buttonLineHeight;
+
+        RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "G", "Discard");
+        buttonOriginY += buttonLineHeight;
+
     }
+    
 
-    std::string name = "GLOCK 22";
-    std::string description = R"(Australian police issue. Matte and boxy, a cold
-little companion. It does the paperwork duty 
-without drama. Dependable at short range, 
-underwhelming at a distance. A proper piece 
-of shit.)";
-
-    if (!test) {
-        name = "RED DOT SIGHT";
-        description = R"(A little window with a floating promise. Turns
-aim into point, and point into a bloody mess.)";
-    }
-
-
-    UIBackEnd::BlitText("[COL=0.839,0.784,0.635]" + name, "BebasNeue", marginX, headingY, Alignment::TOP_LEFT, 1.0f, TextureFilter::LINEAR);
-    UIBackEnd::BlitText("[COL=0.839,0.784,0.635]" + description, "RobotoCondensed", marginX, descriptionY, Alignment::TOP_LEFT, 1.0f, TextureFilter::LINEAR);
-
-
-
-    glm::ivec2 descriptonSize = TextBlitter::GetBlitTextSize(description, "RobotoCondensed", 1.0f);
-
-    int thePlaceholderY = descriptionY + descriptonSize.y;
-
-    // The placeholder
-    BlitTextureInfo placeholderInfo;
-    placeholderInfo.textureName = "inv_the_line_white";
-    placeholderInfo.location = { marginX, descriptionY };
-    placeholderInfo.alignment = Alignment::TOP_LEFT;
-    placeholderInfo.textureFilter = TextureFilter::LINEAR;
-    placeholderInfo.size = { descriptonSize.x, 2 };
-   // UIBackEnd::BlitTexture(placeholderInfo);
-
-
-    placeholderInfo.textureName = "inv_the_line_white";
-    placeholderInfo.location = { marginX, thePlaceholderY };
-    placeholderInfo.alignment = Alignment::TOP_LEFT;
-    placeholderInfo.textureFilter = TextureFilter::LINEAR;
-  //  UIBackEnd::BlitTexture(placeholderInfo);
-    placeholderInfo.size = { descriptonSize.x, 2 };
-
-
-
-    placeholderInfo.textureName = "White";
-    placeholderInfo.location = { marginX + descriptonSize.x, descriptionY };
-    placeholderInfo.alignment = Alignment::TOP_LEFT;
-    placeholderInfo.textureFilter = TextureFilter::LINEAR;
-    placeholderInfo.size = { 2, descriptonSize.y };
-   // UIBackEnd::BlitTexture(placeholderInfo);
-
-    placeholderInfo.textureName = "White";
-    placeholderInfo.location = { marginX, descriptionY };
-    placeholderInfo.alignment = Alignment::TOP_LEFT;
-    placeholderInfo.textureFilter = TextureFilter::LINEAR;
-    placeholderInfo.size = { 2, descriptonSize.y };
-    //UIBackEnd::BlitTexture(placeholderInfo);
-
-
-    int buttonPaddingY = 35;
-    int buttonMarginX = marginX; // maybe you wanna indent this?
-    int buttonOriginY = descriptionY + descriptonSize.y + buttonPaddingY;
-    int buttonLineHeight = 31;
-
-
-    RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "E", "Equip");
-    buttonOriginY += buttonLineHeight;
-
-    RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "C", "Combine");
-    buttonOriginY += buttonLineHeight;
-
-    RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "F", "Examine");
-    buttonOriginY += buttonLineHeight;
-
-    RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "M", "Move");
-    buttonOriginY += buttonLineHeight;
-
-    RenderButton(glm::ivec2(buttonMarginX, buttonOriginY), "G", "Discard");
-    buttonOriginY += buttonLineHeight;
-
-
-    if (false) {
-        UIBackEnd::BlitTexture("White", origin, Alignment::TOP_LEFT, ORANGE, glm::ivec2(1, size.y), TextureFilter::LINEAR);
-        UIBackEnd::BlitTexture("White", origin, Alignment::TOP_LEFT, ORANGE, glm::ivec2(size.x, 1), TextureFilter::LINEAR);
-        UIBackEnd::BlitTexture("White", origin + size, Alignment::BOTTOM_RIGHT, ORANGE, glm::ivec2(1, size.y), TextureFilter::LINEAR);
-        UIBackEnd::BlitTexture("White", origin + size, Alignment::BOTTOM_RIGHT, ORANGE, glm::ivec2(size.x, 1), TextureFilter::LINEAR);
-    }
+    //if (false) {
+    //    UIBackEnd::BlitTexture("White", origin, Alignment::TOP_LEFT, ORANGE, glm::ivec2(1, size.y), TextureFilter::LINEAR);
+    //    UIBackEnd::BlitTexture("White", origin, Alignment::TOP_LEFT, ORANGE, glm::ivec2(size.x, 1), TextureFilter::LINEAR);
+    //    UIBackEnd::BlitTexture("White", origin + size, Alignment::BOTTOM_RIGHT, ORANGE, glm::ivec2(1, size.y), TextureFilter::LINEAR);
+    //    UIBackEnd::BlitTexture("White", origin + size, Alignment::BOTTOM_RIGHT, ORANGE, glm::ivec2(size.x, 1), TextureFilter::LINEAR);
+    //}
 }
 
 

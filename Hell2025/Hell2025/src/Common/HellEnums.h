@@ -379,9 +379,10 @@ enum class GenericBouncableType : uint32_t {
     COUCH_CUSHION_4
 };
 
-enum InventoryState {
+enum struct InventoryState {
     CLOSED,
-    VIEWING_ITEMS,
+    ITEM_EXAMINE,
+    ITEM_VIEW_SCREEN,
     ITEM_INSPECT,
     MOVING_ITEM,
     ROTATING_ITEM

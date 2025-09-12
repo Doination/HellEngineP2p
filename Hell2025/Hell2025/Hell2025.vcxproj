@@ -323,6 +323,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\Game\Enemies\Shark\Shark_debug.cpp" />
     <ClCompile Include="src\Inventory\Inventory.cpp" />
     <ClCompile Include="src\Inventory\Inventory_render_submit.cpp" />
+    <ClCompile Include="src\Inventory\inventory_update.cpp" />
     <ClCompile Include="src\Pathfinding\AStarMap.cpp" />
     <ClCompile Include="src\Game\Enemies\Kangaroo\Kanagaroo_movement.cpp" />
     <ClCompile Include="src\Game\Enemies\Kangaroo\Kangaroo.cpp" />

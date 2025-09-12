@@ -10,19 +10,18 @@ Inventory::Inventory() {
 }
 
 void Inventory::OpenInventory() {
-    m_inventoryState = VIEWING_ITEMS;
+    SetState(InventoryState::ITEM_VIEW_SCREEN);
     m_selectedCellX = 0;
     m_selectedCellY = 0;
 }
 
 void Inventory::CloseInventory() {
-    m_inventoryState = CLOSED;
+    SetState(InventoryState::CLOSED);
 }
 
 void Inventory::AddItem(const std::string& name) {
     InventoryItemInfo* itemInfo = Bible::GetInventoryItemInfoByName(name);
     if (!itemInfo) return;
-
 
     std::cout << "\n";
     std::cout << "Adding: " << name << "\n";
@@ -49,31 +48,83 @@ void Inventory::AddItem(const std::string& name) {
     UpdateOccupiedSlotsArray();
 }
 
+void Inventory::SetLocalPlayerIndex(int localPlayerIndex) {
+    m_localPlayerIndex = localPlayerIndex;
+}
+
+void Inventory::SetState(InventoryState state) {
+    m_state = state;
+}
+
 void Inventory::ClearInventory() {
     m_items.clear();
     UpdateOccupiedSlotsArray();
+}
+
+int Inventory::GetSelectedItemIndex() {
+    return m_itemIndex2DArray[m_selectedCellX][m_selectedCellY];
+}
+
+InventoryItem* Inventory::GetItemAtIndex(int index) {
+    if (index < 0 || index >= m_items.size()) return nullptr;
+    else return &m_items[index];
+}
+
+InventoryItemInfo* Inventory::GetSelectedItemInfo() {
+    int selectedItemIndex = GetSelectedItemIndex();
+    if (selectedItemIndex == -1) return nullptr; // nothing at this slot
+
+    InventoryItem* selectedItem = GetItemAtIndex(selectedItemIndex);
+    if (!selectedItem) return nullptr; // This should never happen
+
+    return Bible::GetInventoryItemInfoByName(selectedItem->m_name);
+}
+
+const std::string& Inventory::GetItemNameAtLocation(int x, int y) {
+    static std::string noItem = "NO_ITEM";
+    int itemIndex = m_itemIndex2DArray[x][y];
+    if (itemIndex == -1) {
+        return noItem;
+    }
+    else {
+        return m_items[itemIndex].m_name;
+    }
+}
+
+int Inventory::GetItemSizeAtLocation(int x, int y) {
+    const std::string& itemName = GetItemNameAtLocation(x, y);
+    int itemSize = 1;
+    if (itemName != "NO_ITEM") {
+        itemSize = Bible::GetInventoryItemSizeByName(itemName);
+    }
+    return itemSize;
+}
+
+bool Inventory::IsCellOccupied(int x, int y) {
+    return m_itemIndex2DArray[x][y] != -1;
 }
 
 void Inventory::UpdateOccupiedSlotsArray() {
     // Initilize to empty
     for (int x = 0; x < MAX_INVENTORY_X_SIZE; x++) {
         for (int y = 0; y < MAX_INVENTORY_Y_SIZE; y++) {
-            m_occupiedSlots[x][y] = false;
+            m_itemIndex2DArray[x][y] = -1;
         }
     }
 
     // Iterate your inventory and mark which slots are occupied
-    for (InventoryItem& item : m_items) {
+    for (int i = 0; i < m_items.size(); i++) {
+        InventoryItem& item = m_items[i];
         InventoryItemInfo* itemInfo = Bible::GetInventoryItemInfoByName(item.m_name);
         if (!itemInfo) continue;
 
-        m_occupiedSlots[item.m_gridLocation.x][item.m_gridLocation.y] = true;
+        m_itemIndex2DArray[item.m_gridLocation.x][item.m_gridLocation.y] = i;
 
         if (itemInfo->m_cellSize > 1) {
-            m_occupiedSlots[item.m_gridLocation.x + 1][item.m_gridLocation.y] = true;
+            m_itemIndex2DArray[item.m_gridLocation.x + 1][item.m_gridLocation.y] = i;
         }
         if (itemInfo->m_cellSize > 2) {
-            m_occupiedSlots[item.m_gridLocation.x + 2][item.m_gridLocation.y] = true;
+            m_itemIndex2DArray[item.m_gridLocation.x + 2][item.m_gridLocation.y] = i;
         }
     }
 }
@@ -90,14 +141,14 @@ glm::ivec2 Inventory::GetNextFreeLocation(int itemCellSize) {
             // Skip fat items
             if (itemCellSize > 1) {
                 if (x + 1 >= m_gridCountX)     continue; // range check
-                if (m_occupiedSlots[x + 1][y]) continue; // cell check
+                if (IsCellOccupied(x + 1, y))  continue; // cell check
             }
             if (itemCellSize > 2) {
                 if (x + 2 >= m_gridCountX)     continue; // range check
-                if (m_occupiedSlots[x + 2][y]) continue; // cell check
+                if (IsCellOccupied(x + 2, y))  continue; // cell check
             }
             // Free slot found
-            if (!m_occupiedSlots[x][y]) {
+            if (!IsCellOccupied(x,y)) {
                 return glm::ivec2(x, y);
             }
         }
@@ -118,7 +169,7 @@ void Inventory::PrintGridOccupiedStateToConsole() {
     for (int y = 0; y < MAX_INVENTORY_Y_SIZE; y++) {
         for (int x = 0; x < m_gridCountX; x++) {
             std::cout << "[";
-            if (m_occupiedSlots[x][y]) {
+            if (m_itemIndex2DArray[x][y]) {
                 std::cout << "X";
             }
             else {
