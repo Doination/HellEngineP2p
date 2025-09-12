@@ -6,8 +6,6 @@
 #include "UI/UiBackend.h"
 
 void Inventory::SubmitRenderItems() {
-    return;
-
     Texture* bgTexture = AssetManager::GetTextureByName("inventory_bg");
     Texture* squareSize1Texture = AssetManager::GetTextureByName("InvSquare_Size1");
     Texture* squareSize2Texture = AssetManager::GetTextureByName("InvSquare_Size2");

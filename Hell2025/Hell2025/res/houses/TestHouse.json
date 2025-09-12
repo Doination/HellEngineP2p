@@ -198,12 +198,12 @@
                 6.150000095367432
             ],
             "P2": [
-                9.0,
+                8.84999942779541,
                 0.0,
                 6.150000095367432
             ],
             "P3": [
-                9.0,
+                8.84999942779541,
                 0.0,
                 -2.9499998092651367
             ],
@@ -443,7 +443,7 @@
                 ]
             ],
             "TextureOffsetU": 0.0,
-            "TextureOffsetV": -0.4,
+            "TextureOffsetV": -0.2,
             "TextureRotation": 0.0,
             "TextureScale": 0.4,
             "TrimTypeCeiling": "TIMBER",

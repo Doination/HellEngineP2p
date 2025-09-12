@@ -93,8 +93,6 @@
     { "width": 7, "height": 14, "offsetX": 10, "offsetY": 106 },
     { "width": 9, "height": 14, "offsetX": 18, "offsetY": 106 },
     { "width": 9, "height": 13, "offsetX": 28, "offsetY": 106 },
-    { "width": 7, "height": 12, "offsetX": 38, "offsetY": 106 },
-    { "width": 5, "height": 13, "offsetX": 46, "offsetY": 106 },
-    { "width": 5, "height": 13, "offsetX": 52, "offsetY": 106 }
+    { "width": 7, "height": 12, "offsetX": 38, "offsetY": 106 }
   ]
 }
