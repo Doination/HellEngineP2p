@@ -141,7 +141,7 @@ ChristmasLights::ChristmasLights(const ChristmasLightsCreateInfo& createInfo, co
     float wireLength = glm::distance(m_start, m_end);
     wireLength = std::min(wireLength, 1.0f);
 
-    int numPoints = wireLength * 25.0;
+    int numPoints = wireLength * 25;
     int numOfLights = numPoints * 1.5f;
     float wireRadius = 0.001f;
     float wireCircleSegments = 5;
@@ -252,6 +252,7 @@ ChristmasLights::ChristmasLights(const ChristmasLightsCreateInfo& createInfo, co
         transform.position = position;
         transform.rotation = glm::vec3(Util::RandomFloat(-1, 1), Util::RandomFloat(-1, 1), Util::RandomFloat(-1, 1));
         transform.rotation.x += HELL_PI * -0.5f;
+        transform.scale = glm::vec3(0.5f);
         modelMatrices.push_back(transform.to_mat4());
     }
 

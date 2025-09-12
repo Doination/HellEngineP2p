@@ -39,6 +39,11 @@ namespace TextBlitter {
             meshData.vertices.reserve(estimatedVertices);
             meshData.indices.reserve(estimatedIndices);
 
+            // TODO:
+            int charSpacing = 1;
+            int lineSpacing = 1;
+            // make sure to also update the GetBlitTextSize() size function below
+
             for (size_t i = 0; i < text.length();) {
 
                 // Handle color tags
@@ -64,7 +69,7 @@ namespace TextBlitter {
                 // Handle newlines
                 if (character == '\n') {
                     cursorX = static_cast<float>(originX);
-                    cursorY -= (spriteSheet->m_lineHeight + 1) * scale;
+                    cursorY -= (spriteSheet->m_lineHeight + 1 + lineSpacing) * scale;
                     reachY = std::min(reachY, cursorY);
                     i++;
                     continue;
@@ -102,7 +107,7 @@ namespace TextBlitter {
                     meshData.indices.push_back(baseVertex + vertexOffset + 2);
                     meshData.indices.push_back(baseVertex + vertexOffset + 3);
 
-                    cursorX += charData.width * scale;
+                    cursorX += (charData.width + charSpacing) * scale;
                     reachX = std::max(reachX, cursorX);
                     reachY = std::min(reachY, cursorY - charData.height * scale);
                 }

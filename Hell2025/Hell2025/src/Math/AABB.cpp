@@ -20,7 +20,7 @@ void AABB::Grow(glm::vec3 p) {
 }
 float AABB::Area() {
     glm::vec3 e = boundsMax - boundsMin; // box extent
-    return e.x * e.y + e.y * e.z + e.z * e.x;
+    return 2.0f * (e.x * e.y + e.y * e.z + e.z * e.x);
 }
 
 void AABB::CalculateCenterAndExtents() {

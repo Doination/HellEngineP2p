@@ -35,7 +35,7 @@ void Player::FireGun() {
         m_weaponAction = WeaponAction::FIRE;
     }
 
-    SpawnMuzzleFlash(55.0f, 0.3f);
+    SpawnMuzzleFlash(55.0f, 0.2f);
     SpawnCasing(ammoInfo, weaponState->shotgunSlug);
     SpawnBullet(0.05f);
 

@@ -49,15 +49,26 @@ layout (binding = 8) uniform sampler2D woundNormalTexture;
 layout (binding = 9) uniform sampler2D woundRmaTexture;
 
 void main() {
+    vec3 emissiveColor = EmissiveColor;
+
 #if ENABLE_BINDLESS == 1
     vec4 baseColor = texture(sampler2D(textureSamplers[BaseColorTextureIndex]), TexCoord);
     vec3 normalMap = texture(sampler2D(textureSamplers[NormalTextureIndex]), TexCoord).rgb;   
-    vec3 rma = texture(sampler2D(textureSamplers[RMATextureIndex]), TexCoord).rgb;  
+    vec3 rma = texture(sampler2D(textureSamplers[RMATextureIndex]), TexCoord).rgb;
+    vec3 emissiveMap = texture(sampler2D(textureSamplers[EmissiveTextureIndex]), TexCoord).rgb;
 #else
     vec4 baseColor = texture2D(baseColorTexture, TexCoord);
     vec3 normalMap = texture2D(normalTexture, TexCoord).rgb;
     vec3 rma = texture2D(rmaTexture, TexCoord).rgb;
+    vec3 emissiveMap = vec3(0, 0, 0);
 #endif
+
+
+    // Emissive
+    if (EmissiveTextureIndex != -1) {
+        emissiveColor = emissiveMap;
+    }
+    EmissiveOut = vec4(emissiveColor, 0);
 
     if (u_alphaDiscard) {
         if (baseColor.a < 0.5) {
@@ -98,17 +109,5 @@ void main() {
 
     WorldPositionOut = vec4(WorldPos.rgb, 1.0);
 
-    // Emissive
-    if (EmissiveTextureIndex != -1) {    
-        #if ENABLE_BINDLESS == 1
-            EmissiveOut = vec4(texture(sampler2D(textureSamplers[EmissiveTextureIndex]), TexCoord).rgb, 1.0);
-
-        #else    
-            EmissiveOut = vec4(0, 0, 0);
-        #endif    
-    }
-    else {
-        EmissiveOut = vec4(EmissiveColor, 0);
-    }
 
 }

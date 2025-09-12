@@ -23,6 +23,8 @@ out vec3 EmissiveColor;
 uniform int u_viewportIndex;
 uniform mat4 u_model;
 
+//uniform mat4 u_perspectiveMatrix;
+
 void main() {
 
     mat4 modelMatrix = u_model;
@@ -38,4 +40,9 @@ void main() {
 	TexCoord = vUV;
     WorldPos = modelMatrix * vec4(vPosition, 1.0);
 	gl_Position = projectionView * WorldPos;
+
+    
+	//mat4 view = viewportData[u_viewportIndex].view;     
+    //WorldPos = modelMatrix * vec4(vPosition, 1.0);
+	//gl_Position = u_perspectiveMatrix * view * WorldPos;
 }

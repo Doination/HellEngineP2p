@@ -39,7 +39,7 @@ void Player::SubmitAttachmentRenderItem(const std::string& weaponAttachmentName)
         Material* material = AssetManager::GetDefaultMaterial();
         
         // Get material (Clean this up later for the love of GAWD!!!!!!!!!!)
-        for (const auto& pair : weaponAttachmentInfo->meshMaterials) {
+        for (const auto& pair : weaponAttachmentInfo->meshMaterialNames) {
             const std::string& meshName = pair.first;
             const std::string& materialName = pair.second;
             if (mesh->GetName() == meshName) {

@@ -88,11 +88,6 @@ void Player::UpdateCamera(float deltaTime) {
             viewHeightModifer = 0.0f;
         }
     }
-   // m_currentViewHeight += viewHeightModifer;
-
-    // Chunk position
-    //m_chunkPos = ivecXZ(static_cast<int>(std::floor(m_camera.GetPosition().x / CHUNK_SIZE_WORLDSPACE)),
-    //                   static_cast<int>(std::floor(m_camera.GetPosition().z / CHUNK_SIZE_WORLDSPACE)));
 
     // Position
     m_camera.SetPosition(m_position + glm::vec3(0, m_currentViewHeight + viewHeightModifer, 0) + m_headBob + m_breatheBob);
@@ -102,7 +97,6 @@ void Player::UpdateCamera(float deltaTime) {
     SkinnedModel* model = viewWeapon->GetSkinnedModel();
 
     glm::mat4 cameraMatrix = viewWeapon->GetAnimatedTransformByBoneName("camera");
-    glm::mat4 dmMaster = viewWeapon->GetAnimatedTransformByBoneName("Dm-Master");
     glm::mat4 cameraBindMatrix = glm::mat4(1);
 
     for (int i = 0; i < model->m_nodes.size(); i++) {
@@ -111,14 +105,6 @@ void Player::UpdateCamera(float deltaTime) {
         }
     }
     m_viewWeaponCameraMatrix = inverse(cameraBindMatrix) * cameraMatrix;
-
-    // Build CSM view matrix
-    //glm::vec3 csmViewPosition = m_position + glm::vec3(0, m_currentViewHeight + viewHeightModifer, 0);
-    //glm::quat orient = glm::quat(m_camera.GetQuaternionRotation());
-    //glm::mat4 rot = glm::mat4_cast(glm::conjugate(orient)); // inverse rotation
-    //glm::mat4 trans = glm::translate(glm::mat4(1.0f), -m_position);
-    //glm::mat4 baseViewMatrix = rot * trans;
-    //m_csmViewMatrix = m_viewWeaponCameraMatrix * baseViewMatrix;
 
     if (!IsAlive()) {
         Ragdoll* ragdoll = GetRagdoll();

@@ -40,6 +40,11 @@ namespace OpenGLRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glBindVertexArray(glMesh.GetVAO());
+
+        glEnable(GL_CLIP_DISTANCE0);
+        glEnable(GL_CLIP_DISTANCE1);
+        glEnable(GL_CLIP_DISTANCE2);
+        glEnable(GL_CLIP_DISTANCE3);
         
         // Draw the nearest linear UI elements
         glBindSampler(0, g_nearestSampler);
@@ -60,6 +65,11 @@ namespace OpenGLRenderer {
             }
         }
 
+        glDisable(GL_CLIP_DISTANCE0);
+        glDisable(GL_CLIP_DISTANCE1);
+        glDisable(GL_CLIP_DISTANCE2);
+        glDisable(GL_CLIP_DISTANCE3);
+
         // Create QUAD if it don't exist
         if (g_quadVAO == 0) {
             g_quadVAO = OpenGLRenderer::CreateQuadVAO();
@@ -68,7 +78,8 @@ namespace OpenGLRenderer {
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glBindSampler(0, g_nearestSampler);
+        //glBindSampler(0, g_nearestSampler);
+        glBindSampler(0, g_linearSampler);
         glViewport(0, 0, BackEnd::GetCurrentWindowWidth(), BackEnd::GetCurrentWindowHeight());
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, uiFrameBuffer->GetColorAttachmentHandleByName("Color"));

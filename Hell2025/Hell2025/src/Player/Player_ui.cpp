@@ -8,6 +8,7 @@
 #include "UI/UiBackend.h"
 #include "Viewport/ViewportManager.h"
 #include "World/World.h"
+#include "Input/Input.h"
 
 void Player::UpdateUI() {
     if (Editor::IsOpen()) return;
@@ -30,6 +31,25 @@ void Player::UpdateUI() {
     // Info text
     int infoTextX = xLeft + (width * 0.1f);
     int infoTextY = ammoY;
+
+//   glm::ivec2 location = glm::ivec2(centerX, centerY);
+//   location = glm::ivec2(64, yTop + 64);
+//   //glm::ivec2 size = glm::ivec2(-1, -1);
+//
+//   std::string texName = "inv10";
+//   if (Input::KeyDown(HELL_KEY_Y)) {
+//       texName = "inv11";
+//   }
+//   Texture* texture = AssetManager::GetTextureByName(texName);
+//   //glm::ivec2 size = glm::ivec2(-1, -1);
+//   glm::ivec2 size = glm::ivec2(texture->GetWidth(0), texture->GetHeight(0));
+//
+//   UIBackEnd::BlitTexture(texName, location, Alignment::TOP_LEFT, WHITE, size, TextureFilter::NEAREST);
+//
+//   location = glm::ivec2(750, yTop + 64);
+//   //UIBackEnd::BlitTexture("inv2", location, Alignment::TOP_LEFT, WHITE, size, TextureFilter::LINEAR);
+//
+    
 
     if (IsAlive()) {
         // Cross hair texture

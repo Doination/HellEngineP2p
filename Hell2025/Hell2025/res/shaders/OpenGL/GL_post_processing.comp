@@ -24,10 +24,10 @@ void main() {
         return;
     }    
 
-	ivec2 texCoord = ivec2(gl_GlobalInvocationID.xy);
-    vec3 lighting = imageLoad(LightingImage, texCoord).rgb;
-    vec3 normal = imageLoad(NormalImage, texCoord).rgb;
-    uint viewportIndex = imageLoad(ViewportIndexImage, texCoord).r;
+	//ivec2 texCoord = ivec2(gl_GlobalInvocationID.xy);
+    vec3 lighting = imageLoad(LightingImage, pixelCoords).rgb;
+    vec3 normal = imageLoad(NormalImage, pixelCoords).rgb;
+    uint viewportIndex = imageLoad(ViewportIndexImage, pixelCoords).r;
     //uint viewportIndex = texture(ViewportIndexTexture, uv_screenspace).r;
    
     vec3 finalColor = lighting;
@@ -44,7 +44,7 @@ void main() {
     finalColor = clamp(finalColor, 0, 1);
 	
     // Some more yolo tone mapping
-    finalColor = mix(finalColor, Tonemap_ACES(finalColor), 0.35);  
+    //finalColor = mix(finalColor, Tonemap_ACES(finalColor), 0.35);  
     
     // Color tint
     finalColor *= colorTint;
@@ -69,13 +69,24 @@ void main() {
     
     
 
-    imageStore(LightingImage, texCoord, vec4(finalColor, 1));
+    // Saturation
+    float saturationAmount = 1.0;
+    float gray = dot(finalColor.rgb, vec3(0.299, 0.587, 0.114));
+    vec3 desaturatedColor = vec3(gray);
+    float desaturationFactor = 1.0 - saturationAmount;
+    float curvedDesaturationFactor = pow(desaturationFactor, 2.2);
+    finalColor.rgb = mix(finalColor.rgb, desaturatedColor, curvedDesaturationFactor);
+
+
+   //finalColor = lighting;
+
+    imageStore(LightingImage, pixelCoords, vec4(finalColor, 1));
 
     
 
     
     
-    vec3 raytracedSceneColor = imageLoad(RaytracedSceneImage, texCoord).rgb;
+    //vec3 raytracedSceneColor = imageLoad(RaytracedSceneImage, texCoord).rgb;
 	//imageStore(LightingImage, texCoord, vec4(raytracedSceneColor, 1));
 
 

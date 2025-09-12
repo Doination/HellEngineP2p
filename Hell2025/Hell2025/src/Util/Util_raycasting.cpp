@@ -27,8 +27,8 @@ namespace Util {
                 if (Util::RayIntersectsTriangle(rayOrigin, rayDir, vert0, vert1, vert2, t) && t < maxDistance && t < rayResult.distanceToHit) {
                     rayResult.distanceToHit = t;
                     rayResult.hitFound = true;
-                    rayResult.hitPosition = rayOrigin + (rayDir * t);
-                    rayResult.cubeTransform;
+                    rayResult.hitPosition = rayOrigin + (rayDir * t); 
+                    rayResult.cubeTransform = cubeTransform;
                     rayResult.hitNormal = glm::normalize(glm::cross(vert1 - vert0, vert2 - vert0));
                 }
             }

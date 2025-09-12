@@ -140,8 +140,6 @@ namespace Util {
     glm::mat4 Mat4InitTranslationTransform(float x, float y, float z);
     glm::mat4 aiMatrix4x4ToGlm(const aiMatrix4x4& from);
     glm::mat4 aiMatrix3x3ToGlm(const aiMatrix3x3& from); 
-    AnimatedTransform BlendTransforms(const AnimatedTransform& transformA, const AnimatedTransform& transformB, float blendFactor);
-    AnimatedTransform BlendMultipleTransforms(const std::vector<AnimatedTransform>& transforms, const std::vector<float>& weights);
 
     // Conversions
     std::string OpenStateToString(OpenState mode);

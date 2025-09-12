@@ -83,6 +83,10 @@ namespace OpenGLRenderer {
         g_textureArrays["WoundMasks"] = OpenGLTextureArray();
         g_textureArrays["WoundMasks"].AllocateMemory(WOUND_MASK_TEXTURE_SIZE, WOUND_MASK_TEXTURE_SIZE, GL_RGBA8, 1, 6);
 
+        g_frameBuffers["GaussianBlur"] = OpenGLFrameBuffer("GaussianBlur", resolutions.gBuffer.x / 2, resolutions.gBuffer.y / 2);
+        g_frameBuffers["GaussianBlur"].CreateAttachment("ColorA", GL_RGBA16F, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
+        g_frameBuffers["GaussianBlur"].CreateAttachment("ColorB", GL_RGBA16F, GL_LINEAR, GL_LINEAR, GL_CLAMP_TO_EDGE);
+
         g_frameBuffers["DecalPainting"] = OpenGLFrameBuffer("DecalPainting", 512, 512);
         g_frameBuffers["DecalPainting"].CreateAttachment("UVMap", GL_RGBA8, GL_LINEAR, GL_LINEAR);
         g_frameBuffers["DecalPainting"].CreateDepthAttachment(GL_DEPTH_COMPONENT24);
@@ -305,6 +309,7 @@ namespace OpenGLRenderer {
         g_shaders["Grass"] = OpenGLShader({ "GL_grass.vert", "GL_grass.frag" });
         g_shaders["GrassGeometryGeneration"] = OpenGLShader({ "GL_grass_geometry_generation.comp" });
         g_shaders["GrassPositionGeneration"] = OpenGLShader({ "GL_grass_position_generation.comp" });
+        g_shaders["GaussianBlurUtil"] = OpenGLShader({ "GL_gaussian_blur_util.comp" });
         g_shaders["HairDepthPeel"] = OpenGLShader({ "GL_hair_depth_peel.vert", "GL_hair_depth_peel.frag" });
         g_shaders["HairFinalComposite"] = OpenGLShader({ "GL_hair_final_composite.comp" });
         g_shaders["HairLayerComposite"] = OpenGLShader({ "GL_hair_layer_composite.comp" });
@@ -327,7 +332,7 @@ namespace OpenGLRenderer {
         g_shaders["OceanUnderwaterMaskPreProcess"] = OpenGLShader({ "GL_ocean_underwater_mask_preprocess.comp" });
         g_shaders["OceanTesseleationEdgeTransitionCleanUp"] = OpenGLShader({ "GL_ocean_tessellation_edge_transition_cleanup.comp" });      
         g_shaders["OceanPositionReadback"] = OpenGLShader({ "GL_ocean_position_readback.comp" });
-        g_shaders["GaussianBlur"] = OpenGLShader({ "GL_gaussian_blur.comp" });
+        g_shaders["GaussianBlur"] = OpenGLShader({ "GL_gaussian_blur.comp" }); // am I needed????
         g_shaders["Outline"] = OpenGLShader({ "GL_outline.vert", "GL_outline.frag" });
         g_shaders["OutlineComposite"] = OpenGLShader({ "GL_outline_composite.comp" });
         g_shaders["OutlineMask"] = OpenGLShader({ "GL_outline_mask.vert", "GL_outline_mask.frag" });
@@ -345,7 +350,6 @@ namespace OpenGLRenderer {
         g_shaders["ZeroOut"] = OpenGLShader({ "GL_zero_out.comp" });
         g_shaders["VatBlood"] = OpenGLShader({ "GL_vat_blood.vert", "GL_vat_blood.frag" });
 
-        //g_shaders["ScreenSpaceDecals"] = OpenGLShader({ "GL_screenspace_decals.comp" });
         g_shaders["ScreenSpaceDecals"] = OpenGLShader({ "GL_screenspace_decals.vert", "GL_screenspace_decals.frag" });
     }
 
@@ -386,7 +390,120 @@ namespace OpenGLRenderer {
         OceanHeightReadback();
     }
 
+    void TestPass() {
+
+        glBindVertexArray(OpenGLBackEnd::GetVertexDataVAO());
+
+        OpenGLFrameBuffer* gBuffer = GetFrameBuffer("GBuffer");
+        gBuffer->Bind();
+        gBuffer->DrawBuffers({ "BaseColor", "Normal", "RMA", "WorldPosition", "Emissive" });
+        SetRasterizerState("GeometryPass_NonBlended");
+
+        OpenGLShader* shader = GetShader("DebugTextured");
+        shader->Bind();
+
+        Player* player = Game::GetLocalPlayerByIndex(0);
+
+        Transform transform;
+        transform.position = player->GetCameraPosition() + (player->GetCameraForward() * glm::vec3(2.0f));
+
+        const glm::vec3 R = player->GetCameraRight();
+        const glm::vec3 U = player->GetCameraUp();
+        const glm::vec3 F = player->GetCameraForward();
+
+        glm::mat4 face(1.0f);
+        face[0] = glm::vec4(-R, 0.0f);
+        face[1] = glm::vec4(U, 0.0f);
+        face[2] = glm::vec4(F, 0.0f);
+
+        static float test = 0.0f;
+        test += 0.01f;
+
+        Transform rot;
+        rot.rotation.x = HELL_PI * 0.5f;
+        rot.rotation.y = HELL_PI * 0.5f;
+        rot.rotation.x = HELL_PI * 0.5f;
+        rot.rotation.y += test;
+
+        static bool toggle = true;
+        if (Input::KeyPressed(HELL_KEY_Y)) {
+            toggle = !toggle;
+        }
+
+        Model* m_model = AssetManager::GetModelByName("Glock_Isolated");
+        if (!toggle) {
+            m_model = AssetManager::GetModelByName("SPAS_Isolated");
+            rot.rotation.x = 0.0;
+            rot.rotation.y = HELL_PI * -0.5f;
+            rot.rotation.y += test;
+        }
+
+        float maxXZ = 2.0f;         // desired max footprint on XZ in meters
+        float maxY = maxXZ * 0.5f;  // desired max height in meters
+
+        glm::vec3 aabbMin = m_model->GetAABBMin();
+        glm::vec3 aabbMax = m_model->GetAABBMax();
+        glm::vec3 extent = aabbMax - aabbMin;
+        float exXZ = std::max(extent.x, extent.z);
+        float exY = extent.y;
+        float sXZ = exXZ > 0.0f ? (maxXZ / exXZ) : 1e9f;
+        float sY = exY > 0.0f ? (maxY / exY) : 1e9f;
+        float s = std::min(sXZ, sY);
+        
+        glm::vec3 center = 0.5f * (aabbMin + aabbMax);
+        glm::mat4 centeringMatrix = glm::translate(glm::mat4(1.0f), -center);
+        glm::mat4 scalingMatrix = glm::scale(glm::mat4(1.0f), glm::vec3(s));
+
+        glm::mat4 modelMatrix = transform.to_mat4() * face * rot.to_mat4() * scalingMatrix * centeringMatrix;
+
+        shader->SetMat4("u_model", modelMatrix);
+        shader->SetInt("u_viewportIndex", 0);
+
+        float m_fov = glm::radians(20.0f);
+        float m_aspect = 1920.0f / 1080.0f;
+        float m_nearPlane = NEAR_PLANE;
+        float m_farPlane = FAR_PLANE;
+        glm::mat4 perspectiveMatrix = glm::perspective(m_fov, m_aspect, m_nearPlane, m_farPlane);
+        shader->SetMat4("u_perspectiveMatrix", perspectiveMatrix); // make this a per viewport "inventory perspective matrix"
+
+        std::vector<RenderItem> m_renderItems;
+
+        for (int i = 0; i < m_model->GetMeshCount(); i++) {
+            Mesh* mesh = AssetManager::GetMeshByIndex(m_model->GetMeshIndices()[i]);
+            if (mesh) {
+                Material* material = AssetManager::GetDefaultMaterial();// (m_materialIndices[i]);
+                RenderItem& renderItem = m_renderItems.emplace_back();
+                renderItem.objectType = (int)ObjectType::PICK_UP;
+                renderItem.modelMatrix = modelMatrix;
+                renderItem.inverseModelMatrix = glm::inverse(renderItem.modelMatrix);
+                renderItem.meshIndex = m_model->GetMeshIndices()[i];
+                renderItem.baseColorTextureIndex = material->m_basecolor;
+                renderItem.normalMapTextureIndex = material->m_normal;
+                renderItem.rmaTextureIndex = material->m_rma;
+                Util::PackUint64(0, renderItem.objectIdLowerBit, renderItem.objectIdUpperBit);
+                Util::UpdateRenderItemAABB(renderItem);
+            }
+        }
+
+
+        for (RenderItem& renderItem : m_renderItems) {
+            Mesh* mesh = AssetManager::GetMeshByIndex(renderItem.meshIndex);
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, AssetManager::GetTextureByIndex(renderItem.baseColorTextureIndex)->GetGLTexture().GetHandle());
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, AssetManager::GetTextureByIndex(renderItem.normalMapTextureIndex)->GetGLTexture().GetHandle());
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, AssetManager::GetTextureByIndex(renderItem.rmaTextureIndex)->GetGLTexture().GetHandle());
+
+            glDrawElementsBaseVertex(GL_TRIANGLES, mesh->indexCount, GL_UNSIGNED_INT, (GLvoid*)(mesh->baseIndex * sizeof(GLuint)), mesh->baseVertex);
+        }
+    }
+
     void RenderGame() {
+        OpenGLFrameBuffer& gBuffer = g_frameBuffers["GBuffer"];
+        OpenGLFrameBuffer& hairFrameBuffer = g_frameBuffers["Hair"];
+        OpenGLFrameBuffer& finalImageBuffer = g_frameBuffers["FinalImage"];
+
         glDisable(GL_DITHER);
 
         UpdateGlobalIllumintation();
@@ -405,6 +522,9 @@ namespace OpenGLRenderer {
         HouseGeometryPass();
         GrassPass();
         GeometryPass();
+
+        //TestPass();
+        
         WeatherBoardsPass();
         VatBloodPass();
         ScreenSpaceDecalsPass();
@@ -421,19 +541,29 @@ namespace OpenGLRenderer {
         RayMarchFog();
         OceanUnderwaterCompositePass();
         WinstonPass();
+
+        static bool gaussianTest = false;
+        if (Input::KeyPressed(HELL_KEY_Y)) {
+            gaussianTest = !gaussianTest;
+        }
+        if (gaussianTest) {
+            BlitRect blitRect;
+            blitRect.x0 = 0;
+            blitRect.y0 = 0;
+            blitRect.x1 = 1920;
+            blitRect.y1 = 1080;
+            GaussianBlur(&gBuffer, &gBuffer, "FinalLighting", "FinalLighting", blitRect, blitRect, 4, 2);
+        }
+
         PostProcessingPass();
-        DebugViewPass();
         SpriteSheetPass();
+        DebugViewPass();
         DebugPass();
         EditorPass();
         OutlinePass();
 
         DrawPointCloud();
         DrawLightVolume();
-
-        OpenGLFrameBuffer& gBuffer = g_frameBuffers["GBuffer"];
-        OpenGLFrameBuffer& hairFrameBuffer = g_frameBuffers["Hair"];
-        OpenGLFrameBuffer& finalImageBuffer = g_frameBuffers["FinalImage"];
 
         // Downscale blit
         OpenGLRenderer::BlitFrameBuffer(&gBuffer, &finalImageBuffer, "FinalLighting", "Color", GL_COLOR_BUFFER_BIT, GL_LINEAR);

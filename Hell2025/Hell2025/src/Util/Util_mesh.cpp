@@ -18,11 +18,11 @@ namespace Util {
         }
         else if (absNormal.y > absNormal.x && absNormal.y > absNormal.z) {
             // Dominant axis is Y, project onto XZ plane
-            uv.y = (vertexPosition.x) / absNormal.y;
-            uv.x = (vertexPosition.z) / absNormal.y;
+            uv.x = vertexPosition.x / absNormal.y;
+            uv.y = vertexPosition.z / absNormal.y;
             uv.y = 1.0f - uv.y;
             if (vertexNormal.y < 0) {
-                uv.y = 1.0f - uv.y;
+                uv.x = 1.0f - uv.x;
             }
         }
         else {

@@ -31,6 +31,7 @@ namespace AssetManager {
         // Failed
         if (!tempAnimScene) {
             std::cout << "Could not load: " << fileInfo.path << "\n";
+            return;
         }
 
         // Success

@@ -257,9 +257,17 @@ void main() {
             vec3 camightRight = normalize(viewportData[i].inverseView[0].xyz);
 		    vec3 spotLightDir = flashlightDir.xyz;
             vec3 spotLightColor = vec3(0.9, 0.95, 1.1);
+
+
             float fresnelReflect = 0.9;
             float spotLightRadius = 20.0;
             float spotLightStregth = 4.5;
+
+            // EXPERIMENTAL NEW COLORS
+            vec3 defaultLightColor = vec3(1.0, 0.7799999713897705, 0.5289999842643738);
+            spotLightColor = mix(defaultLightColor, spotLightColor, 0.95);
+            spotLightRadius = 20.0;
+            spotLightStregth = 5.0;
             
             if (worldSpacePosition.y < 10) {
                 spotLightStregth = 25;
@@ -307,7 +315,7 @@ void main() {
             //spotLighting *= spotLightColor;
 
             spotLighting *= vec3(1 - shadow);
-            spotLighting *= cookie * spotLightColor;
+            spotLighting *= cookie;
             directLighting += vec3(spotLighting) * flashlightModifer;
 
 
@@ -496,7 +504,7 @@ void main() {
     float fadeFactor = pow(fadeRaw, boundaryFadeExponent);
     indirect *= fadeFactor;
                         
-    float indirectStrength = 0.0035;
+    float indirectStrength = 0.00235;
     indirectStrength = 0.5;
     indirect *= indirectStrength;
         
@@ -519,7 +527,7 @@ void main() {
 
    // finalColor = indirect;
 
-    vec3 ambientTerm = baseColor.rgb * vec3(0.005);
+    vec3 ambientTerm = baseColor.rgb * vec3(0.0025);
 
     finalColor = directLighting. rgb + moonLighting  + ambientTerm;
 

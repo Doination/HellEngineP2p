@@ -134,38 +134,6 @@ namespace Util {
         return rz * ry * rx;
     }
 
-    AnimatedTransform BlendTransforms(const AnimatedTransform& transformA, const AnimatedTransform& transformB, float blendFactor) {
-        AnimatedTransform result;
-        result.translation = glm::mix(transformA.translation, transformB.translation, blendFactor);
-        result.rotation = glm::slerp(transformA.rotation, transformB.rotation, blendFactor);
-        result.scale = glm::mix(transformA.scale, transformB.scale, blendFactor);
-        return result;
-    }
-
-    AnimatedTransform BlendMultipleTransforms(const std::vector<AnimatedTransform>& transforms, const std::vector<float>& weights) {
-        if (transforms.size() != weights.size() || transforms.empty()) {
-            throw std::invalid_argument("Number of transforms and weights must be the same and non-zero.");
-        }
-        AnimatedTransform result;
-        result.translation = glm::vec3(0.0f);
-        result.rotation = glm::quat(0.0f, 0.0f, 0.0f, 0.0f); // Identity quaternion
-        result.scale = glm::vec3(0.0f);
-        float totalWeight = 0.0f;
-        for (size_t i = 0; i < transforms.size(); ++i) {
-            result.translation += transforms[i].translation * weights[i];
-            result.rotation = glm::slerp(result.rotation, transforms[i].rotation, weights[i]);
-            result.scale += transforms[i].scale * weights[i];
-            totalWeight += weights[i];
-        }
-        if (totalWeight > 0.0f) {
-            result.translation /= totalWeight;
-            result.scale /= totalWeight;
-        }
-        // Normalize rotation to maintain a valid quaternion (optional, depending on glm::slerp implementation)
-        result.rotation = glm::normalize(result.rotation);
-        return result;
-    }
-
     float SmoothStep(float t) {
         t = glm::clamp(t, 0.0f, 1.0f);
         return t * t * (3.0f - 2.0f * t);

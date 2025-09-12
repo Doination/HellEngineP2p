@@ -6,12 +6,12 @@ layout(rgba16f, binding = 1) uniform image2D compositeTexture;
 void main() {
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
     ivec2 outputImageSize = imageSize(compositeTexture);
-    vec2 uv_screenspace = vec2(pixelCoords) / vec2(outputImageSize);
+    vec2 uv_screenspace = vec2(pixelCoords + 0.5) / vec2(outputImageSize);
 
     // Don't process out of bounds pixels
-    //if (pixelCoords.x >= outputImageSize.x || pixelCoords.y >= outputImageSize.y) {
-    //    return;
-    //}    
+    if (pixelCoords.x >= outputImageSize.x || pixelCoords.y >= outputImageSize.y) {
+        return;
+    }    
 
     // Inputs
     vec4 compositeColor = imageLoad(compositeTexture, pixelCoords);

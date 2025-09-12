@@ -130,12 +130,20 @@ struct WeaponInfo {
 };
 
 struct WeaponAttachmentInfo {
+    // Config
     std::string name = UNDEFINED_STRING;
     std::string modelName = UNDEFINED_STRING;
     std::string boneName = UNDEFINED_STRING;
-    std::unordered_map<std::string, std::string> meshMaterials;             // maybe make me const char*
-    std::unordered_map<std::string, std::string> meshEmmisveTextureNames;   // maybe make me const char*
-    std::vector<std::string> glassMeshNames;                                // maybe make me const char*
+    std::unordered_map<std::string, std::string> meshMaterialNames;
+    std::unordered_map<std::string, std::string> meshEmmisveTextureNames;
+    std::vector<std::string> glassMeshNames;
+
+    // Runtime
+    void Init();
+    // TODO: std::vector<uint32_t> meshIndices;
+    // TODO: std::vector<uint32_t> emissiveTextureIndices;
+    // TODO: std::vector<Material*> meshMaterials;
+    // TODO: std::vector<bool> meshGlassFlags;
 };
 
 struct AmmoInfo {
@@ -147,14 +155,6 @@ struct AmmoInfo {
     const char* casingMaterialName = UNDEFINED_STRING;
     int pickupAmount = 0;
 };
-
-/*
-struct WeaponAttachmentInfo {
-    const char* name = UNDEFINED_STRING;
-    const char* materialName = UNDEFINED_STRING;
-    const char* modelName = UNDEFINED_STRING;
-    bool isGold = false;
-};*/
 
 struct WeaponState {
     bool has = false;

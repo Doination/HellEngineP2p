@@ -1,20 +1,20 @@
 {
   "name": "AmmoFont",
-  "textureWidth": 93,
-  "textureHeight": 93,
+  "textureWidth": 96,
+  "textureHeight": 96,
   "lineHeight": 31,
   "characters": "0123456789/",
   "charDataList": [
-    { "width": 16, "height": 31, "offsetX": 0, "offsetY": 0 },
-    { "width": 9, "height": 31, "offsetX": 16, "offsetY": 0 },
-    { "width": 15, "height": 31, "offsetX": 25, "offsetY": 0 },
-    { "width": 15, "height": 31, "offsetX": 40, "offsetY": 0 },
-    { "width": 17, "height": 31, "offsetX": 0, "offsetY": 31 },
-    { "width": 15, "height": 31, "offsetX": 17, "offsetY": 31 },
-    { "width": 16, "height": 31, "offsetX": 32, "offsetY": 31 },
-    { "width": 15, "height": 31, "offsetX": 48, "offsetY": 31 },
-    { "width": 16, "height": 31, "offsetX": 0, "offsetY": 62 },
-    { "width": 15, "height": 31, "offsetX": 16, "offsetY": 62 },
-    { "width": 10, "height": 31, "offsetX": 31, "offsetY": 62 }
+    { "width": 16, "height": 31, "offsetX": 1, "offsetY": 1 },
+    { "width": 9, "height": 31, "offsetX": 18, "offsetY": 1 },
+    { "width": 15, "height": 31, "offsetX": 28, "offsetY": 1 },
+    { "width": 15, "height": 31, "offsetX": 44, "offsetY": 1 },
+    { "width": 17, "height": 31, "offsetX": 1, "offsetY": 33 },
+    { "width": 15, "height": 31, "offsetX": 19, "offsetY": 33 },
+    { "width": 16, "height": 31, "offsetX": 35, "offsetY": 33 },
+    { "width": 15, "height": 31, "offsetX": 52, "offsetY": 33 },
+    { "width": 16, "height": 31, "offsetX": 1, "offsetY": 65 },
+    { "width": 15, "height": 31, "offsetX": 18, "offsetY": 65 },
+    { "width": 10, "height": 31, "offsetX": 34, "offsetY": 65 }
   ]
 }

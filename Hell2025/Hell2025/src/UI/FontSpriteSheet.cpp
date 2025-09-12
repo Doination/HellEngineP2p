@@ -39,6 +39,10 @@ namespace FontSpriteSheetPacker {
     }
 
     void Export(const std::string& name, const std::string& characters, const std::string& textureSourcePath, const std::string& outputPath) {
+        // Padding in pixels around each glyph
+        const int padX = 1;
+        const int padY = 1;
+
         // Configure filepaths
         std::filesystem::path outputDir = outputPath;
         std::filesystem::path outputImagePath = outputDir / (name + ".png");
@@ -60,7 +64,8 @@ namespace FontSpriteSheetPacker {
         int totalArea = 0;
         int maxCharHeight = 0;
         for (const ImageData& imageData : imageDataList) {
-            totalArea += imageData.m_width * imageData.m_height;
+            //totalArea += imageData.m_width * imageData.m_height;
+            totalArea += (imageData.m_width + padX) * (imageData.m_height + padY);
             maxCharHeight = std::max(maxCharHeight, imageData.m_height);
         }
         // Determine the minimum texture width for roughly a square (the ceiling of the square root)
@@ -71,23 +76,23 @@ namespace FontSpriteSheetPacker {
         std::vector<FontSpriteSheet::CharData> charDataList(charCount);
         charDataList[0].width = imageDataList[0].m_width;
         charDataList[0].height = imageDataList[0].m_height;
-        charDataList[0].offsetX = 0;
-        charDataList[0].offsetY = 0;
+        charDataList[0].offsetX = padX;
+        charDataList[0].offsetY = padY;
 
         // Calculate the remaining character's data
-        int cursorX = imageDataList[0].m_width;
-        int cursorY = 0;
+        int cursorX = charDataList[0].offsetX + charDataList[0].width + padX;
+        int cursorY = padY;
         for (int i = 1; i < charCount; i++) {
             int charWidth = imageDataList[i].m_width;
             if (cursorX + charWidth > textureWidth) {
-                cursorX = 0;
-                cursorY += maxCharHeight;
+                cursorX = padX;
+                cursorY += maxCharHeight + padY;
             }
             charDataList[i].width = imageDataList[i].m_width;
             charDataList[i].height = imageDataList[i].m_height;
             charDataList[i].offsetX = cursorX;
             charDataList[i].offsetY = cursorY;
-            cursorX += charWidth;
+            cursorX += charWidth + padX;
         }
         // Calculate texture height
         int textureHeight = cursorY + maxCharHeight;

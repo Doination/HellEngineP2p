@@ -92,10 +92,16 @@ float SpotlightShadowCalculationFast(vec4 fragPosLightSpace, vec3 normal, vec3 l
 }
 
 vec3 ApplyCookie(mat4 LightViewProj, vec3 worldPos, vec3 lightPos, vec3 lightColor, float maxDistance, sampler2D cookieTexture) {
-    vec4 lightSpacePos = LightViewProj * vec4(worldPos, 1.0);
+   vec4 lightSpacePos = LightViewProj * vec4(worldPos, 1.0);
     vec2 cookieUV = lightSpacePos.xy / lightSpacePos.w * 0.5 + 0.5;
-    vec2 clampedUV = clamp(cookieUV, vec2(0.0), vec2(1.0));
-    float fadeFactor = clamp(1.0 - length(cookieUV - clampedUV) * 15.0, 0.0, 1.0);
+
+    // Centered scale
+    float cookieScale = 1.5;
+    vec2 scaledUV = (cookieUV - 0.5) * cookieScale + 0.5;
+
+    // Edge fade based on scaledUV
+    vec2 clampedUV = clamp(scaledUV, vec2(0.0), vec2(1.0));
+    float fadeFactor = clamp(1.0 - length(scaledUV - clampedUV) * 15.0, 0.0, 1.0);
 
     float dist = length(worldPos - lightPos);
     float distanceFactor = clamp(1.0 - dist / maxDistance, 0.0, 1.0);

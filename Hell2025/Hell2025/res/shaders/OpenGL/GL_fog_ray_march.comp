@@ -167,6 +167,11 @@ void main() {
         float flashlightRadius = 10.0;
         float flashlightStrength = 0.5;
 
+            // experimental new flashlight colors
+            flashlightColor = vec3(0.9, 0.95, 1.1);
+            vec3 defaultLightColor = vec3(1.0, 0.7799999713897705, 0.5289999842643738);
+            flashlightColor = mix(defaultLightColor, flashlightColor, 0.95);
+
         float innerAngle = cos(radians(5.0 * flashlightModifer));
         float outerAngle = cos(radians(25.0));         
 

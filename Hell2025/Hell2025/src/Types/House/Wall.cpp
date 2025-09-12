@@ -129,126 +129,70 @@ void Wall::CleanUp() {
     for (WallSegment& wallSegment : m_wallSegments) {
         wallSegment.CleanUp();
     }
-
-    //m_ceilingTrimType = TrimType::NONE;
-    //m_floorTrimType = TrimType::NONE;
-    //m_points.clear();
-    //m_trims.clear();
-    //m_wallSegments.clear();
-    //m_height = 0.0f;
-    //m_textureOffsetU = 0.0;
-    //m_textureOffsetV = 0.0f;
-    //m_textureScale = 1.0f;
-    //m_material = nullptr;
-    //m_createInfo = WallCreateInfo();
 }
 
 void Wall::CreateTrims() {
     m_trims.clear();
-
     World::UpdateDoorAndWindowCubeTransforms();
 
-    
     // Ceiling
     if (m_ceilingTrimType != TrimType::NONE) {
-        for (int i = 0; i < m_createInfo.points.size() - 1; i++) {
+        for (int i = 0; i < (int)m_createInfo.points.size() - 1; i++) {
             const glm::vec3& start = m_createInfo.points[i];
             const glm::vec3& end = m_createInfo.points[i + 1];
 
-            Transform transform;
-            transform.position = start;
-            transform.position.y += m_createInfo.height;
-            transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
-            transform.scale.x = glm::distance(start, end);
+            Transform t;
+            t.position = start;
+            t.position.y += m_createInfo.height;
+            t.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
+            t.scale.x = glm::distance(start, end);
 
             Trim& trim = m_trims.emplace_back();
-            trim.Init(transform, "TrimCeiling", "Trims");
+            trim.Init(t, "TrimCeiling", "Trims");
         }
     }
 
     // Floor
     if (m_floorTrimType != TrimType::NONE) {
-        for (int i = 0; i < m_createInfo.points.size() - 1; i++) {
-
+        for (int i = 0; i < (int)m_createInfo.points.size() - 1; i++) {
             const glm::vec3& start = m_createInfo.points[i];
             const glm::vec3& end = m_createInfo.points[i + 1];
+
             glm::vec3 rayOrigin = start;
             glm::vec3 rayDir = glm::normalize(end - start);
-            float segmentLength = glm::distance(start, end);
+            const float segmentLength = glm::distance(start, end);
+            float remaining = segmentLength;
+            const float eps = 1e-3f;
 
-         // glm::vec3 pointColor = BLACK;
-         // switch (i) {
-         //     case 0: pointColor = RED; break;
-         //     case 1: pointColor = GREEN; break;
-         //     case 2: pointColor = BLUE; break;
-         //     case 3: pointColor = YELLOW; break;
-         //     case 4: pointColor = PURPLE; break;
-         //     case 5: pointColor = ORANGE; break;
-         // }
+            while (remaining > eps) {
+                CubeRayResult r = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), remaining);
+                if (!r.hitFound) break;
 
-
-            // i = 0
-            // first point (RED) 
-             
-            // i = 1
-            // second point (GREEN) 
-             
-            // i = 2
-            // third point (BLUE) 
-
-            // i = 3
-            // fourth point (YELLOW) 
-
-            // i = 4
-            // fifth point (PURPLE) 
-
-            // if you are on the second last point, and the last point is the same as the first point, then continue
-          
-            
-            // if i = (4)
-            //bool doNotRayCast = false;
-            //if (i == m_createInfo.points.size() - 2) {
-            //    if (m_createInfo.points[m_createInfo.points.size()-1] == m_createInfo.points[0]) {
-            //        doNotRayCast = true;
-            //    }
-            //}
-
-            //std::cout << " m_createInfo.points.size(): " << m_createInfo.points.size() << '\n';
-
-           // Renderer::DrawPoint(start, pointColor);
-
-           // if (!doNotRayCast) {
-                CubeRayResult rayResult;
-                do {
-                    rayResult = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), segmentLength);
-                    if (rayResult.hitFound) {
-
-                        Transform transform;
-                        transform.position = rayOrigin;
-                        transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
-                        transform.scale.x = rayResult.distanceToHit;
-
-                        float dot = glm::dot(rayResult.hitNormal, rayDir);
-                        if (dot <= 0.99f) {
-                            Trim& trim = m_trims.emplace_back();
-                            trim.Init(transform, "TrimFloor", "Trims");
-                        }
-
-                        // Start next ray just past the opposite face of the hit cube
-                        rayOrigin = rayResult.hitPosition + (rayDir * 0.01f);
+                // Only add a trim up to a NEAR face (entering the cube)
+                if (glm::dot(r.hitNormal, rayDir) < 0.0f) {
+                    Transform t;
+                    t.position = rayOrigin;
+                    t.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
+                    t.scale.x = r.distanceToHit;
+                    if (t.scale.x > eps) {
+                        Trim& trim = m_trims.emplace_back();
+                        trim.Init(t, "TrimFloor", "Trims");
                     }
+                }
 
-                } while (rayResult.hitFound);
-            //}
+                float advance = r.distanceToHit + eps; // step through face
+                rayOrigin += rayDir * advance;
+                remaining -= advance;
+            }
 
-
-            Transform transform;
-            transform.position = rayOrigin;
-            transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(rayOrigin, end);
-            transform.scale.x = glm::distance(rayOrigin, end);
-
-            Trim& trim = m_trims.emplace_back();
-            trim.Init(transform, "TrimFloor", "Trims");
+            if (remaining > eps) {
+                Transform t;
+                t.position = rayOrigin;
+                t.rotation.y = Util::EulerYRotationBetweenTwoPoints(rayOrigin, end);
+                t.scale.x = remaining;
+                Trim& trim = m_trims.emplace_back();
+                trim.Init(t, "TrimFloor", "Trims");
+            }
         }
     }
 }
@@ -260,7 +204,6 @@ void Wall::CreateCSGVertexData() {
 }
 
 void Wall::SubmitRenderItems() {
-
     // If this wall is exterior, then dont render the CSG geometry, or any trims if you accidentally set it to have trims
     if (m_createInfo.wallType == WallType::WEATHER_BOARDS) {
         return;
@@ -309,8 +252,6 @@ void Wall::DrawSegmentVertices(glm::vec4 color) {
     }
 }
 
-
-
 void Wall::DrawSegmentLines(glm::vec4 color) {
     for (WallSegment& wallSegment : m_wallSegments) {
         const glm::vec3& p1 = wallSegment.GetStart();
@@ -329,12 +270,7 @@ void Wall::DrawSegmentLines(glm::vec4 color) {
     }
 }
 
-
-
-
-
 BoardVertexData Wall::CreateBoardVertexData(glm::vec3 begin, glm::vec3 end, glm::vec3 boardDirection, int yUVOffsetIndex, float xUVOffset) {
-
     BoardVertexData weatherBoardVertexData;
 
     Model* model = AssetManager::GetModelByName("WeatherBoard");
@@ -345,34 +281,28 @@ BoardVertexData Wall::CreateBoardVertexData(glm::vec3 begin, glm::vec3 end, glm:
     std::span<uint32_t> indicesSpan = AssetManager::GetMeshIndicesSpan(mesh);
 
     float boardWidth = glm::distance(begin, end);
-    const float meshBoardWidth = 4.0f; // FULL WIDTH (MATHCES TEXUTRE STUFF)
+    const float meshBoardWidth = 4.0f;
 
-    glm::mat4 rotationMatrix = Util::GetRotationMat4FromForwardVector(boardDirection);
+    glm::mat3 rot3 = glm::mat3(Util::GetRotationMat4FromForwardVector(glm::normalize(boardDirection)));
 
     for (Vertex vertex : verticesSpan) {
-
-        // Shift right most vertices
-        if (vertex.position.z > 0.5f) {
+        bool isRightEdge = vertex.uv.x > 0.5f;
+        if (isRightEdge) {
             vertex.position.x = boardWidth * boardDirection.x;
             vertex.position.z = boardWidth * boardDirection.z;
             vertex.uv.x = boardWidth / meshBoardWidth;
         }
 
-        // Rotate the normal
-        vertex.normal = rotationMatrix * glm::vec4(vertex.normal, 0.0f);
-
-        // Finally shift to the origin
+        vertex.normal = glm::normalize(rot3 * vertex.normal);
         vertex.position += begin;
 
-        // Test next board up 
-        float uvVerticalOffset = 1.0f / 16.0f;;
+        float uvVerticalOffset = 1.0f / 16.0f;
         vertex.uv.y -= uvVerticalOffset * yUVOffsetIndex;
-
         vertex.uv.x += xUVOffset;
+
         weatherBoardVertexData.vertices.push_back(vertex);
     }
 
-    // Indices
     for (uint32_t& index : indicesSpan) {
         weatherBoardVertexData.indices.push_back(index);
     }
@@ -380,33 +310,32 @@ BoardVertexData Wall::CreateBoardVertexData(glm::vec3 begin, glm::vec3 end, glm:
     return weatherBoardVertexData;
 }
 
+
 #define WEATHERBOARD_STOP_MESH_HEGIHT 2.6f
 
 void Wall::CreateWeatherBoards() {
-
     float individialBoardHeight = 0.13f;
-    float desiredTotalWallHeight = 2.8;
-    int weatherBoardCount = desiredTotalWallHeight / individialBoardHeight;
+    float desiredTotalWallHeight = 2.8f;
+    int weatherBoardCount = (int)(desiredTotalWallHeight / individialBoardHeight);
     float actualFinalWallHeight = weatherBoardCount * individialBoardHeight;
     float weathboardStopScale = actualFinalWallHeight / WEATHERBOARD_STOP_MESH_HEGIHT;
-    
-    // Make the stops
+
     m_weatherBoardstopRenderItems.clear();
 
     for (WallSegment& wallSegemet : m_wallSegments) {
         glm::vec3 start = wallSegemet.GetStart();
         glm::vec3 end = wallSegemet.GetEnd();
-        glm::vec3 segmentDir = glm::normalize(end - start);
-        glm::mat4 rotationMatrix = Util::GetRotationMat4FromForwardVector(segmentDir);
+
         Transform transform;
         transform.position = start;
         transform.scale.y = weathboardStopScale;
+        transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
 
         Material* material = AssetManager::GetMaterialByName("WeatherBoards0");
         Model* model = AssetManager::GetModelByName("WeatherboardStop");
 
         RenderItem& renderItem = m_weatherBoardstopRenderItems.emplace_back();
-        renderItem.modelMatrix = transform.to_mat4() * rotationMatrix;
+        renderItem.modelMatrix = transform.to_mat4();
         renderItem.inverseModelMatrix = glm::inverse(renderItem.modelMatrix);
         renderItem.meshIndex = model->GetMeshIndices()[0];
         renderItem.baseColorTextureIndex = material->m_basecolor;
@@ -416,32 +345,16 @@ void Wall::CreateWeatherBoards() {
         Util::PackUint64(m_objectId, renderItem.objectIdLowerBit, renderItem.objectIdUpperBit);
     }
 
-    // Ensure all the door and window cube transforms exist at the time this runs
     World::UpdateDoorAndWindowCubeTransforms();
 
     m_boardVertexDataSet.clear();
 
     for (WallSegment& wallSegemet : m_wallSegments) {
-
-       // glm::vec3 origin = glm::vec3(-0.0225f, 0.0f, -3.0f);
-        //glm::vec3 origin = wallSegemet.GetStart();
-//
-//
-// glm::vec3 start = wallSegemet.GetStart();
-// glm::vec3 end = wallSegemet.GetEnd();
-
-
-
-
-        //std::vector<BoardVertexData> boardVertexDataSet;
-
         int yUVOffsetIndex = -1;
 
         for (int i = 0; i < weatherBoardCount; i++) {
             yUVOffsetIndex++;
-            
             float xUVOffset = 0.0f;
-
 
             if (i > 15) {
                 yUVOffsetIndex = 12;
@@ -458,45 +371,30 @@ void Wall::CreateWeatherBoards() {
 
             glm::vec3 rayOrigin = start;
             glm::vec3 rayDir = glm::normalize(end - start);
-            float desiredBoardLength = glm::distance(start, end);
+            const float segLen = glm::distance(start, end);
+            float remaining = segLen;
+            const float eps = 1e-3f;
 
-            CubeRayResult rayResult;
-            do {
-                rayResult = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), desiredBoardLength);
-                if (rayResult.hitFound) {
+            while (remaining > eps) {
+                CubeRayResult r = Util::CastCubeRay(rayOrigin, rayDir, World::GetDoorAndWindowCubeTransforms(), remaining);
+                if (!r.hitFound) break;
 
-                    glm::vec3 hitPos = rayOrigin + (rayDir * rayResult.distanceToHit);
-                   // DrawPoint(hitPos, YELLOW);
-
-                    Transform transform;
-                    transform.position = rayOrigin;
-                    transform.rotation.y = Util::EulerYRotationBetweenTwoPoints(start, end);
-                    transform.scale.x = rayResult.distanceToHit;
-
-                    float dot = glm::dot(rayResult.hitNormal, rayDir);
-                    if (dot <= 0.99f) {
-                        glm::vec3 localStart = rayOrigin;
-                        glm::vec3 localEnd = rayOrigin + (rayDir * rayResult.distanceToHit);
-
-                        BoardVertexData boardVertexData = CreateBoardVertexData(localStart, localEnd, rayDir, yUVOffsetIndex, xUVOffset);
-                        m_boardVertexDataSet.emplace_back(boardVertexData);
-                    }
-
-                    // Start next ray just past the opposite face of the hit cube
-                    rayOrigin = rayResult.hitPosition + (rayDir * 0.01f);
+                if (glm::dot(r.hitNormal, rayDir) < 0.0f && r.distanceToHit > eps) {
+                    glm::vec3 localStart = rayOrigin;
+                    glm::vec3 localEnd = rayOrigin + (rayDir * r.distanceToHit);
+                    m_boardVertexDataSet.emplace_back(CreateBoardVertexData(localStart, localEnd, rayDir, yUVOffsetIndex, xUVOffset));
                 }
 
-            } while (rayResult.hitFound);
-
-            BoardVertexData boardVertexData = CreateBoardVertexData(rayOrigin, end, rayDir, yUVOffsetIndex, xUVOffset);
-            m_boardVertexDataSet.emplace_back(boardVertexData);
-
+                float advance = r.distanceToHit + eps;
+                rayOrigin += rayDir * advance;
+                remaining -= advance;
             }
-        //break;
+
+            if (remaining > eps) {
+                m_boardVertexDataSet.emplace_back(CreateBoardVertexData(rayOrigin, end, rayDir, yUVOffsetIndex, xUVOffset));
+            }
+        }
     }
-
-
-    
-
 }
+
 

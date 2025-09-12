@@ -75,6 +75,9 @@ void main() {
 
         int textureIndex = screenSpaceDecals[i].textureIndex;
         vec2 texCoords = clamp(objPos.xz + 0.5, 0.0, 1.0);
+
+        
+        #if ENABLE_BINDLESS == 1
         vec4 texData = texture(sampler2D(textureSamplers[textureIndex]), texCoords);
         float a = texData.a;
 
@@ -82,6 +85,9 @@ void main() {
 
         // Break if this pixel has already reached a full decal max of 1.0
         if (bestMask >= 1.0) break;
+        #else
+
+        #endif
     }
 
     DecalMaskOut = vec4(bestMask, bestMask, bestMask, 0);

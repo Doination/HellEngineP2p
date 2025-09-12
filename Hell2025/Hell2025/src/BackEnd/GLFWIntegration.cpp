@@ -150,19 +150,19 @@ namespace GLFWIntegration {
     }
 
     void SetWindowedMode(const WindowedMode& windowedMode) {
+        g_windowedMode = windowedMode;
+
         if (windowedMode == WindowedMode::WINDOWED) {
             g_currentWindowWidth = g_windowedWidth;
             g_currentWindowHeight = g_windowedHeight;
-            glfwSetWindowMonitor(g_window, nullptr, 0, 0, g_windowedWidth, g_windowedHeight, g_mode->refreshRate);
-            glfwSetWindowPos(g_window, 0, 0);
         }
         else if (windowedMode == WindowedMode::FULLSCREEN) {
-            g_currentWindowWidth = g_fullscreenWidth;
-            g_currentWindowHeight = g_fullscreenHeight;
-            glfwSetWindowMonitor(g_window, nullptr, 0, 0, g_fullscreenWidth - 1, g_fullscreenHeight - 1, g_mode->refreshRate);
-            //glfwSetWindowMonitor(g_window, g_monitor, 0, 0, g_fullscreenWidth, g_fullscreenHeight, g_mode->refreshRate);
+            g_currentWindowWidth = g_fullscreenWidth - 1;
+            g_currentWindowHeight = g_fullscreenHeight - 1;
         }
-        g_windowedMode = windowedMode;
+
+        glfwSetWindowMonitor(g_window, nullptr, 0, 0, g_currentWindowWidth, g_currentWindowHeight, g_mode->refreshRate);
+        glfwSetWindowPos(g_window, 0, 0);
     }
 
     void ToggleFullscreen() {
@@ -248,13 +248,4 @@ namespace GLFWIntegration {
     void framebuffer_size_callback(GLFWwindow* /*window*/, int width, int height) {
         // Nothing as of yet
     }
-
-    //void window_focus_callback(GLFWwindow* /*window*/, int focused) {
-    //    if (focused) {
-    //        g_windowHasFocus = true;
-    //    }
-    //    else {
-    //        g_windowHasFocus = false;
-    //    }
-    //}
 }

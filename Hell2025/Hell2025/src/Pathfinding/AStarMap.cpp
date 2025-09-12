@@ -237,13 +237,11 @@ namespace AStarMap {
     }
 
     bool IsCellObstacle(int x, int y) {
-        if (IsInBounds) {
+        if (IsInBounds(x, y)) {
             int idx = Index1D(x, y);
             return g_map[idx];
         }
-        else {
-            return false;
-        }
+        return false;
     }
 
     glm::ivec2 GetCellCoordsFromWorldSpacePosition(glm::vec3 position) {

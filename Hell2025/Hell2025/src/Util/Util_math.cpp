@@ -92,6 +92,9 @@ namespace Util {
     }
 
     glm::vec2 ComputeCentroid2D(const std::vector<glm::vec2>& points) {
+        if (points.empty()) {
+            return glm::vec2(0.0f);
+        }
         glm::vec2 centroid(0.0f);
         for (const auto& p : points) {
             centroid += p;

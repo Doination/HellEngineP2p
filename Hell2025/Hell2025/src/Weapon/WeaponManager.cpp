@@ -22,14 +22,14 @@ namespace WeaponManager {
         glockSilencer.name = "GLOCK_SILENCER";
         glockSilencer.modelName = "Glock_Silencer";
         glockSilencer.boneName = "Suppressor";
-        glockSilencer.meshMaterials["Glock_silencer"] = "Glock_Silencer";
+        glockSilencer.meshMaterialNames["Glock_silencer"] = "Glock_Silencer";
 
         WeaponAttachmentInfo& glockRedDot = g_attachments.emplace_back();
         glockRedDot.name = "GLOCK_RED_DOT";
         glockRedDot.modelName = "Glock_RedDot";
         glockRedDot.boneName = "Sight";
-        glockRedDot.meshMaterials["RedDotSight"] = "Glock_RedDot";
-        glockRedDot.meshMaterials["RedDotSightGlass"] = "Glock_RedDot";
+        glockRedDot.meshMaterialNames["RedDotSight"] = "Glock_RedDot";
+        glockRedDot.meshMaterialNames["RedDotSightGlass"] = "Glock_RedDot";
         glockRedDot.meshEmmisveTextureNames["RedDotSight"] = "Glock_RedDot_EMI";
         glockRedDot.glassMeshNames.push_back("RedDotSightGlass");
 

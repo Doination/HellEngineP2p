@@ -36,7 +36,6 @@ namespace World {
                 RenderDataManager::SubmitOutlineRenderItems(gameObject.GetRenderItems());
                 RenderDataManager::SubmitOutlineRenderItems(gameObject.GetRenderItemsHairTopLayer());
                 RenderDataManager::SubmitOutlineRenderItems(gameObject.GetRenderItemsHairBottomLayer());
-                break;
             }
         }
 

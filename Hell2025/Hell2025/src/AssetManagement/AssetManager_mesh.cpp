@@ -104,20 +104,37 @@ namespace AssetManager {
     }
 
     std::span<Vertex> GetMeshVerticesSpan(Mesh* mesh) {
-        std::vector<Vertex>& vertices = GetVertices();
         static const std::span<Vertex> empty;
-    
-        if (!mesh || mesh->baseVertex < 0 || mesh->vertexCount + mesh->vertexCount > vertices.size()) return empty;
-        return std::span<Vertex>(vertices.data() + mesh->baseVertex, mesh->vertexCount);
+        auto& vertices = GetVertices();
+
+        if (!mesh || mesh->baseVertex < 0 || mesh->vertexCount < 0) {
+            return empty;
+        }
+        size_t base = static_cast<size_t>(mesh->baseVertex);
+        size_t count = static_cast<size_t>(mesh->vertexCount);
+        
+        if (base > vertices.size() || count > vertices.size() - base) {
+            return empty;
+        }
+        return { vertices.data() + base, count };
     }
-    
+
     std::span<uint32_t> GetMeshIndicesSpan(Mesh* mesh) {
-        std::vector<uint32_t>& indices = GetIndices();
         static const std::span<uint32_t> empty;
-    
-        if (!mesh || mesh->baseVertex < 0 || mesh->baseIndex + mesh->indexCount > indices.size()) return empty;
-        return std::span<uint32_t>(indices.data() + mesh->baseIndex, mesh->indexCount);
+        auto& indices = GetIndices();
+
+        if (!mesh || mesh->baseIndex < 0 || mesh->indexCount < 0) {
+            return empty;
+        }        
+        size_t base = static_cast<size_t>(mesh->baseIndex);
+        size_t count = static_cast<size_t>(mesh->indexCount);
+        
+        if (base > indices.size() || count > indices.size() - base) {
+            return empty;
+        }
+        return { indices.data() + base, count };
     }
+
 
     void CreateMeshBvhs() {
         Timer timer ("CreateMeshBVHs()");

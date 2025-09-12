@@ -311,7 +311,7 @@ namespace World {
         g_gameObjects.clear();
 
         GameObjectCreateInfo createInfo2;
-        createInfo2.position = glm::vec3(22.0f, 30.5f, 39.0f);
+        createInfo2.position = glm::vec3(22.0f, 30.5f, 38.25f);
         createInfo2.scale = glm::vec3(1.0f);
         createInfo2.modelName = "Bunny";
         AddGameObject(createInfo2);

@@ -69,7 +69,7 @@ namespace OpenGLRenderer {
         spriteSheet->depthMask = false;
         spriteSheet->depthFunc = GL_LESS;
         spriteSheet->blendFuncSrcfactor = GL_SRC_ALPHA;
-        spriteSheet->blendFuncDstfactor = GL_ONE_MINUS_SRC_ALPHA;
+        spriteSheet->blendFuncDstfactor = GL_ONE; // was GL_ONE_MINUS_SRC_ALPHA
 
         OpenGLRasterizerState* skybox = CreateRasterizerState("SkyBox");
         skybox->depthTestEnabled = false;

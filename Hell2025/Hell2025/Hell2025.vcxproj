@@ -211,6 +211,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <ClCompile Include="src\API\OpenGL\GL_util.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\ComputePasses\GL_compute_ftt.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\ComputePasses\GL_compute_skinning.cpp" />
+    <ClCompile Include="src\API\OpenGL\Renderer\ComputePasses\GL_gaussian_blur.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\GL_renderer.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\GL_renderer_debug.cpp" />
     <ClCompile Include="src\API\OpenGL\Renderer\GL_renderer_util.cpp" />
@@ -538,6 +539,7 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <None Include="res\shaders\OpenGL\GL_fur.vert" />
     <None Include="res\shaders\OpenGL\GL_fur_composite.comp" />
     <None Include="res\shaders\OpenGL\GL_gaussian_blur.comp" />
+    <None Include="res\shaders\OpenGL\GL_gaussian_blur_util.comp" />
     <None Include="res\shaders\OpenGL\GL_gizmo.frag" />
     <None Include="res\shaders\OpenGL\GL_gizmo.vert" />
     <None Include="res\shaders\OpenGL\GL_glass.frag" />
@@ -579,7 +581,6 @@ xcopy /Y /I "$(ProjectDir)vendor\DLLs\*.dll" "$(TargetDir)"
     <None Include="res\shaders\OpenGL\GL_point_cloud_lighting.comp" />
     <None Include="res\shaders\OpenGL\GL_post_processing.comp" />
     <None Include="res\shaders\OpenGL\GL_raytrace_scene.comp" />
-    <None Include="res\shaders\OpenGL\GL_screenspace_decals.comp" />
     <None Include="res\shaders\OpenGL\GL_screenspace_decals.frag" />
     <None Include="res\shaders\OpenGL\GL_screenspace_decals.vert" />
     <None Include="res\shaders\OpenGL\GL_shadow_cube_map.frag" />

@@ -28,9 +28,10 @@ namespace UIBackEnd {
         const std::string& textureName,
         glm::ivec2 location,
         Alignment alignment,
-        glm::vec4 colorTint = glm::vec4(1,1,1,1),
+        glm::vec4 colorTint = glm::vec4(1, 1, 1, 1),
         glm::ivec2 size = glm::ivec2(-1, -1),
-        TextureFilter textureFilter = TextureFilter::NEAREST
+        TextureFilter textureFilter = TextureFilter::NEAREST,
+        float rotation = 0.0f
     );
     void EndFrame();
     Mesh2D& GetUIMesh();
