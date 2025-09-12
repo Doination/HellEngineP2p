@@ -17,6 +17,8 @@
 #include "Tools/ImageTools.h"
 #include "UI/UIBackEnd.h"
 #include "Viewport/ViewportManager.h"
+#include "../../../HellNet/NetSystem.h"
+
 
 // Get me out of here
 #include "World/World.h"
@@ -31,11 +33,13 @@ namespace Game {
     std::vector<Player> g_localPlayers;
     std::vector<Player> g_onlinePlayers;
     SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
+hellnet::NetSystem gNet;
+uint32_t g_netTick = 0;
 
     void UpdateAudioLoops();
 
     void AddLocalPlayer(glm::vec3 position, glm::vec3 rotation) {
-        if (g_localPlayers.size() == 4) {
+            if (g_localPlayers.size() == 4) {
             return;
         }
         Player& player = g_localPlayers.emplace_back();
