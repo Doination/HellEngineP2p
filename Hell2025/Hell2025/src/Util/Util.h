@@ -142,6 +142,7 @@ namespace Util {
     glm::mat4 aiMatrix3x3ToGlm(const aiMatrix3x3& from); 
 
     // Conversions
+    std::string InventoryStateToString(const InventoryState& state);
     std::string OpenStateToString(OpenState mode);
     std::string LightTypeToString(LightType type);
     std::string PickUpTypeToString(PickUpType type);

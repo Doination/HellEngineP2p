@@ -7,7 +7,9 @@ struct FontSpriteSheet {
     std::string m_characters;
     int m_textureWidth;
     int m_textureHeight;
-    int m_lineHeight;
+    int m_charHeight;
+    int m_lineSpacing;
+    int m_charSpacing;
     struct CharData {
         int width;
         int height;
@@ -19,7 +21,9 @@ struct FontSpriteSheet {
 
 namespace FontSpriteSheetPacker {
     void Export(const std::string& name, 
-        const std::string& characters, 
+        const std::string& characters,
+        int charSpacing,
+        int lineSpacing,
         const std::string& textureSourcePath, 
         const std::string& outputPath
     );

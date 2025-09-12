@@ -1,6 +1,16 @@
 #include "Util.h"
 
 namespace Util {
+    std::string InventoryStateToString(const InventoryState& state) {
+        switch (state) {
+            case InventoryState::CLOSED:         return "CLOSED";
+            case InventoryState::VIEWING_ITEMS:  return "VIEWING_ITEMS";
+            case InventoryState::ITEM_INSPECT:   return "ITEM_INSPECT";
+            case InventoryState::MOVING_ITEM:    return "MOVING_ITEM";
+            case InventoryState::ROTATING_ITEM:  return "ROTATING_ITEM";
+            default: return "UNKNOWN";
+        }
+    }
 
     std::string LightTypeToString(LightType type) {
         switch (type) {

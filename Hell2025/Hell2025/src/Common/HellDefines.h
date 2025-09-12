@@ -98,3 +98,7 @@
 
 // Global illumination
 #define POINT_CLOUD_SPACING 0.4f
+
+// Inventory
+#define MAX_INVENTORY_X_SIZE 8
+#define MAX_INVENTORY_Y_SIZE 4

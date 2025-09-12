@@ -92,7 +92,7 @@ namespace Editor {
     void Update(float deltaTime) {
 
         // Toggle editor
-        if (Input::KeyPressed(HELL_KEY_TAB)) {
+        if (Input::KeyPressed(HELL_KEY_F1)) {
             Audio::PlayAudio(AUDIO_SELECT, 1.0f);
             Editor::ToggleEditorOpenState();
 

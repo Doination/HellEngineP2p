@@ -47,8 +47,26 @@ void Player::BeginFrame() {
 }
 
 void Player::Update(float deltaTime) {
+    m_moving = false;
+
     if (Editor::IsOpen()) {
         return;
+    }
+
+    // Toggle inventory
+    if (PressedToggleInventory()) {
+        std::cout << "PRESSED TOGGLE INVENTORY\n";
+        if (m_inventory.IsClosed()) {
+            m_inventory.OpenInventory();
+        }
+        else {
+            m_inventory.CloseInventory();
+        }
+    }
+
+    // This may break code elsewhere in the player logic like anywhere
+    if (m_inventory.IsOpen()) {
+        DisableControl();
     }
 
     // Inside or outside?
@@ -149,6 +167,14 @@ void Player::Update(float deltaTime) {
         auto* viewWeapon = GetViewWeaponAnimatedGameObject();
         viewWeapon->PrintNodeNames();
     }
+
+    Viewport* viewport = ViewportManager::GetViewportByIndex(m_viewportIndex);
+    if (viewport->IsVisible()) {
+        if (Input::KeyPressed(HELL_KEY_8)) {
+            std::cout << "\nPlayer " << m_viewportIndex << " inventory:\n";
+            m_inventory.PrintGridOccupiedStateToConsole();
+        }
+    }
 }
 
 struct SpawnPoint {
@@ -157,11 +183,20 @@ struct SpawnPoint {
 };
 
 void Player::Respawn() {
-
     WeaponManager::Init();
+    m_inventory.CloseInventory();
+    m_inventory.ClearInventory();
+    m_inventory.AddItem("Knife");
+    m_inventory.AddItem("Glock");
+    m_inventory.AddItem("GoldenGlock");
+    m_inventory.AddItem("Remington870");
+    m_inventory.AddItem("GoldenGlock");
+    m_inventory.AddItem("GoldenGlock");
+    m_inventory.AddItem("Knife");
+    m_inventory.AddItem("Knife");
+    m_inventory.AddItem("Remington870");
 
     World::GetKangaroos()[0].Respawn();
-
 
     if (m_viewportIndex == 0) {
 
@@ -463,4 +498,8 @@ Ragdoll* Player::GetRagdoll() {
     return Physics::GetRagdollById(m_characterModelAnimatedGameObject.GetRagdollId());
 }
 
+
+bool Player::InventoryIsOpen() {
+    return m_inventory.IsOpen();
+}
 

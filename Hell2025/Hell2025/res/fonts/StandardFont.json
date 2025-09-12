@@ -2,8 +2,10 @@
   "name": "StandardFont",
   "textureWidth": 120,
   "textureHeight": 120,
-  "lineHeight": 14,
-  "characters": "!\"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\\^_`abcdefghijklmnopqrstuvwxyz ",
+  "charHeight": 14,
+  "lineSpacing": 0,
+  "charSpacing": 0,
+  "characters": "!\"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\\^_`abcdefghijklmnopqrstuvwxyz []",
   "charDataList": [
     { "width": 3, "height": 13, "offsetX": 1, "offsetY": 1 },
     { "width": 9, "height": 14, "offsetX": 5, "offsetY": 1 },
@@ -91,6 +93,8 @@
     { "width": 7, "height": 14, "offsetX": 10, "offsetY": 106 },
     { "width": 9, "height": 14, "offsetX": 18, "offsetY": 106 },
     { "width": 9, "height": 13, "offsetX": 28, "offsetY": 106 },
-    { "width": 7, "height": 12, "offsetX": 38, "offsetY": 106 }
+    { "width": 7, "height": 12, "offsetX": 38, "offsetY": 106 },
+    { "width": 5, "height": 13, "offsetX": 46, "offsetY": 106 },
+    { "width": 5, "height": 13, "offsetX": 52, "offsetY": 106 }
   ]
 }

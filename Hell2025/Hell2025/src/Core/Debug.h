@@ -6,10 +6,10 @@ namespace Debug {
     void Update();
     void AddText(const std::string& text);
     void EndFrame();
-    void ToggleDebugText();
     void NextDebugRenderMode();
+    void NextDebugTextMode();
 
-    bool IsDebugTextVisible();
     const std::string& GetText();
     const DebugRenderMode& GetDebugRenderMode();
+    const DebugTextMode& GetDebugTextMode();
 }

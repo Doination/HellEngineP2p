@@ -860,7 +860,7 @@ namespace World {
         }
 
         Wall& wall = g_walls.emplace_back();
-        wall.Init(createInfo);
+        wall.Init(createInfo, spawnOffset);
 
         return wall.GetObjectId();
     }

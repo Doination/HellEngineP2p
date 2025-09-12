@@ -4,10 +4,11 @@
 #include "Util.h"
 #include "UniqueID.h"
 
-void WallSegment::Init(glm::vec3 start, glm::vec3 end, float height, uint64_t parentObjectId) {
+void WallSegment::Init(glm::vec3 start, glm::vec3 end, float height, uint64_t parentObjectId, const SpawnOffset& spawnOffset) {
     m_start = start;
     m_end = end;
     m_height = height;
+    m_spawnOffset = spawnOffset;
 
     // Normal
     glm::vec3 dir = glm::normalize(m_end - m_start);
@@ -47,7 +48,7 @@ void WallSegment::CreateVertexData(std::vector<ClippingCube>& clippingCubes, flo
     for (Vertex& vertex : m_vertices) {
         glm::vec3 origin = glm::vec3(0, 0, 0);
 
-        // Correct any errors introduced by Clipper used integers the underhood
+        // Correct any errors introduced by Clipper used integers the under hood
         float threshold = 0.01f;
         for (const glm::vec3& originalPosition : m_corners) {
             if (std::abs(vertex.position.x - originalPosition.x) < threshold) {
@@ -63,7 +64,7 @@ void WallSegment::CreateVertexData(std::vector<ClippingCube>& clippingCubes, flo
 
         // Update UVs
         origin = glm::vec3(0);
-        vertex.uv = Util::CalculateUV(vertex.position, m_normal);
+        vertex.uv = Util::CalculateUV(vertex.position - m_spawnOffset.translation, m_normal);
         vertex.uv *= texScale;
         vertex.uv.x += texOffsetX;
         vertex.uv.y += texOffsetY;

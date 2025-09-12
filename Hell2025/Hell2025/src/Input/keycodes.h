@@ -129,13 +129,13 @@
 #define HELL_MOUSE_LEFT				350
 #define HELL_MOUSE_RIGHT			351
 
-#define HELL_KEY_WIN_ENTER        13
+#define HELL_KEY_WIN_ENTER         13
 #define HELL_KEY_WIN_SHIFT         16
 #define HELL_KEY_WIN_CONTROL       17
 #define HELL_KEY_WIN_ALT		   18
 #define HELL_KEY_WIN_TAB           9
 #define HELL_KEY_WIN_CAPSLOCK      20
-#define HELL_KEY_WIN_ESCAPE			27
+#define HELL_KEY_WIN_ESCAPE		   27
 
 /*#define HELL_CONTROLLER_BUTTON_0	352
 #define HELL_CONTROLLER_BUTTON_1    353

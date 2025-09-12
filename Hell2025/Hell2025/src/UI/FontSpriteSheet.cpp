@@ -34,11 +34,11 @@ namespace FontSpriteSheetPacker {
         std::string characters = R"(!"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\^_`abcdefghijklmnopqrstuvwxyz )";
         std::string textureSourcePath = "res/fonts/raw_images/standard_font/";
         std::string outputPath = "res/fonts/";
-        Export(name, characters, textureSourcePath, outputPath);
+        Export(name, characters, 0, 0, textureSourcePath, outputPath);
         FontSpriteSheet fontSpriteSheet = Import("res/fonts/StandardFont.json");
     }
 
-    void Export(const std::string& name, const std::string& characters, const std::string& textureSourcePath, const std::string& outputPath) {
+    void Export(const std::string& name, const std::string& characters, int charSpacing, int lineSpacing, const std::string& textureSourcePath, const std::string& outputPath) {
         // Padding in pixels around each glyph
         const int padX = 1;
         const int padY = 1;
@@ -134,7 +134,9 @@ namespace FontSpriteSheetPacker {
             jsonFile << "  \"name\": \"" << EscapeString(name) << "\",\n";
             jsonFile << "  \"textureWidth\": " << textureWidth << ",\n";
             jsonFile << "  \"textureHeight\": " << textureHeight << ",\n";
-            jsonFile << "  \"lineHeight\": " << maxCharHeight << ",\n";
+            jsonFile << "  \"charHeight\": " << maxCharHeight << ",\n";
+            jsonFile << "  \"lineSpacing\": " << lineSpacing << ",\n";
+            jsonFile << "  \"charSpacing\": " << charSpacing << ",\n";
             jsonFile << "  \"characters\": \"" << EscapeString(characters) << "\",\n";
             jsonFile << "  \"charDataList\": [\n";
             for (size_t i = 0; i < charDataList.size(); i++) {
@@ -179,7 +181,9 @@ namespace FontSpriteSheetPacker {
         fontSpriteSheet.m_characters = FindString(json, "characters");
         fontSpriteSheet.m_textureWidth = FindInt(json, "textureWidth");
         fontSpriteSheet.m_textureHeight = FindInt(json, "textureHeight");
-        fontSpriteSheet.m_lineHeight = FindInt(json, "lineHeight");
+        fontSpriteSheet.m_lineSpacing = FindInt(json, "lineSpacing");
+        fontSpriteSheet.m_charHeight = FindInt(json, "charHeight");
+        fontSpriteSheet.m_charSpacing = FindInt(json, "charSpacing");
         std::vector<std::string> charDataList = FindArray(json, "charDataList");
         for (const auto& charData : charDataList) {
             FontSpriteSheet::CharData data;

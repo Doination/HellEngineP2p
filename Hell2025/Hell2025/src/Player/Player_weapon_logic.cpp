@@ -11,7 +11,7 @@
 #include "Renderer/Renderer.h"
 
 void Player::UpdateWeaponLogic(float deltaTime) {
-    if (!HasControl() || IsDead()) return;
+    if (IsDead()) return;
 
     if (PressedNextWeapon()) {
         NextWeapon();
@@ -24,11 +24,13 @@ void Player::UpdateWeaponLogic(float deltaTime) {
     if (!viewWeapon) return;
     if (!weaponInfo) return;
 
-    switch (GetCurrentWeaponType()) {
-    case WeaponType::MELEE:     UpdateMeleeLogic(deltaTime);        break;
-    case WeaponType::PISTOL:    UpdateGunLogic(deltaTime);          break;
-    case WeaponType::AUTOMATIC: UpdateGunLogic(deltaTime);          break;
-    case WeaponType::SHOTGUN:   UpdateShotgunGunLogic(deltaTime);   break;
+    if (HasControl()) {
+        switch (GetCurrentWeaponType()) {
+            case WeaponType::MELEE:     UpdateMeleeLogic(deltaTime);        break;
+            case WeaponType::PISTOL:    UpdateGunLogic(deltaTime);          break;
+            case WeaponType::AUTOMATIC: UpdateGunLogic(deltaTime);          break;
+            case WeaponType::SHOTGUN:   UpdateShotgunGunLogic(deltaTime);   break;
+        }
     }
 
     // Need to initiate draw animation?

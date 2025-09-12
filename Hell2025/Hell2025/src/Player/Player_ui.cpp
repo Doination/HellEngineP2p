@@ -26,11 +26,15 @@ void Player::UpdateUI() {
     int centerX = xLeft + (width / 2);
     int centerY = yTop + (height / 2);
     int ammoX = xRight - (width * 0.17f);
-    int ammoY = yBottom - (height * 0.145f) - TextBlitter::GetFontSpriteSheet("AmmoFont")->m_lineHeight;
+    int ammoY = yBottom - (height * 0.145f) - TextBlitter::GetFontSpriteSheet("AmmoFont")->m_charHeight - -TextBlitter::GetFontSpriteSheet("AmmoFont")->m_lineSpacing;
 
     // Info text
     int infoTextX = xLeft + (width * 0.1f);
     int infoTextY = ammoY;
+
+    if (m_inventory.IsOpen()) {
+        m_inventory.SubmitRenderItems();
+    }
 
 //   glm::ivec2 location = glm::ivec2(centerX, centerY);
 //   location = glm::ivec2(64, yTop + 64);
@@ -60,7 +64,7 @@ void Player::UpdateUI() {
 
         UIBackEnd::BlitText(m_infoText, "StandardFont", infoTextX, infoTextY, Alignment::TOP_LEFT, 2.0f);
         UIBackEnd::BlitTexture(crosshairTexture, glm::ivec2(centerX, centerY), Alignment::CENTERED, WHITE, glm::ivec2(128, 128));
-    
+
         // Ammo
         if (GetCurrentWeaponType() != WeaponType::MELEE) {
             float scale = 1.3f;
@@ -119,105 +123,120 @@ void Player::UpdateUI() {
             }
         }
 
-        if (Debug::IsDebugTextVisible()) {
-            return;
-        }
+        if (Debug::GetDebugTextMode() == DebugTextMode::PER_PLAYER) {
 
-        std::string text = "";
-        text += "Cam Pos: " + Util::Vec3ToString(GetCameraPosition()) + "\n";
-        text += "Cam Euler: " + Util::Vec3ToString(GetCameraRotation()) + "\n";
 
-        //text += "Debug Render mode: " + Util::DebugRenderModeToString(Debug::GetDebugRenderMode())+ "\n";
+            std::string text = "";
+            text += "Cam Pos: " + Util::Vec3ToString(GetCameraPosition()) + "\n";
+            text += "Cam Euler: " + Util::Vec3ToString(GetCameraRotation()) + "\n";
 
-        // Kangaroos
-        if (false) {
-            if (World::GetKangaroos().size()) {
-                Kangaroo& kangaroo = World::GetKangaroos()[0];
-                text += kangaroo.GetDebugInfoString();
+            //text += "Debug Render mode: " + Util::DebugRenderModeToString(Debug::GetDebugRenderMode())+ "\n";
+
+            // Kangaroos
+            if (false) {
+                if (World::GetKangaroos().size()) {
+                    Kangaroo& kangaroo = World::GetKangaroos()[0];
+                    text += kangaroo.GetDebugInfoString();
+                }
             }
-        }
 
-        // Weapons
-        if (false) {
-            text += "Weapon Action: " + Util::WeaponActionToString(GetCurrentWeaponAction()) + "\n";
-        }
-
-        // Interact
-        if (false) {
-            text += "Interact object: " + Util::ObjectTypeToString(m_interactObjectType) + " " + std::to_string(m_interactObjectId) + "\n";
-        }
-
-        // Rays
-        if (true) {
-            text += "BVH ray: " + Util::ObjectTypeToString(m_bvhRayResult.objectType) + " " + std::to_string(m_bvhRayResult.objectId) + "\n";
-            text += "PhysX ray: " + Util::ObjectTypeToString(m_physXRayResult.userData.objectType) + " " + std::to_string(m_physXRayResult.userData.objectId) + " " + Util::PhysicsTypeToString(m_physXRayResult.userData.physicsType) + " " + std::to_string(m_physXRayResult.userData.physicsId) + "\n";
-            text += "Ray hit found: " + Util::BoolToString(m_rayHitFound) + " " + Util::ObjectTypeToString(m_rayHitObjectType) + " " + std::to_string(m_rayhitObjectId) + "\n";
-            text += "Feet above height field: " + Util::BoolToString(m_feetAboveHeightField) + "\n";
-        }
-
-        // Movement
-        if (false) {
-            text += "Movement Dir: " + Util::Vec3ToString(m_movementDirection) + "\n";
-            text += "Acceleration: " + std::to_string(m_acceleration) + "\n";
-            text += "Y Velocity: " + std::to_string(m_yVelocity) + "\n";
-        }
-
-        // Lights
-        if (false) {
-            for (Light& Light : World::GetLights()) {
-                text += "Light: " + Util::BoolToString(Light.IsDirty()) + "\n";
+            // Inventory
+            if (true) {
+                text += "Inventory State: " + Util::InventoryStateToString(m_inventory.GetInventoryState()) + "\n";
+                for (auto item : m_inventory.GetItems()) {
+                    text += "- " + item.m_name;
+                    text += " [" + std::to_string(item.m_gridLocation.x) +"][" + std::to_string(item.m_gridLocation.y) + "]";
+                    text += "\n";
+                }
             }
-        }
 
-        // Physx Object Count
-        if (false) {
-            text += "\n";
-            text += Physics::GetObjectCountsAsString();
-            text += "\n";
-        }
-
-        // Shark
-        if (false) {
-            for (Shark& shark : World::GetSharks()) {
-                text += shark.GetDebugInfoAsString();
+            // Movement
+            if (true) {
+                text += "IsMoving: " + Util::BoolToString(IsMoving()) + "\n";
             }
-        }
 
-        glm::vec3 rayOrigin = GetCameraPosition();
-        glm::vec3 rayDir = GetCameraForward();
-        float maxRayDistance = 100.0f;
+            // Weapons
+            if (false) {
+                text += "Weapon Action: " + Util::WeaponActionToString(GetCurrentWeaponAction()) + "\n";
+            }
 
-        BvhRayResult result = World::ClosestHit(rayOrigin, rayDir, maxRayDistance, m_viewportIndex);
-        if (result.hitFound) {
-            if (result.objectType == ObjectType::PIANO_KEY) {
-                for (Piano& piano : World::GetPianos()) {
-                    if (piano.PianoKeyExists(result.objectId)) {
-                        PianoKey* pianoKey = piano.GetPianoKey(result.objectId);
-                        if (pianoKey) {
-                            text += "Key code: " + std::to_string(pianoKey->m_note) + "\n";
+            // Interact
+            if (false) {
+                text += "Interact object: " + Util::ObjectTypeToString(m_interactObjectType) + " " + std::to_string(m_interactObjectId) + "\n";
+            }
+
+            // Rays
+            if (false) {
+                text += "BVH ray: " + Util::ObjectTypeToString(m_bvhRayResult.objectType) + " " + std::to_string(m_bvhRayResult.objectId) + "\n";
+                text += "PhysX ray: " + Util::ObjectTypeToString(m_physXRayResult.userData.objectType) + " " + std::to_string(m_physXRayResult.userData.objectId) + " " + Util::PhysicsTypeToString(m_physXRayResult.userData.physicsType) + " " + std::to_string(m_physXRayResult.userData.physicsId) + "\n";
+                text += "Ray hit found: " + Util::BoolToString(m_rayHitFound) + " " + Util::ObjectTypeToString(m_rayHitObjectType) + " " + std::to_string(m_rayhitObjectId) + "\n";
+                text += "Feet above height field: " + Util::BoolToString(m_feetAboveHeightField) + "\n";
+            }
+
+            // Movement
+            if (false) {
+                text += "Movement Dir: " + Util::Vec3ToString(m_movementDirection) + "\n";
+                text += "Acceleration: " + std::to_string(m_acceleration) + "\n";
+                text += "Y Velocity: " + std::to_string(m_yVelocity) + "\n";
+            }
+
+            // Lights
+            if (false) {
+                for (Light& Light : World::GetLights()) {
+                    text += "Light: " + Util::BoolToString(Light.IsDirty()) + "\n";
+                }
+            }
+
+            // Physx Object Count
+            if (false) {
+                text += "\n";
+                text += Physics::GetObjectCountsAsString();
+                text += "\n";
+            }
+
+            // Shark
+            if (false) {
+                for (Shark& shark : World::GetSharks()) {
+                    text += shark.GetDebugInfoAsString();
+                }
+            }
+
+            glm::vec3 rayOrigin = GetCameraPosition();
+            glm::vec3 rayDir = GetCameraForward();
+            float maxRayDistance = 100.0f;
+
+            BvhRayResult result = World::ClosestHit(rayOrigin, rayDir, maxRayDistance, m_viewportIndex);
+            if (result.hitFound) {
+                if (result.objectType == ObjectType::PIANO_KEY) {
+                    for (Piano& piano : World::GetPianos()) {
+                        if (piano.PianoKeyExists(result.objectId)) {
+                            PianoKey* pianoKey = piano.GetPianoKey(result.objectId);
+                            if (pianoKey) {
+                                text += "Key code: " + std::to_string(pianoKey->m_note) + "\n";
+                            }
                         }
                     }
                 }
             }
+
+            //text += "CanReloadShotgun: " + Util::BoolToString(CanReloadShotgun()) + "\n";
+            // text += "ShellInChamber: " + Util::BoolToString(IsShellInShotgunChamber()) + "\n";
+            // text += "CanFireShotgun: " + Util::BoolToString(CanFireShotgun()) + "\n";
+            //
+            // WeaponState* weaponState = GetCurrentWeaponState();
+            // AmmoState* ammoState = GetCurrentAmmoState();
+            // text += "AwaitingPumpAudio: " + Util::BoolToString(weaponState->shotgunAwaitingPumpAudio) + "\n";
+            // text += "ShotgunInAuto: " + Util::BoolToString(weaponState->shotgunInAutoMode) + "\n";
+            //
+            //
+            // text += "\n";
+            // text += "Grounded: " + Util::BoolToString(m_grounded) + "\n";
+            //text += "Grounded: " + Util::BoolToString(m_grounded) +  "\n";
+            //text += "GroundedLastFrame: " + Util::BoolToString(m_groundedLastFrame) + "\n";
+
+            UIBackEnd::BlitText(text, "StandardFont", xLeft, yTop, Alignment::TOP_LEFT, 2.0f);
         }
-
-        //text += "CanReloadShotgun: " + Util::BoolToString(CanReloadShotgun()) + "\n";
-        // text += "ShellInChamber: " + Util::BoolToString(IsShellInShotgunChamber()) + "\n";
-        // text += "CanFireShotgun: " + Util::BoolToString(CanFireShotgun()) + "\n";
-        //
-        // WeaponState* weaponState = GetCurrentWeaponState();
-        // AmmoState* ammoState = GetCurrentAmmoState();
-        // text += "AwaitingPumpAudio: " + Util::BoolToString(weaponState->shotgunAwaitingPumpAudio) + "\n";
-        // text += "ShotgunInAuto: " + Util::BoolToString(weaponState->shotgunInAutoMode) + "\n";
-        //
-        //
-        // text += "\n";
-        // text += "Grounded: " + Util::BoolToString(m_grounded) + "\n";
-        //text += "Grounded: " + Util::BoolToString(m_grounded) +  "\n";
-        //text += "GroundedLastFrame: " + Util::BoolToString(m_groundedLastFrame) + "\n";
-
-        UIBackEnd::BlitText(text, "StandardFont", xLeft, yTop, Alignment::TOP_LEFT, 2.0f);
-
+    
     }
     
     // Press Start

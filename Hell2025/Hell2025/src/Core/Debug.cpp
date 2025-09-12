@@ -19,6 +19,7 @@ namespace Debug {
     std::string g_text = "";
     bool g_showDebugText = false;
     DebugRenderMode g_debugRenderMode = DebugRenderMode::NONE;
+    DebugTextMode g_debugTextMode = DebugTextMode::NONE;
 
     void UpdateDebugPointsAndLines();
     void UpdateDebugText();
@@ -164,12 +165,11 @@ namespace Debug {
         g_text = "";
     }
 
-    void ToggleDebugText() {
-        g_showDebugText = !g_showDebugText;
-    }
-
-    bool IsDebugTextVisible() {
-        return g_showDebugText;
+    void NextDebugTextMode() {
+        g_debugTextMode = (DebugTextMode)(int(g_debugTextMode) + 1);
+        if (g_debugTextMode == DebugTextMode::DEBUG_TEXT_MODE_COUNT) {
+            g_debugTextMode = (DebugTextMode)0;
+        }
     }
 
     void NextDebugRenderMode() {
@@ -210,5 +210,9 @@ namespace Debug {
 
     const DebugRenderMode& GetDebugRenderMode() {
         return g_debugRenderMode;
+    }
+
+    const DebugTextMode& GetDebugTextMode() {
+        return g_debugTextMode;
     }
 }

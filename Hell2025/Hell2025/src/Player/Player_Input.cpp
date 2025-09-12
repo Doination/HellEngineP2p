@@ -251,6 +251,16 @@ bool Player::PressedFullscreen() {
     }
 }
 
+bool Player::PressedToggleInventory() {
+    if (m_inputType == InputType::KEYBOARD_AND_MOUSE) {
+        return InputMulti::KeyPressed(m_keyboardIndex, m_mouseIndex, m_controls.TOGGLE_INVENTORY);
+    }
+    else {
+        //return InputMulti::ButtonPressed(_controllerIndex, _controls.FIRE);
+        return false;
+    }
+}
+
 bool Player::PressedFlashlight() {
     if (m_inputType == InputType::KEYBOARD_AND_MOUSE) {
         return InputMulti::KeyPressed(m_keyboardIndex, m_mouseIndex, m_controls.FLASHLIGHT);

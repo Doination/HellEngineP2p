@@ -499,6 +499,100 @@ namespace OpenGLRenderer {
         }
     }
 
+
+    void InventoryGaussianPass() {
+        OpenGLFrameBuffer& gBuffer = g_frameBuffers["GBuffer"];
+
+        for (int i = 0; i < Game::GetLocalPlayerCount(); i++) {
+            Viewport* viewport = ViewportManager::GetViewportByIndex(i);
+            Player* player = Game::GetLocalPlayerByIndex(i);
+
+            if (!viewport->IsVisible()) continue;
+            if (!player->InventoryIsOpen()) continue;
+
+            SpaceCoords gBufferSpaceCooords = viewport->GetGBufferSpaceCoords();
+
+
+            if (Game::GetSplitscreenMode() == SplitscreenMode::FULLSCREEN && i == 0) {
+                BlitRect blitRect;
+                blitRect.x0 = 0;
+                blitRect.x1 = 1920;
+                blitRect.y0 = 0;
+                blitRect.y1 = 1080;
+                GaussianBlur(&gBuffer, &gBuffer, "FinalLighting", "FinalLighting", blitRect, blitRect, 5, 1);
+            }
+
+            if (Game::GetSplitscreenMode() == SplitscreenMode::TWO_PLAYER && i == 0) {
+                BlitRect blitRect;
+                blitRect.x0 = 0;
+                blitRect.x1 = 1920;
+                blitRect.y0 = 540;
+                blitRect.y1 = 1080;
+                GaussianBlur(&gBuffer, &gBuffer, "FinalLighting", "FinalLighting", blitRect, blitRect, 5, 1);
+            }
+
+            if (Game::GetSplitscreenMode() == SplitscreenMode::TWO_PLAYER && i == 1) {
+                BlitRect blitRect;
+                blitRect.x0 = 0;
+                blitRect.x1 = 1920;
+                blitRect.y0 = 0;
+                blitRect.y1 = 540;
+                GaussianBlur(&gBuffer, &gBuffer, "FinalLighting", "FinalLighting", blitRect, blitRect, 5, 1);
+            }
+
+           // const Resolutions& resolutions = Config::GetResolutions();
+           // int width = resolutions.ui.x * viewport->GetSize().x;
+           // int height = resolutions.ui.y * viewport->GetSize().y;
+           // int xLeft = resolutions.ui.x * viewport->GetPosition().x;
+           // int xRight = xLeft + width;
+           // int yTop = resolutions.ui.y * (1.0f - viewport->GetPosition().y - viewport->GetSize().y);
+           // int yBottom = yTop + height;
+           //
+           // yTop = resolutions.ui.y * (viewport->GetPosition().y - viewport->GetSize().y);
+           // yBottom = yTop - height;
+           //
+           //
+           // blitRect.x0 = xLeft;
+           // blitRect.x1 = xRight;
+           // blitRect.y0 = yTop;
+           // blitRect.y1 = yBottom;
+           //
+           //
+           // blitRect.y0 = 540;
+           // blitRect.y1 = 1080;
+
+
+           // blitRect.x0 = viewport->GetPosition().x * gBufferSpaceCooords.width;
+           // blitRect.x1 = (viewport->GetPosition().x * gBufferSpaceCooords.width) +  gBufferSpaceCooords.width;
+           //
+           // blitRect.y0 = viewport->GetPosition().y * gBufferSpaceCooords.height;
+           // blitRect.y1 = (viewport->GetPosition().y * gBufferSpaceCooords.height) + gBufferSpaceCooords.height;
+           //
+            //blitRect.x0 = viewport->GetLeftPixel();
+            //blitRect.x1 = viewport->GetRightPixel();
+            //blitRect.y0 = viewport->GetTopPixel();
+            //blitRect.y1 = viewport->GetBottomPixel();
+
+
+           //std::cout << "viewport Pos x: " << viewport->GetPosition().x << '\n';
+           //std::cout << "viewport Pos y: " << viewport->GetPosition().y << '\n';
+           //std::cout << "viewport Size x: " << viewport->GetSize().x << '\n';
+           //std::cout << "viewport Size y: " << viewport->GetSize().y << '\n';
+           //
+           //std::cout << "width: " << width << '\n';
+           //std::cout << "height: " << height << '\n';
+           //
+           //std::cout << "x0: " << blitRect.x0  << '\n';
+           //std::cout << "x1: " << blitRect.x1  << '\n';
+           //std::cout << "y0: " << blitRect.y0  << '\n';
+           //std::cout << "y1: " << blitRect.y1  << "\n\n";
+
+          //  std::cout << "player " << i << " inventory open, applying blur\n";
+        }
+
+    }
+
+
     void RenderGame() {
         OpenGLFrameBuffer& gBuffer = g_frameBuffers["GBuffer"];
         OpenGLFrameBuffer& hairFrameBuffer = g_frameBuffers["Hair"];
@@ -541,20 +635,7 @@ namespace OpenGLRenderer {
         RayMarchFog();
         OceanUnderwaterCompositePass();
         WinstonPass();
-
-        static bool gaussianTest = false;
-        if (Input::KeyPressed(HELL_KEY_Y)) {
-            gaussianTest = !gaussianTest;
-        }
-        if (gaussianTest) {
-            BlitRect blitRect;
-            blitRect.x0 = 0;
-            blitRect.y0 = 0;
-            blitRect.x1 = 1920;
-            blitRect.y1 = 1080;
-            GaussianBlur(&gBuffer, &gBuffer, "FinalLighting", "FinalLighting", blitRect, blitRect, 4, 2);
-        }
-
+        InventoryGaussianPass();
         PostProcessingPass();
         SpriteSheetPass();
         DebugViewPass();

@@ -2,6 +2,7 @@
 #include "HellTypes.h"
 #include "Camera/Camera.h"
 #include "Camera/Frustum.h"
+#include "Inventory/Inventory.h"
 #include "Math/AABB.h"
 #include "Physics/Physics.h"
 #include "Types/Game/AnimatedGameObject.h"
@@ -166,6 +167,7 @@ struct Player {
     bool PressedEscape();
     bool PressedMelee();
     bool PressedFlashlight();
+    bool PressedToggleInventory();
 
     void DisplayInfoText(const std::string& text);
     std::string m_infoText = "";
@@ -185,6 +187,8 @@ struct Player {
 
     ivecXZ GetChunkPos() { return m_chunkPos; }
 
+    bool InventoryIsOpen();
+
     bool InteractFound()                { return m_interactFound; }
     uint64_t GetInteractObjectId()      { return m_interactObjectId; }
     ObjectType GetInteractObjectType()  { return m_interactObjectType; }
@@ -193,6 +197,7 @@ struct Player {
 
 private:
     std::string m_name = "PLAYER_NAME";
+    Inventory m_inventory;
 
     // Interact
     PhysXRayResult m_physXRayResult;

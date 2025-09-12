@@ -2,7 +2,9 @@
   "name": "BebasNeue",
   "textureWidth": 180,
   "textureHeight": 180,
-  "lineHeight": 35,
+  "charHeight": 35,
+  "lineSpacing": 0,
+  "charSpacing": 2,
   "characters": "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789’,. ",
   "charDataList": [
     { "width": 17, "height": 35, "offsetX": 1, "offsetY": 1 },

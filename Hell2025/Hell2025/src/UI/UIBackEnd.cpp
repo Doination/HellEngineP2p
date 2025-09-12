@@ -16,25 +16,25 @@ namespace UIBackEnd {
     void Init() {
         // Export fonts, aka create spritesheets from single char files, no need to do every init but YOLO ¯\_(ツ)_/¯
         std::string name = "StandardFont";
-        std::string characters = R"(!"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\^_`abcdefghijklmnopqrstuvwxyz )";
+        std::string characters = R"(!"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\^_`abcdefghijklmnopqrstuvwxyz [])";
         std::string textureSourcePath = "res/fonts/raw_images/standard_font/";
         std::string outputPath = "res/fonts/";
-        FontSpriteSheetPacker::Export(name, characters, textureSourcePath, outputPath);
+        FontSpriteSheetPacker::Export(name, characters, 0, 0, textureSourcePath, outputPath);
 
         name = "AmmoFont";
         characters = "0123456789/";
         textureSourcePath = "res/fonts/raw_images/ammo_font/";
-        FontSpriteSheetPacker::Export(name, characters, textureSourcePath, outputPath);
+        FontSpriteSheetPacker::Export(name, characters, 0, 0, textureSourcePath, outputPath);
 
         name = "BebasNeue";
         characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789’,. ";
         textureSourcePath = "res/fonts/raw_images/bebas_neue/";
-        FontSpriteSheetPacker::Export(name, characters, textureSourcePath, outputPath);
+        FontSpriteSheetPacker::Export(name, characters, 2, 0, textureSourcePath, outputPath);
 
         name = "RobotoCondensed";
         characters = R"(!"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\^_`abcdefghijklmnopqrstuvwxyz )";
         textureSourcePath = "res/fonts/raw_images/roboto_condensed/";
-        FontSpriteSheetPacker::Export(name, characters, textureSourcePath, outputPath);
+        FontSpriteSheetPacker::Export(name, characters, 1, 1, textureSourcePath, outputPath);
 
         // Import fonts
         FontSpriteSheet standardFont = FontSpriteSheetPacker::Import("res/fonts/StandardFont.json");
@@ -156,8 +156,10 @@ mystery.
 
     void Update() {
         
-        if (Debug::IsDebugTextVisible()) {
-            BlitText(Debug::GetText(), "StandardFont", 0, 0, Alignment::TOP_LEFT, 2.0f);
+        if (Debug::GetDebugTextMode() == DebugTextMode::GLOBAL) {
+            //std::string text = Debug::GetText();
+            std::string text = "Global debug text\n... apparently it's broken right now.";
+            BlitText(text, "StandardFont", 0, 0, Alignment::TOP_LEFT, 2.0f);
         }
 
         //InventoryTest();
@@ -187,6 +189,7 @@ mystery.
         g_renderItems.clear();
     }
 
+
     void BlitText(const std::string& text, const std::string& fontName, int originX, int originY, Alignment alignment, float scale, TextureFilter textureFilter) {
         FontSpriteSheet* fontSpriteSheet = TextBlitter::GetFontSpriteSheet(fontName);
         if (!fontSpriteSheet) {
@@ -209,7 +212,12 @@ mystery.
         renderItem.filter = (textureFilter == TextureFilter::NEAREST) ? 1 : 0;
     }
 
-    void BlitTexture(const std::string& textureName, glm::ivec2 location, Alignment alignment, glm::vec4 colorTint, glm::ivec2 size, TextureFilter textureFilter, float rotation) {
+
+    void BlitTexture(BlitTextureInfo info) {
+        BlitTexture(info.textureName, info.location, info.alignment, info.colorTint, info.size, info.textureFilter, info.rotation, info.clipMinX, info.clipMinY, info.clipMaxX, info.clipMaxY);
+    }
+
+    void BlitTexture(const std::string& textureName, glm::ivec2 location, Alignment alignment, glm::vec4 colorTint, glm::ivec2 size, TextureFilter textureFilter, float rotation, int clipMinX, int clipMinY, int clipMaxX, int clipMaxY) {
         // Bail if texture not found
         int textureIndex = AssetManager::GetTextureIndexByName(textureName);
         if (textureIndex == -1) {
@@ -303,6 +311,24 @@ mystery.
         renderItem.indexCount = 6;
         renderItem.textureIndex = textureIndex;
         renderItem.filter = (textureFilter == TextureFilter::NEAREST) ? 1 : 0;
+        renderItem.clipMinX = clipMinX;
+        renderItem.clipMinY = clipMinY;
+        renderItem.clipMaxX = clipMaxX;
+        renderItem.clipMaxY = clipMaxY;
+
+        // Maybe tidy this up later
+        if (renderItem.clipMinX == -1) {
+            renderItem.clipMinX = 0;
+        }
+        if (renderItem.clipMinY == -1) {
+            renderItem.clipMinY = 0;
+        }
+        if (renderItem.clipMaxX == -1) {
+            renderItem.clipMaxX = BackEnd::GetCurrentWindowWidth();
+        }
+        if (renderItem.clipMaxY == -1) {
+            renderItem.clipMaxY = BackEnd::GetCurrentWindowHeight();
+        }
     }
 
     Mesh2D& GetUIMesh() {

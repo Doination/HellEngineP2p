@@ -8,6 +8,7 @@
 #include "Util.h"
 
 void Player::UpdateHeadBob(float deltaTime) {
+    if (!HasControl()) return;
   
     bool pressingMoveKey = PressingWalkLeft() || PressingWalkRight() || PressingWalkForward() || PressingWalkBackward();
 

@@ -38,28 +38,69 @@ namespace OpenGLRenderer {
 
         glDisable(GL_DEPTH_TEST);
         glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // vERY IMPORTANT. Preserves alpha accumulation correclty. Required for blit into main image.
+
         glBindVertexArray(glMesh.GetVAO());
 
         glEnable(GL_CLIP_DISTANCE0);
         glEnable(GL_CLIP_DISTANCE1);
         glEnable(GL_CLIP_DISTANCE2);
         glEnable(GL_CLIP_DISTANCE3);
-        
-        // Draw the nearest linear UI elements
-        glBindSampler(0, g_nearestSampler);
-        for (UIRenderItem& renderItem : UIBackEnd::GetRenderItems()) {
-            if (renderItem.filter == 1) {
-                OpenGLTexture& glTexture = AssetManager::GetTextureByIndex(renderItem.textureIndex)->GetGLTexture();
-                glBindTextureUnit(0, glTexture.GetHandle());
-                glDrawElementsInstancedBaseVertex(GL_TRIANGLES, renderItem.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * renderItem.baseIndex), 1, renderItem.baseVertex);
-            }
-        }
+
+
         // Draw the linear UI elements
         glBindSampler(0, g_linearSampler);
         for (UIRenderItem& renderItem : UIBackEnd::GetRenderItems()) {
             if (renderItem.filter == 0) {
                 OpenGLTexture& glTexture = AssetManager::GetTextureByIndex(renderItem.textureIndex)->GetGLTexture();
+
+                if (renderItem.clipMaxX != -1) {
+                    glEnable(GL_CLIP_DISTANCE0);
+                    glEnable(GL_CLIP_DISTANCE1);
+                    glEnable(GL_CLIP_DISTANCE2);
+                    glEnable(GL_CLIP_DISTANCE3);
+                    shader->SetInt("u_clipMinX", renderItem.clipMinX);
+                    shader->SetInt("u_clipMinY", renderItem.clipMinY);
+                    shader->SetInt("u_clipMaxX", renderItem.clipMaxX);
+                    shader->SetInt("u_clipMaxY", renderItem.clipMaxY);
+                }
+                else {
+                    glDisable(GL_CLIP_DISTANCE0);
+                    glDisable(GL_CLIP_DISTANCE1);
+                    glDisable(GL_CLIP_DISTANCE2);
+                    glDisable(GL_CLIP_DISTANCE3);
+                }
+
+
+                glBindTextureUnit(0, glTexture.GetHandle());
+                glDrawElementsInstancedBaseVertex(GL_TRIANGLES, renderItem.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * renderItem.baseIndex), 1, renderItem.baseVertex);
+            }
+        }
+
+
+        // Draw the nearest linear UI elements
+        glBindSampler(0, g_nearestSampler);
+        for (UIRenderItem& renderItem : UIBackEnd::GetRenderItems()) {
+            if (renderItem.filter == 1) {
+                OpenGLTexture& glTexture = AssetManager::GetTextureByIndex(renderItem.textureIndex)->GetGLTexture();
+
+                if (renderItem.clipMaxX != -1) {
+                    glEnable(GL_CLIP_DISTANCE0);
+                    glEnable(GL_CLIP_DISTANCE1);
+                    glEnable(GL_CLIP_DISTANCE2);
+                    glEnable(GL_CLIP_DISTANCE3);
+                    shader->SetInt("u_clipMinX", renderItem.clipMinX);
+                    shader->SetInt("u_clipMinY", renderItem.clipMinY);
+                    shader->SetInt("u_clipMaxX", renderItem.clipMaxX);
+                    shader->SetInt("u_clipMaxY", renderItem.clipMaxY);
+                }
+                else {
+                    glDisable(GL_CLIP_DISTANCE0);
+                    glDisable(GL_CLIP_DISTANCE1);
+                    glDisable(GL_CLIP_DISTANCE2);
+                    glDisable(GL_CLIP_DISTANCE3);
+                }
+
                 glBindTextureUnit(0, glTexture.GetHandle());
                 glDrawElementsInstancedBaseVertex(GL_TRIANGLES, renderItem.indexCount, GL_UNSIGNED_INT, (void*)(sizeof(unsigned int) * renderItem.baseIndex), 1, renderItem.baseVertex);
             }

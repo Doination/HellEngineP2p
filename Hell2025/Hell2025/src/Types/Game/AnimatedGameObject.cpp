@@ -361,6 +361,8 @@ void AnimatedGameObject::SetName(std::string name) {
 void AnimatedGameObject::SetSkinnedModel(std::string name) {
     SkinnedModel* ptr = AssetManager::GetSkinnedModelByName(name);
     if (ptr) {
+        //std::cout << "SetSkinnedModel() " << name << " mesh count: " << m_skinnedModel->GetMeshCount() << "\n";
+
         m_skinnedModel = ptr;
         m_meshRenderingEntries.clear();
         m_woundMaskTextureIndices.resize(m_skinnedModel->GetMeshCount());

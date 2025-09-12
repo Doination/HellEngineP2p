@@ -379,6 +379,27 @@ enum class GenericBouncableType : uint32_t {
     COUCH_CUSHION_4
 };
 
+enum InventoryState {
+    CLOSED,
+    VIEWING_ITEMS,
+    ITEM_INSPECT,
+    MOVING_ITEM,
+    ROTATING_ITEM
+};
+
+enum class DebugTextMode{
+    NONE,
+    PER_PLAYER,
+    GLOBAL,
+    DEBUG_TEXT_MODE_COUNT
+};
+
+enum struct InventoryItemType {
+    WEAPON,
+    AMMO,
+    KEY,
+    UESLESS,
+};
 
 inline RaycastIgnoreFlags operator|(RaycastIgnoreFlags a, RaycastIgnoreFlags b) {
     return static_cast<RaycastIgnoreFlags>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));

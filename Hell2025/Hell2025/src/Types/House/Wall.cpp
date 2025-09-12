@@ -7,9 +7,10 @@
 #include "World/World.h"
 #include "UniqueID.h"
 
-void Wall::Init(WallCreateInfo createInfo) {
+void Wall::Init(WallCreateInfo createInfo, const SpawnOffset& spawnOffset) {
     m_objectId = UniqueID::GetNext(); // Only do this once
     m_createInfo = createInfo;
+    m_spawnOffset = spawnOffset;
 
     UpdateSegmentsAndVertexData();
     //std::cout << "Wall::Init(): " << Util::WallTypeToString(m_createInfo.wallType) << "\n";
@@ -40,7 +41,7 @@ void Wall::UpdateSegmentsAndVertexData() {
         const glm::vec3& start = m_createInfo.points[i];
         const glm::vec3& end = m_createInfo.points[i + 1];
         WallSegment& wallSegment = m_wallSegments.emplace_back();
-        wallSegment.Init(start, end, m_createInfo.height, m_objectId);
+        wallSegment.Init(start, end, m_createInfo.height, m_objectId, m_spawnOffset);
     }
 
     // Calculate worldspace center

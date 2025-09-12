@@ -16,8 +16,9 @@ namespace TextBlitter {
         FontSpriteSheet* spriteSheet = GetFontSpriteSheet(fontName);
         MeshData2D meshData;
         int textureIndex = AssetManager::GetTextureIndexByName(fontName);
-
+        int charSpacing = spriteSheet->m_charSpacing * scale;
         // Bail if spritesheet or font texture not found
+
         if (!spriteSheet || textureIndex == -1) {
             return meshData;
         } 
@@ -38,11 +39,6 @@ namespace TextBlitter {
             size_t estimatedIndices = text.length() * 6;
             meshData.vertices.reserve(estimatedVertices);
             meshData.indices.reserve(estimatedIndices);
-
-            // TODO:
-            int charSpacing = 1;
-            int lineSpacing = 1;
-            // make sure to also update the GetBlitTextSize() size function below
 
             for (size_t i = 0; i < text.length();) {
 
@@ -69,7 +65,7 @@ namespace TextBlitter {
                 // Handle newlines
                 if (character == '\n') {
                     cursorX = static_cast<float>(originX);
-                    cursorY -= (spriteSheet->m_lineHeight + 1 + lineSpacing) * scale;
+                    cursorY -= (spriteSheet->m_charHeight + spriteSheet->m_lineSpacing) * scale;
                     reachY = std::min(reachY, cursorY);
                     i++;
                     continue;
@@ -206,45 +202,73 @@ namespace TextBlitter {
         FontSpriteSheet* spriteSheet = GetFontSpriteSheet(fontName);
         MeshData2D meshData;
         int textureIndex = AssetManager::GetTextureIndexByName(fontName);
-        float cursorX = 0;
-        float cursorY = 0;
-        for (size_t i = 0; i < text.length();) {
+        int charSpacing = spriteSheet->m_charSpacing * scale;
+        // Bail if spritesheet or font texture not found
 
-            // Skip color tags
-            if (text.compare(i, 5, "[COL=") == 0) {
-                size_t end = text.find("]", i);
-                if (end != std::string::npos) {
-                    i = end + 1;
+        if (!spriteSheet || textureIndex == -1) {
+            return glm::ivec2(0, 0);
+        }
+        // Otherwise construct the vertex data
+        else {
+            float cursorX = 0;
+            float cursorY = 0;
+            float reachX = cursorX;
+            float reachY = cursorY;
+            float invTextureWidth = 1.0f / static_cast<float>(spriteSheet->m_textureWidth);
+            float invTextureHeight = 1.0f / static_cast<float>(spriteSheet->m_textureHeight);
+            float halfPixelU = 0.5f * invTextureWidth;
+            float halfPixelV = 0.5f * invTextureHeight;
+            glm::vec4 color(1.0f); // Default color
+
+            // Reserve space for vertices and indices
+            size_t estimatedVertices = text.length() * 4;
+            size_t estimatedIndices = text.length() * 6;
+            meshData.vertices.reserve(estimatedVertices);
+            meshData.indices.reserve(estimatedIndices);
+
+            for (size_t i = 0; i < text.length();) {
+
+                // Handle color tags
+                if (text.compare(i, 5, "[COL=") == 0) {
+                    size_t end = text.find("]", i);
+                    if (end != std::string::npos) {
+                        color = ParseColorTag(text.substr(i, end - i + 1));
+                        i = end + 1; // Skip the tag
+                        continue;
+                    }
+                }
+                char character = text[i];
+
+                // Handle spaces
+                if (character == ' ') {
+                    size_t spaceIndex = spriteSheet->m_characters.find(' ');
+                    int spaceWidth = (spaceIndex != std::string::npos) ? spriteSheet->m_charDataList[spaceIndex].width : 0;
+                    cursorX += spaceWidth * scale;
+                    i++;
                     continue;
                 }
-            }
-            char character = text[i];
+                // Handle newlines
+                if (character == '\n') {
+                    cursorX = 0;
+                    cursorY += (spriteSheet->m_charHeight + spriteSheet->m_lineSpacing) * scale;
+                    reachY = std::min(reachY, cursorY);
+                    i++;
+                    continue;
+                }
+                // Process regular characters
+                int charIndex = spriteSheet->m_characters.find(character);
 
-            // Skip spaces
-            if (character == ' ') {
-                size_t spaceIndex = spriteSheet->m_characters.find(' ');
-                int spaceWidth = (spaceIndex != std::string::npos) ? spriteSheet->m_charDataList[spaceIndex].width : 0;
-                cursorX += spaceWidth * scale;
+                if (charIndex != std::string::npos) {
+                    const auto& charData = spriteSheet->m_charDataList[charIndex];
+                    cursorX += (charData.width + charSpacing) * scale;
+                    //reachX = std::max(reachX, cursorX - (charData.width * scale));
+                    reachX = std::max(reachX, cursorX);
+                    reachY = std::min(reachY, cursorY - charData.height * scale);
+                }
                 i++;
-                continue;
             }
-            // Handle newlines
-            if (character == '\n') {
-                cursorX = 0;
-                cursorY -= (spriteSheet->m_lineHeight + 1) * scale;
-                i++;
-                continue;
-            }
-            // Process regular characters
-            int charIndex = spriteSheet->m_characters.find(character);
-
-            if (charIndex != std::string::npos) {
-                const auto& charData = spriteSheet->m_charDataList[charIndex];
-                cursorX += charData.width * scale;
-            }
-            i++;
+            return glm::ivec2(reachX, cursorY + (spriteSheet->m_charHeight * scale));
         }
-        return glm::ivec2(cursorX, cursorY + (spriteSheet->m_lineHeight * scale));
     }
 
 }

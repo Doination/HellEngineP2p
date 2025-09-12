@@ -65,7 +65,7 @@ void Light::UpdateDirtyState() {
         }
     }
 
-    // Toilet // FIXXXXXXXXXXXXX
+    // TODO: make this only actually affect lights in range
     for (Toilet& toilet : World::GetToilets()) {
         if (toilet.MovedThisFrame()) {
             m_dirty = true;

@@ -13,8 +13,7 @@ struct BoardVertexData {
 };
 
 struct Wall {
-
-    void Init(WallCreateInfo createInfo);
+    void Init(WallCreateInfo createInfo, const SpawnOffset& spawnOffset);
     void CleanUp();
     void UpdateSegmentsAndVertexData();
     void UpdateWorldSpaceCenter(glm::vec3 worldSpaceCenter);
@@ -33,7 +32,7 @@ struct Wall {
     const glm::vec3& GetWorldSpaceCenter() const                            { return m_worldSpaceCenter; }
     Material* GetMaterial()                                                 { return m_material; };
     const std::vector<RenderItem>& GetWeatherBoardstopRenderItems()         { return m_weatherBoardstopRenderItems; }
-    std::vector<WallSegment>& GetWallSegments()                       { return m_wallSegments; }
+    std::vector<WallSegment>& GetWallSegments()                             { return m_wallSegments; }
     const uint64_t GetObjectId() const                                      { return m_objectId; }
     const WallCreateInfo& GetCreateInfo() const                             { return m_createInfo; }
 
@@ -55,6 +54,7 @@ private:
     std::vector<WallSegment> m_wallSegments;
     std::vector<Trim> m_trims;
     WallCreateInfo m_createInfo;
+    SpawnOffset m_spawnOffset;
 
     void CreateCSGVertexData();
     void CreateWeatherBoards();

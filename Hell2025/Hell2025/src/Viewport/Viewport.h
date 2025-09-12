@@ -37,7 +37,12 @@ public:
     ShadingMode GetViewportMode() const;
     SpaceCoords GetWindowSpaceCoords() const;
     SpaceCoords GetGBufferSpaceCoords() const;
+
     Frustum& GetFrustum() { return m_frustum; }
+    int GetLeftPixel()    { return m_leftPixel; }
+    int GetRightPixel()   { return m_rightPixel; }
+    int GetTopPixel()     { return m_topPixel; }
+    int GetBottomPixel()  { return m_bottomPixel; }
 
 private:
     glm::vec2 m_position;           // Top-left corner in normalized screen space (0-1)

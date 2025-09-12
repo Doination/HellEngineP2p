@@ -35,7 +35,6 @@ void Player::UpdateMovement(float deltaTime) {
 }
 
 void Player::UpdateWalkingMovement(float deltaTime) {
-    m_moving = false;
     m_crouching = PressingCrouch();
     m_groundedLastFrame = m_grounded;
 
@@ -161,7 +160,6 @@ inline float SmoothLerp(float current, float target, float deltaTime, float smoo
 }
 
 void Player::UpdateSwimmingMovement(float deltaTime) {
-    m_moving = false;
     m_crouching = false;
     m_grounded = false;
     m_groundedLastFrame = false;

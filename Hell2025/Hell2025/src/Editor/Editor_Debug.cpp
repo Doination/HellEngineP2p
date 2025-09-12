@@ -12,6 +12,10 @@ namespace Editor {
     void UpdateDebug() {
         if (!IsOpen()) return;
 
+        // you commented this out when you added debug text modes, maybe you want htis in the future
+
+        /*
+
         for (int i = 0; i < 4; i++) {
             const Viewport* viewport = ViewportManager::GetViewportByIndex(i);
             if (!viewport->IsVisible()) return;
@@ -57,6 +61,6 @@ namespace Editor {
 
                 UIBackEnd::BlitText(text, "StandardFont", xLeft + 2, yTop + 2, Alignment::TOP_LEFT, 2.0f);
             }
-        }
+        }*/
     }
 }

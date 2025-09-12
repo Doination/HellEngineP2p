@@ -4,7 +4,7 @@
 #include <vector>
 
 struct WallSegment {
-    void Init(glm::vec3 start, glm::vec3 end, float height, uint64_t parentObjectId);
+    void Init(glm::vec3 start, glm::vec3 end, float height, uint64_t parentObjectId, const SpawnOffset& spawnOffset);
     void SetMeshIndex(uint32_t index);
     void CleanUp();
     void CreateVertexData(std::vector<ClippingCube>& clippingCubes, float texOffsetX, float texOffsetY, float texScale);
@@ -35,4 +35,5 @@ private:
     std::vector<Vertex> m_vertices;
     std::vector<uint32_t> m_indices;
     uint32_t m_meshIndex = 0;
+    SpawnOffset m_spawnOffset;
 };

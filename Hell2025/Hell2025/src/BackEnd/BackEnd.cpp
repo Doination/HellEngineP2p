@@ -11,6 +11,7 @@
 #include "Audio/Audio.h"
 #include "Audio/MidiFileManager.h"
 #include "Audio/Synth.h"
+#include "Core/Bible.h"
 #include "Core/Debug.h"
 #include "Core/Game.h"
 #include "Editor/Editor.h"
@@ -73,6 +74,7 @@ namespace BackEnd {
         AssetManager::Init();
         UIBackEnd::Init();
         Audio::Init();
+        Bible::Init();
         Input::Init(BackEnd::GetWindowPointer());
         InputMulti::Init();
         Gizmo::Init();
@@ -330,7 +332,7 @@ namespace BackEnd {
         }
         if (Input::KeyPressed(HELL_KEY_GRAVE_ACCENT)) {
             Audio::PlayAudio(AUDIO_SELECT, 1.00f);
-            Debug::ToggleDebugText();
+            Debug::NextDebugTextMode();
         }
         if (!Editor::IsOpen()) {
             if (Input::KeyPressed(HELL_KEY_C)) {

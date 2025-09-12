@@ -2,7 +2,9 @@
   "name": "RobotoCondensed",
   "textureWidth": 154,
   "textureHeight": 154,
-  "lineHeight": 21,
+  "charHeight": 21,
+  "lineSpacing": 1,
+  "charSpacing": 1,
   "characters": "!\"#$%&'*+,-./0123456789:;<=>?_ABCDEFGHIJKLMNOPQRSTUVWXYZ\\^_`abcdefghijklmnopqrstuvwxyz ",
   "charDataList": [
     { "width": 3, "height": 21, "offsetX": 1, "offsetY": 1 },

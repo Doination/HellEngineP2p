@@ -395,6 +395,7 @@ struct PlayerControls {
     unsigned int FLASHLIGHT = HELL_KEY_F;
     unsigned int MISC_WEAPON_FUNCTION = HELL_KEY_T;
     unsigned int RUN = HELL_KEY_LEFT_SHIFT;
+    unsigned int TOGGLE_INVENTORY = HELL_KEY_WIN_TAB;
 };
 
 /*
