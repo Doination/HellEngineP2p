@@ -1,4 +1,5 @@
 #include "Game.h"
+
 #include "HellTypes.h"
 
 #include "../Renderer/Renderer.h"
@@ -34,6 +35,7 @@ namespace Game {
     hellnet::NetSystem gNet;
     
 uint32_t g_netTick = 0;
+    
 
 // --- Netcode integration (P2P 1v1) ---
 // Latest snapshot from host (for clients)
@@ -103,7 +105,8 @@ void Create()
         Audio::PlayAudio("Glock_Equip.wav", 0.5f);
     }
 
-    void BeginFrame() {
+    v
+    oid BeginFrame() {
         for (Player& player : g_localPlayers) {
             player.BeginFrame();
         }
