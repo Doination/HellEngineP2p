@@ -19,7 +19,8 @@
 #include "Viewport/ViewportManager.h"
 
 // Get me out of here
-#include "World/World.h"
+##include "../../../HellNet/NetSystem.h"
+n#clude "World/World.h"
 // Get me out of here
 
 namespace Game {
@@ -30,7 +31,23 @@ namespace Game {
     glm::vec3 g_moonlightDirection = glm::normalize(glm::vec3(0.0, 0.2, 0.5));
     std::vector<Player> g_localPlayers;
     std::vector<Player> g_onlinePlayers;
-    SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
+    hellnet::NetSystem gNet;
+uint32_t g_netTick = 0;
+
+// --- Netcode integration (P2P 1v1) ---
+// Latest snapshot from host (for clients)
+static hellnet::Snapshot g_latestSnapshot;
+// Callback when host receives remote input (host-only)
+static void Net_OnHostReceiveRemoteInput(const hellnet::InputFrame& in);
+// Callback when client receives authoritative snapshot (client-only)
+static void Net_OnClientApplySnapshot(const hellnet::Snapshot& snap);
+// Callback when host receives a fire event (host-only)
+static void Net_OnHostFireEvent(const hellnet::FireEvent& fe);
+
+void Create()
+ AddLocalPlayer(
+     NetSystem gNet
+       SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
 
     void UpdateAudioLoops();
 
@@ -66,6 +83,20 @@ namespace Game {
         //SetPlayerKeyboardAndMouseIndex(3, 1, 1);
 
         SetSplitscreenMode(SplitscreenMode::FULLSCREEN);
+       
+        // Netcode: initialize P2P host
+    {
+        hellnet::NetCallbacks netCallbacks{};
+        netCallbacks.onHostReceiveRemoteInput = &Net_OnHostReceiveRemoteInput;
+       
+        
+
+        netCallbacks.onClientApplySnapshot = &Net_OnClientApplySnapshot;
+        netCallbacks.onHostFireEvent = &Net_OnHostFireEvent;
+        gNet.setCallbacks(netCallbacks);
+        gNet.host();
+    }
+
         //SetSplitscreenMode(SplitscreenMode::TWO_PLAYER);
 
         Audio::PlayAudio("Glock_Equip.wav", 0.5f);
@@ -83,6 +114,9 @@ namespace Game {
         g_deltaTime = static_cast<float>(currentTime - lastTime);
         lastTime = currentTime;
         g_deltaTimeAccumulator += g_deltaTime;
+                // Netcode: pump network messages
+        gNet.pump(currentTime * 1000.0);
+
 
         // Total time
         g_totalTime += g_deltaTime;
@@ -113,6 +147,76 @@ namespace Game {
         // Physics
         while (g_deltaTimeAccumulator >= g_fixedDeltaTime) {
             g_deltaTimeAccumulator -= g_fixedDeltaTime;
+                        // Netcode: capture local input and send
+            if (!g_localPlayers.empty()) {
+                hellnet::InputFrame input{};
+                input.tick = g_netTick;
+                // assume first local player is the controlling player
+                Player& p = g_localPlayers[0];
+                glm::vec3 camRot = p.GetCameraRotation();
+                input.yaw = camRot.y;
+                input.pitch = camRot.x;
+                int8_t moveX = 0;
+                if (p.PressingWalkLeft()) moveX -= 127;
+                if (p.PressingWalkRight()) moveX += 127;
+                input.moveX = moveX;
+                int8_t moveY = 0;
+                if (p.PressingWalkBackward()) moveY -= 127;
+                if (p.PressingWalkForward()) moveY += 127;
+                input.moveY = moveY;
+                uint16_t buttons = 0;
+                if (p.PressingJump()) buttons |= 1;
+                if (p.PressingCrouch()) buttons |= 2;
+                if (p.PressingFire()) buttons |= 4;
+                if (p.PressedReload()) buttons |= 8;
+                input.buttons = buttons;
+                gNet.captureLocalInput(input);
+            }
+
+            // If host, build authoritative snapshot and send
+            if (gNet.role() == hellnet::Role::Host) {
+                hellnet::PlayerState hostState{};
+                hellnet::PlayerState clientState{};
+                // Fill host state from first local player
+                if (!g_localPlayers.empty()) {
+                    Player& hp = g_localPlayers[0];
+                    hostState.tick = g_netTick;
+                    glm::vec3 pos = hp.GetCameraPosition();
+                    hostState.px = pos.x;
+                    hostState.py = pos.y;
+                    hostState.pz = pos.z;
+                    hostState.vx = 0.0f;
+                    hostState.vy = 0.0f;
+                    hostState.vz = 0.0f;
+                    glm::vec3 hrot = hp.GetCameraRotation();
+                    hostState.yaw = hrot.y;
+                    hostState.pitch = hrot.x;
+                    hostState.ammo = (uint16_t)hp.GetCurrentWeaponMagAmmo();
+                    hostState.health = 100;
+                }
+                // Fill client state from first online player (if any)
+                if (!g_onLinePlayers.empty()) {
+                    Player& cp = g_onLinePlayers[0];
+                    clientState.tick = g_netTick;
+                    glm::vec3 pos = cp.GetCameraPosition();
+                    clientState.px = pos.x;
+                    clientState.py = pos.y;
+                    clientState.pz = pos.z;
+                    clientState.vx = 0.0f;
+                    clientState.vy = 0.0f;
+                    clientState.vz = 0.0f;
+                    glm::vec3 crot = cp.GetCameraRotation();
+                    clientState.yaw = crot.y;
+                    clientState.pitch = crot.x;
+                    clientState.ammo = (uint16_t)cp.GetCurrentWeaponMagAmmo();
+                    clientState.health = 100;
+                }
+                gNet.hostSubmitAuthoritativeStates(g_netTick, hostState, clientState);
+            }
+
+                // Advance net tick
+                            ++g_netTick;
+    
             if (Editor::IsClosed()) {
                 Physics::StepPhysics(g_fixedDeltaTime);
             }
@@ -272,3 +376,21 @@ namespace Game {
         return g_moonlightDirection;
     }
 }
+
+
+namespace Game {
+
+static void Net_OnHostReceiveRemoteInput(const hellnet::InputFrame& in) {
+    // TODO: handle remote input on host
+}
+
+static void Net_OnClientApplySnapshot(const hellnet::Snapshot& snap) {
+    g_latestSnapshot = snap;
+    // TODO: apply snapshot to update client state
+}
+
+static void Net_OnHostFireEvent(const hellnet::FireEvent& fe) {
+    // TODO: handle fire event on host (lag compensation)
+}
+
+} // namespace Game
