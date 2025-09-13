@@ -31,10 +31,14 @@ namespace Game {
     double g_fixedDeltaTime = 1.0 / 60.0;
     glm::vec3 g_moonlightDirection = glm::normalize(glm::vec3(0.0, 0.2, 0.5));
     std::vector<Player> g_localPlayers;
+
     std::vector<Player> g_onlinePlayers;
-    SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
+ 
+SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
 hellnet::NetSystem gNet;
+
 uint32_t g_netTick = 0;
+
 
     void UpdateAudioLoops();
 
@@ -96,13 +100,17 @@ uint32_t g_netTick = 0;
 
         World::UpdatePlayerBvhs();
 
+ 
         // Editor select menu open?
         if (Editor::IsOpen() || ImGuiBackEnd::OwnsMouse()) {
             for (Player& player : g_localPlayers) {
+
+                
                 player.DisableControl();
             }
         } 
         else {
+
             for (Player& player : g_localPlayers) {
                 player.EnableControl();
             }
@@ -139,6 +147,8 @@ uint32_t g_netTick = 0;
         }
     }
 
+
+
     Player* GetPlayerByPlayerId(uint64_t playerId) {
         for (Player& player : g_localPlayers) {
             if (player.GetPlayerId() == playerId) {
@@ -171,6 +181,7 @@ uint32_t g_netTick = 0;
     float GetLocalPlayerFovByIndex(uint32_t index) {
         if (index >= 0 && index < g_localPlayers.size()) {
             return g_localPlayers[index].GetFov();
+
         }
         else {
             std::cout << "Game::GetLocalPlayerFOVByIndex(int index) failed. " << index << " out of range of local player count " << g_localPlayers.size() << "\n";
@@ -205,6 +216,7 @@ uint32_t g_netTick = 0;
         if (g_splitscreenMode == SplitscreenMode::FULLSCREEN) {
             return std::min(GetLocalPlayerCount(), (int32_t)1);
         }
+            
         else if (g_splitscreenMode == SplitscreenMode::TWO_PLAYER) {
             return std::min(GetLocalPlayerCount(), (int32_t)2);
         }
