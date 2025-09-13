@@ -183,7 +183,9 @@ void Create()
                     hostState.tick = g_netTick;
                     glm::vec3 pos = hp.GetCameraPosition();
                     hostState.px = pos.x;
+ 
                     hostState.py = pos.y;
+
                     hostState.pz = pos.z;
                     hostState.vx = 0.0f;
                     hostState.vy = 0.0f;
