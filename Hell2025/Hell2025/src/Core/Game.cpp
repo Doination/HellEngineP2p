@@ -33,7 +33,8 @@ namespace Game {
     std::vector<Player> g_localPlayers;
 
     std::vector<Player> g_onlinePlayers;
- 
+
+
 SplitscreenMode g_splitscreenMode = SplitscreenMode::FULLSCREEN;
 hellnet::NetSystem gNet;
 
@@ -106,7 +107,9 @@ uint32_t g_netTick = 0;
             for (Player& player : g_localPlayers) {
 
                 
+ 
                 player.DisableControl();
+
             }
         } 
         else {
@@ -141,7 +144,9 @@ uint32_t g_netTick = 0;
         return g_totalTime;
     }
 
-    void RespawnPlayers() {
+    void RespawnP
+layers() {
+    
         for (Player& player : g_localPlayers) {
             player.Respawn();
         }
@@ -176,6 +181,7 @@ uint32_t g_netTick = 0;
             std::cout << "Game::GetLocalPlayerCameraByIndex(int index) failed. " << index << " out of range of local player count " << g_localPlayers.size() << "\n";
             return nullptr;
         }
+ 
     }
 
     float GetLocalPlayerFovByIndex(uint32_t index) {
