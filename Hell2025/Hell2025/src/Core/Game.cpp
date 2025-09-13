@@ -32,6 +32,7 @@ namespace Game {
     std::vector<Player> g_localPlayers;
     std::vector<Player> g_onlinePlayers;
     hellnet::NetSystem gNet;
+    
 uint32_t g_netTick = 0;
 
 // --- Netcode integration (P2P 1v1) ---
@@ -118,6 +119,7 @@ void Create()
         gNet.pump(currentTime * 1000.0);
 
 
+        
         // Total time
         g_totalTime += g_deltaTime;
         if (g_totalTime > TIME_WRAP) {
@@ -153,6 +155,7 @@ void Create()
                 input.tick = g_netTick;
                 // assume first local player is the controlling player
                 Player& p = g_localPlayers[0];
+
                 glm::vec3 camRot = p.GetCameraRotation();
                 input.yaw = camRot.y;
                 input.pitch = camRot.x;
